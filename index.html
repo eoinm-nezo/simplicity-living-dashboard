@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplicity Living - Building Performance Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Building Better. Building Smarter.</h1>
+        <p>Explore real data from 4 Simplicity projects showcasing industry-leading performance in embodied carbon, energy efficiency, and construction productivity.</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Project Timeline -->
+        <section class="section">
+            <h2 class="section-title">Project Timeline</h2>
+            <p class="timeline-intro">
+                Four Simplicity Living build-to-rent communities across Tāmaki Makaurau Auckland, tracked from completion through to delivery. Each successive project builds on the last &mdash; driving down embodied carbon and lifting performance.
+            </p>
+            <div class="project-timeline">
+                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/reiputa" target="_blank" rel="noopener">
+                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/OTOH_Te_Reiputa_Ext_Pavilion_small.jpg" alt="Reiputa, Mt Wellington" loading="lazy">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-body">
+                        <h3>Reiputa</h3>
+                        <div class="timeline-location">Mt Wellington</div>
+                        <div class="timeline-date">2026</div>
+                        <span class="timeline-status status-complete">Completed</span>
+                        <div class="timeline-meta">297 homes &middot; NZ's largest build-to-rent</div>
+                        <div class="timeline-link">View community &rarr;</div>
+                    </div>
+                </a>
+                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/waiatarua" target="_blank" rel="noopener">
+                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/waiatarua/renders/Simplicity_Ascot_Ext_Motorway.jpg" alt="Waiatarua, Remuera" loading="lazy">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-body">
+                        <h3>Waiatarua</h3>
+                        <div class="timeline-location">Remuera</div>
+                        <div class="timeline-date">Late 2026</div>
+                        <span class="timeline-status status-construction">Under construction</span>
+                        <div class="timeline-meta">330 homes &middot; 130 Ascot Ave</div>
+                        <div class="timeline-link">View community &rarr;</div>
+                    </div>
+                </a>
+                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/northcote" target="_blank" rel="noopener">
+                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/northcote/renders/Northcote.png" alt="Lake Road, Northcote" loading="lazy">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-body">
+                        <h3>Lake Road</h3>
+                        <div class="timeline-location">Northcote</div>
+                        <div class="timeline-date">Mid 2027</div>
+                        <span class="timeline-status status-planned">Planned</span>
+                        <div class="timeline-meta">93 homes &middot; 137 Lake Road</div>
+                        <div class="timeline-link">View community &rarr;</div>
+                    </div>
+                </a>
+                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/morningside" target="_blank" rel="noopener">
+                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/morningside/renders/Morningside.png" alt="Morningside Drive, Morningside" loading="lazy">
+                    <div class="timeline-node"></div>
+                    <div class="timeline-body">
+                        <h3>Morningside Drive</h3>
+                        <div class="timeline-location">Morningside</div>
+                        <div class="timeline-date">Late 2027</div>
+                        <span class="timeline-status status-construction">Under construction</span>
+                        <div class="timeline-meta">264 homes &middot; 10 Morningside Dr</div>
+                        <div class="timeline-link">View community &rarr;</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Performance Metrics Charts -->
+        <section class="section">
+            <h2 class="section-title">Project Performance Overview</h2>
+            <div class="charts-container">
+                <!-- Embodied Carbon Chart -->
+                <div class="chart-wrapper">
+                    <h3>Embodied Carbon Performance</h3>
+                    <div class="chart-canvas-container">
+                        <canvas id="carbonChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Energy Usage Chart -->
+                <div class="chart-wrapper">
+                    <h3>Energy Usage Performance</h3>
+                    <div class="toggle-container">
+                        <span>Energy (kWh)</span>
+                        <div class="toggle-switch" id="energyToggle" onclick="toggleEnergyChart()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <span>Carbon (kgCO2e)</span>
+                    </div>
+                    <div class="chart-canvas-container">
+                        <canvas id="energyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- A4-A5 Tool Promotion -->
+    <section class="promo-section orange-bg">
+        <h2>The Carbon Productivity Tool</h2>
+        <p>Optimize your project's A4-A5 carbon footprint with our comprehensive calculator. Model construction scenarios, transport logistics, and on-site activities to find the perfect balance between carbon reduction and productivity.</p>
+        <a href="a4a5-calculator.html" class="promo-btn white">Launch Calculator</a>
+    </section>
+
+    <div class="container">
+        <!-- Waste Management Promotion -->
+        <section class="promo-section">
+            <h2>Construction Waste Management</h2>
+            <p>Track, analyze, and minimize waste throughout your construction project. Access case study data, use our waste calculator, and implement the Simplicity way of managing resources efficiently.</p>
+            <a href="waste.html" class="promo-btn">Explore Waste Tool</a>
+        </section>
+
+        <!-- Case Study Navigation Tiles -->
+        <section class="section">
+            <h2 class="section-title">Case Studies</h2>
+            <div class="nav-tiles">
+                <a href="embodied-carbon.html" class="nav-tile">
+                    <div class="nav-tile-icon">🏗️</div>
+                    <h3>Embodied Carbon</h3>
+                    <p>Detailed analysis of material carbon footprint across Simplicity projects</p>
+                </a>
+                <a href="energy.html" class="nav-tile">
+                    <div class="nav-tile-icon">⚡</div>
+                    <h3>Energy Performance</h3>
+                    <p>OpenStudio models and energy simulation results</p>
+                </a>
+                <a href="productivity.html" class="nav-tile">
+                    <div class="nav-tile-icon">📊</div>
+                    <h3>Site Activity & Productivity</h3>
+                    <p>Construction efficiency metrics and workforce analysis</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Life Cycle Cost Section -->
+        <section class="section">
+            <h2 class="section-title">Life Cycle Cost & Maintenance</h2>
+            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 2rem;">
+                Understand the long-term financial implications of construction methodology choices. Our analysis compares in-situ concrete, precast, and CLT systems over 20-50 years.
+            </p>
+            <div style="text-align: center;">
+                <a href="maintenance.html" class="promo-btn">View Analysis</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scoring System Promotion -->
+    <section class="promo-section orange-bg">
+        <h2>Simplicity Scoring System</h2>
+        <p>Introducing our self-driven building performance assessment tool - inspired by leading green-building rating schemes, tailored for Simplicity. Evaluate your project across multiple sustainability dimensions and benchmark against industry standards.</p>
+        <a href="scoring.html" class="promo-btn white">Start Assessment</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Data sourced from 4 real Simplicity construction projects</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/charts.js"></script>
+</body>
+</html>

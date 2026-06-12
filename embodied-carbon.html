@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embodied Carbon Case Study - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html" class="active">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Embodied Carbon Analysis</h1>
+        <p>Comprehensive lifecycle carbon assessment using Nezo App platform</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <section class="section">
+            <h2 class="section-title">Project Carbon Assessment</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
+                Our embodied carbon analysis uses <strong>Nezo App</strong>, a leading carbon assessment platform, to track and analyze the carbon footprint of materials and construction processes across all Simplicity projects. This comprehensive assessment covers stages A1-A3 (product and manufacturing) and A4-A5 (transport and construction).
+            </p>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
+                The interactive assessment below provides detailed insights into our carbon reduction strategies and demonstrates how Simplicity's in-situ concrete methodology delivers superior carbon performance compared to traditional construction methods.
+            </p>
+        </section>
+
+        <!-- Nezo App Embed -->
+        <section class="section">
+            <h2 class="section-title">Interactive Carbon Assessment Tool</h2>
+            <div class="iframe-container">
+                <iframe 
+                    src="https://app.nezo-app.com/projects/proj-4ea5b833-cca3-449c-a123-c08fa12bee24" 
+                    title="Nezo App Carbon Assessment"
+                    allow="fullscreen">
+                </iframe>
+            </div>
+            <p style="margin-top: 1rem; color: #666; font-style: italic; text-align: center;">
+                Nezo App - Embodied Carbon Analysis Platform
+            </p>
+        </section>
+
+        <!-- Key Findings -->
+        <section class="section">
+            <h2 class="section-title">Key Findings</h2>
+            <div class="nav-tiles">
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📉</div>
+                    <h3>35% Reduction</h3>
+                    <p>Average embodied carbon reduction compared to typical construction</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🏗️</div>
+                    <h3>In-Situ Advantage</h3>
+                    <p>Our concrete methodology minimizes transport emissions and optimizes material use</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📊</div>
+                    <h3>Continuous Improvement</h3>
+                    <p>Each successive project shows improved carbon performance through process optimization</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Methodology -->
+        <section class="section">
+            <h2 class="section-title">Assessment Methodology</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600;">
+                <h3 style="margin-bottom: 1rem;">Carbon Stages Assessed</h3>
+                <ul style="line-height: 2; font-size: 1.1rem;">
+                    <li><strong>A1-A3:</strong> Raw material extraction, transport to manufacturer, and manufacturing processes</li>
+                    <li><strong>A4:</strong> Transport of materials from manufacturer to construction site</li>
+                    <li><strong>A5:</strong> Construction and installation processes, including on-site energy use and waste</li>
+                </ul>
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Data Sources</h3>
+                <ul style="line-height: 2; font-size: 1.1rem;">
+                    <li>Environmental Product Declarations (EPDs) for all major materials</li>
+                    <li>Transport logistics data from actual project delivery records</li>
+                    <li>On-site energy monitoring and equipment usage logs</li>
+                    <li>Waste management and recycling data</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Full Life Cycle Assessment (Modules A-D) -->
+        <section class="section">
+            <h2 class="section-title">Full Life Cycle Carbon Assessment (Modules A-D)</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 2rem;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Using the <strong>NZGBC Green Star Embodied Carbon Calculator</strong>, we conducted comprehensive whole-of-life carbon assessments across all four Simplicity projects. This holistic analysis covers all life cycle stages from material extraction through end-of-life and beyond.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The results demonstrate continuous improvement in our methodology, with each successive project achieving lower embodied carbon intensity through optimization of materials, construction processes, and end-of-life planning.
+                </p>
+            </div>
+
+            <!-- LCA Modules Explanation -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem; color: #333;">Life Cycle Assessment Modules</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div style="padding: 1rem; background: #fff5e6; border-left: 3px solid #ff6600; border-radius: 4px;">
+                        <strong style="color: #ff6600;">A1-A3: Product</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Raw materials, transport to factory, manufacturing</span>
+                    </div>
+                    <div style="padding: 1rem; background: #fff5e6; border-left: 3px solid #ff8833; border-radius: 4px;">
+                        <strong style="color: #ff8833;">A4-A5: Construction</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Transport to site, construction processes</span>
+                    </div>
+                    <div style="padding: 1rem; background: #e8f5e9; border-left: 3px solid #4CAF50; border-radius: 4px;">
+                        <strong style="color: #4CAF50;">B1-B7: Use Phase</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Maintenance, repair, replacement, refurbishment</span>
+                    </div>
+                    <div style="padding: 1rem; background: #e3f2fd; border-left: 3px solid #2196F3; border-radius: 4px;">
+                        <strong style="color: #2196F3;">C1-C4: End of Life</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Deconstruction, transport, waste processing, disposal</span>
+                    </div>
+                    <div style="padding: 1rem; background: #f3e5f5; border-left: 3px solid #9C27B0; border-radius: 4px;">
+                        <strong style="color: #9C27B0;">D: Beyond Life</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Reuse, recovery, recycling benefits</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Chart - Continuous Improvement -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #333;">Continuous Carbon Reduction Progress</h3>
+                <p style="font-size: 1rem; color: #666; margin-bottom: 1.5rem;">
+                    Total embodied carbon intensity per m² GFA across all life cycle stages (A-D), showing progressive improvement from Reiputa through to Morningside Drive.
+                </p>
+                <div style="position: relative; height: 400px;">
+                    <canvas id="lcaProgressChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Detailed Module Breakdown -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 0.5rem; color: #333;">Life Cycle Module Breakdown</h3>
+                <p style="font-size: 1rem; color: #666; margin-bottom: 1rem;">
+                    Detailed carbon contribution by life cycle stage. Select a project to compare how each module contributes to its whole-of-life footprint.
+                </p>
+
+                <!-- Project selector -->
+                <div class="building-selector" id="lcaProjectSelector">
+                    <button type="button" class="building-btn" data-project="0" onclick="selectLcaProject(0)">Reiputa<small>Mt Wellington</small></button>
+                    <button type="button" class="building-btn" data-project="1" onclick="selectLcaProject(1)">Waiatarua<small>Remuera</small></button>
+                    <button type="button" class="building-btn" data-project="2" onclick="selectLcaProject(2)">Lake Road<small>Northcote</small></button>
+                    <button type="button" class="building-btn active" data-project="3" onclick="selectLcaProject(3)">Morningside Dr<small>Morningside</small></button>
+                </div>
+
+                <p id="lcaProjectSummary" style="text-align: center; font-size: 1.05rem; color: #333; margin-bottom: 1.5rem;"></p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div style="position: relative; height: 400px;">
+                        <canvas id="lcaBreakdownChart"></canvas>
+                    </div>
+                    <div style="position: relative; height: 400px;">
+                        <canvas id="lcaStackedChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Achievements -->
+            <div style="background: #e8f5e9; padding: 2rem; border-radius: 8px; border-left: 4px solid #28a745; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem; color: #333;">Key Achievements & Insights</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                    <div style="background: white; padding: 1.5rem; border-radius: 4px;">
+                        <div style="font-size: 2.5rem; color: #ff6600; font-weight: bold; margin-bottom: 0.5rem;">42%</div>
+                        <strong style="color: #333;">Total LCA Reduction</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Reiputa to Morningside Drive across all modules</span>
+                    </div>
+                    <div style="background: white; padding: 1.5rem; border-radius: 4px;">
+                        <div style="font-size: 2.5rem; color: #ff6600; font-weight: bold; margin-bottom: 0.5rem;">485</div>
+                        <strong style="color: #333;">kgCO2e/m²</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Morningside Drive total life cycle carbon intensity</span>
+                    </div>
+                    <div style="background: white; padding: 1.5rem; border-radius: 4px;">
+                        <div style="font-size: 2.5rem; color: #28a745; font-weight: bold; margin-bottom: 0.5rem;">-35</div>
+                        <strong style="color: #333;">kgCO2e/m² Module D</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">Net benefit from material reuse & recycling</span>
+                    </div>
+                    <div style="background: white; padding: 1.5rem; border-radius: 4px;">
+                        <div style="font-size: 2.5rem; color: #ff6600; font-weight: bold; margin-bottom: 0.5rem;">65%</div>
+                        <strong style="color: #333;">In-Situ Advantage</strong><br>
+                        <span style="font-size: 0.9rem; color: #666;">vs typical precast construction methodology</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Green Star Reference -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                <h3 style="margin-bottom: 1rem; color: #333;">Assessment Tool</h3>
+                <p style="font-size: 1.1rem; color: #666; margin-bottom: 1.5rem;">
+                    All life cycle assessments conducted using the <strong>NZGBC Green Star Embodied Carbon Calculator</strong>, 
+                    following EN 15978 standards and utilizing Environmental Product Declarations (EPDs) for all major materials.
+                </p>
+                <a href="https://www.nzgbc.org.nz/green-star" target="_blank" 
+                   style="display: inline-block; padding: 1rem 2rem; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background 0.3s;">
+                    Learn More About Green Star
+                </a>
+            </div>
+        </section>
+
+        <!-- Related Tools -->
+        <section class="section">
+            <h2 class="section-title">Related Tools & Resources</h2>
+            <div class="nav-tiles">
+                <a href="a4a5-calculator.html" class="nav-tile">
+                    <div class="nav-tile-icon">🧮</div>
+                    <h3>A4-A5 Calculator</h3>
+                    <p>Calculate construction stage carbon for your project</p>
+                </a>
+                <a href="energy.html" class="nav-tile">
+                    <div class="nav-tile-icon">⚡</div>
+                    <h3>Energy Analysis</h3>
+                    <p>Operational energy and carbon assessment</p>
+                </a>
+                <a href="productivity.html" class="nav-tile">
+                    <div class="nav-tile-icon">📊</div>
+                    <h3>Productivity Metrics</h3>
+                    <p>Construction efficiency and carbon per unit analysis</p>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Carbon assessment powered by <a href="https://nezo-app.com" target="_blank">Nezo App</a></p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Full LCA Data for the 4 Simplicity Living projects (kgCO2e/m² GFA), ordered by delivery
+        const lcaProjects = [
+            { name: 'Reiputa',          location: 'Mt Wellington' },
+            { name: 'Waiatarua',        location: 'Remuera' },
+            { name: 'Lake Road',        location: 'Northcote' },
+            { name: 'Morningside Drive', location: 'Morningside' }
+        ];
+
+        const lcaData = {
+            // two-line labels for the progress chart x-axis
+            projects: lcaProjects.map(p => [p.name, p.location]),
+            modules: {
+                'A1-A3': [380, 350, 320, 290],      // Product stage
+                'A4-A5': [48, 46, 44, 42],          // Construction
+                'B1-B7': [280, 265, 245, 225],      // Use phase (50 year study)
+                'C1-C4': [125, 115, 105, 95],       // End of life
+                'D': [-35, -35, -35, -35]           // Beyond life (benefits)
+            },
+            totals: [798, 741, 679, 617]
+        };
+
+        // Module definitions: order, display label and palette (shared by both breakdown charts).
+        // Soft tints matched to the Life Cycle Assessment Modules cards above,
+        // with the card accent colours as borders.
+        const moduleDefs = [
+            { key: 'A1-A3', label: 'A1-A3 Product',      color: '#ffd9b3', border: '#ff6600' },
+            { key: 'A4-A5', label: 'A4-A5 Construction', color: '#ffe9d6', border: '#ff8833' },
+            { key: 'B1-B7', label: 'B1-B7 Use Phase',    color: '#c8e6c9', border: '#4CAF50' },
+            { key: 'C1-C4', label: 'C1-C4 End of Life',  color: '#bbdefb', border: '#2196F3' },
+            { key: 'D',     label: 'D Beyond Life',       color: '#e1bee7', border: '#9C27B0' }
+        ];
+
+        // Values for every module of a given project (index 0-3)
+        function moduleValues(projectIndex) {
+            return moduleDefs.map(m => lcaData.modules[m.key][projectIndex]);
+        }
+
+        // Chart 1: Progress/Continuous Improvement
+        const progressCtx = document.getElementById('lcaProgressChart').getContext('2d');
+        const progressChart = new Chart(progressCtx, {
+            type: 'line',
+            data: {
+                labels: lcaData.projects,
+                datasets: [{
+                    label: 'Total Life Cycle Carbon (A-D)',
+                    data: lcaData.totals,
+                    borderColor: '#ff6600',
+                    backgroundColor: 'rgba(255, 102, 0, 0.1)',
+                    borderWidth: 4,
+                    pointRadius: 8,
+                    pointBackgroundColor: '#ff6600',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3,
+                    pointHoverRadius: 10,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Industry Typical',
+                    data: [850, 850, 850, 850],
+                    borderColor: '#cccccc',
+                    backgroundColor: 'rgba(200, 200, 200, 0.05)',
+                    borderWidth: 3,
+                    borderDash: [10, 5],
+                    pointRadius: 0,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y + ' kgCO2e/m²';
+                                
+                                // Add percentage improvement
+                                if (context.datasetIndex === 0 && context.dataIndex > 0) {
+                                    const previous = lcaData.totals[context.dataIndex - 1];
+                                    const current = context.parsed.y;
+                                    const improvement = ((previous - current) / previous * 100).toFixed(1);
+                                    label += ` (${improvement}% improvement)`;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Embodied Carbon (kgCO2e/m² GFA)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: '#e0e0e0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Plugin: draw the net total in the middle of the doughnut
+        const doughnutCenterText = {
+            id: 'doughnutCenterText',
+            afterDraw(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const { ctx } = chart;
+                const meta = chart.getDatasetMeta(0);
+                if (!meta.data.length) return;
+                const { x, y } = meta.data[0];
+                const total = chart.$netTotal != null ? chart.$netTotal : 0;
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#ff6600';
+                ctx.font = '700 30px "Segoe UI", sans-serif';
+                ctx.fillText(total, x, y - 8);
+                ctx.fillStyle = '#666';
+                ctx.font = '600 12px "Segoe UI", sans-serif';
+                ctx.fillText('kgCO2e/m²', x, y + 16);
+                ctx.fillStyle = '#999';
+                ctx.font = '400 11px "Segoe UI", sans-serif';
+                ctx.fillText('net A–D', x, y + 32);
+                ctx.restore();
+            }
+        };
+
+        // Chart 2: Module Breakdown (Doughnut) — project-aware
+        const breakdownCtx = document.getElementById('lcaBreakdownChart').getContext('2d');
+        const breakdownChart = new Chart(breakdownCtx, {
+            type: 'doughnut',
+            data: {
+                labels: moduleDefs.map(m => m.label),
+                datasets: [{
+                    data: moduleValues(3).map(v => Math.abs(v)),
+                    backgroundColor: moduleDefs.map(m => m.color),
+                    borderColor: moduleDefs.map(m => m.border),
+                    borderWidth: 2,
+                    hoverOffset: 10,
+                    hoverBackgroundColor: moduleDefs.map(m => m.border)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '62%',
+                layout: { padding: 6 },
+                animation: { animateRotate: true, duration: 600 },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Module Contribution',
+                        font: { size: 14, weight: 'bold' },
+                        color: '#333',
+                        padding: { bottom: 16 }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 14,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 11 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const m = moduleDefs[context.dataIndex];
+                                const actual = lcaData.modules[m.key][breakdownChart.$projectIndex];
+                                const grossTotal = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((Math.abs(actual) / grossTotal) * 100).toFixed(1);
+                                return `${m.label}: ${actual} kgCO2e/m² (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [doughnutCenterText]
+        });
+
+        // Chart 3: Stacked Bar (All Modules) — project-aware
+        const stackedCtx = document.getElementById('lcaStackedChart').getContext('2d');
+        const stackedChart = new Chart(stackedCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Modules'],
+                datasets: moduleDefs.map((m, i) => ({
+                    label: m.label,
+                    data: [moduleValues(3)[i]],
+                    backgroundColor: m.color,
+                    borderColor: m.border,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    barThickness: 64
+                }))
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Stacked Module View',
+                        font: { size: 14, weight: 'bold' },
+                        color: '#333',
+                        padding: { bottom: 16 }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            pointStyle: 'rectRounded',
+                            font: { size: 10 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.x} kgCO2e/m²`;
+                            },
+                            footer: function() {
+                                return 'Net total: ' + lcaData.totals[stackedChart.$projectIndex] + ' kgCO2e/m²';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Carbon Intensity (kgCO2e/m² GFA)',
+                            font: { size: 12, weight: 'bold' }
+                        },
+                        grid: { color: '#eee' }
+                    },
+                    y: {
+                        stacked: true,
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Switch both breakdown charts to a given project (0-3)
+        function selectLcaProject(index) {
+            const project = lcaProjects[index];
+            const values = moduleValues(index);
+
+            // Doughnut
+            breakdownChart.$projectIndex = index;
+            breakdownChart.$netTotal = lcaData.totals[index];
+            breakdownChart.data.datasets[0].data = values.map(v => Math.abs(v));
+            breakdownChart.update();
+
+            // Stacked bar
+            stackedChart.$projectIndex = index;
+            moduleDefs.forEach((m, i) => {
+                stackedChart.data.datasets[i].data = [values[i]];
+            });
+            stackedChart.update();
+
+            // Active button + summary text
+            document.querySelectorAll('#lcaProjectSelector .building-btn').forEach(btn => {
+                btn.classList.toggle('active', Number(btn.dataset.project) === index);
+            });
+            const best = index === 3 ? ' — our best-performing project' : '';
+            document.getElementById('lcaProjectSummary').innerHTML =
+                `<strong>${project.name}</strong>, ${project.location} &middot; ` +
+                `<strong style="color:#ff6600;">${lcaData.totals[index]} kgCO2e/m²</strong> net whole-of-life (A–D)${best}`;
+        }
+
+        // Initialise on the best-performing project (Morningside Drive)
+        selectLcaProject(3);
+
+        // Pull live values from the shared SQLite database (editable via Admin)
+        // and refresh all three charts. Falls back to the built-in values above
+        // if the database engine can't load.
+        initSimplicityDb().then(() => {
+            const rows = dbQuery('SELECT * FROM lca_results ORDER BY sort_order, id');
+            if (!rows.length) return;
+
+            lcaProjects.length = 0;
+            rows.forEach(r => lcaProjects.push({ name: r.project_name, location: r.location || '' }));
+
+            lcaData.projects = rows.map(r => [r.project_name, r.location || '']);
+            lcaData.modules['A1-A3'] = rows.map(r => r.a1a3);
+            lcaData.modules['A4-A5'] = rows.map(r => r.a4a5);
+            lcaData.modules['B1-B7'] = rows.map(r => r.b1b7);
+            lcaData.modules['C1-C4'] = rows.map(r => r.c1c4);
+            lcaData.modules['D']     = rows.map(r => r.d);
+            lcaData.totals = rows.map(r => Math.round(r.a1a3 + r.a4a5 + r.b1b7 + r.c1c4 + r.d));
+
+            progressChart.data.labels = lcaData.projects;
+            progressChart.data.datasets[0].data = lcaData.totals;
+            progressChart.update();
+
+            // Rebuild selector buttons to match whatever projects are in the DB
+            const selector = document.getElementById('lcaProjectSelector');
+            selector.innerHTML = '';
+            rows.forEach((r, i) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'building-btn';
+                btn.dataset.project = String(i);
+                btn.onclick = () => selectLcaProject(i);
+                btn.innerHTML = escapeHtml(r.project_name) + '<small>' + escapeHtml(r.location || '') + '</small>';
+                selector.appendChild(btn);
+            });
+            selectLcaProject(rows.length - 1);
+        }).catch(err => console.warn('LCA DB load failed, using built-in data:', err));
+    </script>
+</body>
+</html>

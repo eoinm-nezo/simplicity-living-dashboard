@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Management Tool - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/waste.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html" class="active">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Construction Waste Management</h1>
+        <p>Track, reduce, and manage construction waste the Simplicity way</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Introduction -->
+        <section class="section">
+            <h2 class="section-title">Simplicity Waste Benchmark</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 2rem;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Simplicity uses a unique benchmarking approach to visualize construction waste impact. We calculate the volume of waste generated and divide it by the ground floor area to determine how high the waste would stack if placed on the building footprint.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    <strong>Lower is better!</strong> Our goal is to keep waste height below 100mm, demonstrating exceptional resource efficiency and waste minimization strategies.
+                </p>
+            </div>
+        </section>
+
+        <!-- Interactive Calculator -->
+        <section class="section">
+            <h2 class="section-title">Waste Calculator</h2>
+            <div class="calculator-container">
+                <div class="calculator-inputs">
+                    <h3>Project Parameters</h3>
+                    <div class="input-group">
+                        <label for="wasteVolume">Total Waste Volume (m³):</label>
+                        <input type="number" id="wasteVolume" value="50" min="0" step="0.1" oninput="calculateWaste()">
+                    </div>
+                    <div class="input-group">
+                        <label for="floorArea">Ground Floor Area (m²):</label>
+                        <input type="number" id="floorArea" value="500" min="1" step="0.1" oninput="calculateWaste()">
+                    </div>
+                    <div class="result-display">
+                        <div class="result-value">
+                            <span>Waste Height:</span>
+                            <strong id="wasteHeight">100</strong>
+                            <span>mm</span>
+                        </div>
+                        <div class="emoji-display">
+                            <span id="wasteEmoji" class="waste-emoji">🙂</span>
+                        </div>
+                        <div class="performance-rating">
+                            <span id="performanceText">Good Performance</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual Building Graph -->
+                <div class="building-visual">
+                    <h3>Visual Representation</h3>
+                    <div class="building-container">
+                        <div class="building-outline">
+                            <div class="building-floor" style="bottom: 80%;">Roof</div>
+                            <div class="building-floor" style="bottom: 60%;">Floor 6</div>
+                            <div class="building-floor" style="bottom: 50%;">Floor 5</div>
+                            <div class="building-floor" style="bottom: 40%;">Floor 4</div>
+                            <div class="building-floor" style="bottom: 30%;">Floor 3</div>
+                            <div class="building-floor" style="bottom: 20%;">Floor 2</div>
+                            <div class="building-floor" style="bottom: 10%;">Floor 1</div>
+                            <div class="building-floor ground">Ground</div>
+                            <div id="wasteVisualization" class="waste-fill" style="height: 10%;"></div>
+                        </div>
+                        <div class="scale-indicator">
+                            <div class="scale-mark" style="bottom: 0%;"><span>0m</span></div>
+                            <div class="scale-mark" style="bottom: 20%;"><span>0.5m</span></div>
+                            <div class="scale-mark" style="bottom: 40%;"><span>1.0m</span></div>
+                            <div class="scale-mark" style="bottom: 60%;"><span>1.5m</span></div>
+                            <div class="scale-mark" style="bottom: 80%;"><span>2.0m</span></div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        Orange fill shows waste volume if stacked on ground floor area
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benchmarks -->
+        <section class="section">
+            <h2 class="section-title">Performance Benchmarks</h2>
+            <div class="benchmark-grid">
+                <div class="benchmark-card excellent">
+                    <div class="benchmark-emoji">😊</div>
+                    <h3>Excellent</h3>
+                    <p class="benchmark-value">&lt; 50mm</p>
+                    <p class="benchmark-desc">Industry-leading waste minimization</p>
+                </div>
+                <div class="benchmark-card good">
+                    <div class="benchmark-emoji">🙂</div>
+                    <h3>Good</h3>
+                    <p class="benchmark-value">50-100mm</p>
+                    <p class="benchmark-desc">Effective waste management practices</p>
+                </div>
+                <div class="benchmark-card acceptable">
+                    <div class="benchmark-emoji">😐</div>
+                    <h3>Acceptable</h3>
+                    <p class="benchmark-value">100-150mm</p>
+                    <p class="benchmark-desc">Room for improvement</p>
+                </div>
+                <div class="benchmark-card attention">
+                    <div class="benchmark-emoji">🤔</div>
+                    <h3>Needs Attention</h3>
+                    <p class="benchmark-value">150-250mm</p>
+                    <p class="benchmark-desc">Waste reduction strategies required</p>
+                </div>
+                <div class="benchmark-card poor">
+                    <div class="benchmark-emoji">😟</div>
+                    <h3>High Waste</h3>
+                    <p class="benchmark-value">250-400mm</p>
+                    <p class="benchmark-desc">Significant waste management issues</p>
+                </div>
+                <div class="benchmark-card critical">
+                    <div class="benchmark-emoji">😰</div>
+                    <h3>Critical</h3>
+                    <p class="benchmark-value">&gt; 400mm</p>
+                    <p class="benchmark-desc">Urgent action required</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Study Data -->
+        <section class="section">
+            <h2 class="section-title">Simplicity Project Performance</h2>
+            <div class="case-study-grid" id="wasteCaseGrid">
+                <div class="case-card">
+                    <h3>Reiputa <span style="font-weight:400;font-size:0.8rem;color:#666;">Mt Wellington</span></h3>
+                    <div class="case-stats">
+                        <div class="stat">
+                            <span>Waste Volume:</span>
+                            <strong>32 m³</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Floor Area:</span>
+                            <strong>680 m²</strong>
+                        </div>
+                        <div class="stat highlight">
+                            <span>Waste Height:</span>
+                            <strong>47mm</strong>
+                        </div>
+                    </div>
+                    <div class="performance-badge excellent">😊 Excellent</div>
+                </div>
+                
+                <div class="case-card">
+                    <h3>Waiatarua <span style="font-weight:400;font-size:0.8rem;color:#666;">Remuera</span></h3>
+                    <div class="case-stats">
+                        <div class="stat">
+                            <span>Waste Volume:</span>
+                            <strong>28 m³</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Floor Area:</span>
+                            <strong>550 m²</strong>
+                        </div>
+                        <div class="stat highlight">
+                            <span>Waste Height:</span>
+                            <strong>51mm</strong>
+                        </div>
+                    </div>
+                    <div class="performance-badge good">🙂 Good</div>
+                </div>
+                
+                <div class="case-card">
+                    <h3>Lake Road <span style="font-weight:400;font-size:0.8rem;color:#666;">Northcote</span></h3>
+                    <div class="case-stats">
+                        <div class="stat">
+                            <span>Waste Volume:</span>
+                            <strong>25 m³</strong>
+                        </div>
+                        <div class="stat">
+                            <span>Floor Area:</span>
+                            <strong>720 m²</strong>
+                        </div>
+                        <div class="stat highlight">
+                            <span>Waste Height:</span>
+                            <strong>35mm</strong>
+                        </div>
+                    </div>
+                    <div class="performance-badge excellent">😊 Excellent</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waste Reduction Strategies -->
+        <section class="section">
+            <h2 class="section-title">Simplicity Waste Reduction Strategies</h2>
+            <div class="nav-tiles">
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📏</div>
+                    <h3>Precision Planning</h3>
+                    <p>Accurate material ordering and cut lists minimize off-cuts and excess materials</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">♻️</div>
+                    <h3>On-Site Recycling</h3>
+                    <p>Segregated waste streams enable maximum material recovery and recycling</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🏗️</div>
+                    <h3>In-Situ Advantage</h3>
+                    <p>In-situ concrete reduces packaging waste and material transport damage</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📦</div>
+                    <h3>Supplier Partnerships</h3>
+                    <p>Working with suppliers on returnable packaging and take-back schemes</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Waste management methodology based on Rebri waste planning standards</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/waste.js"></script>
+    <script>
+        // Rebuild the project performance cards from the shared SQLite DB
+        // (editable via the Admin page). Static cards above are the fallback.
+        function wasteRating(heightMm) {
+            if (heightMm < 50)  return { cls: 'excellent', label: '😊 Excellent' };
+            if (heightMm < 100) return { cls: 'good',      label: '🙂 Good' };
+            if (heightMm < 200) return { cls: 'moderate',  label: '😐 Moderate' };
+            return { cls: 'high', label: '😟 High' };
+        }
+
+        initSimplicityDb().then(() => {
+            const rows = dbQuery('SELECT * FROM waste_results ORDER BY sort_order, id');
+            if (!rows.length) return;
+            const grid = document.getElementById('wasteCaseGrid');
+            grid.innerHTML = '';
+            rows.forEach(r => {
+                const height = Math.round((r.waste_volume / r.floor_area) * 1000);
+                const rating = wasteRating(height);
+                const card = document.createElement('div');
+                card.className = 'case-card';
+                card.innerHTML = `
+                    <h3>${escapeHtml(r.project_name)} <span style="font-weight:400;font-size:0.8rem;color:#666;">${escapeHtml(r.location || '')}</span></h3>
+                    <div class="case-stats">
+                        <div class="stat"><span>Waste Volume:</span><strong>${r.waste_volume} m³</strong></div>
+                        <div class="stat"><span>Floor Area:</span><strong>${r.floor_area} m²</strong></div>
+                        <div class="stat highlight"><span>Waste Height:</span><strong>${height}mm</strong></div>
+                    </div>
+                    <div class="performance-badge ${rating.cls}">${rating.label}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }).catch(err => console.warn('Waste DB load failed, keeping static cards:', err));
+    </script>
+</body>
+</html>

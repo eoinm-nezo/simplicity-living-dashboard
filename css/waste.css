@@ -1,0 +1,329 @@
+/* Waste Management Page Specific Styles */
+
+.calculator-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.calculator-inputs,
+.building-visual {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.calculator-inputs h3,
+.building-visual h3 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #ff6600;
+}
+
+.result-display {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.result-value {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.result-value strong {
+    font-size: 3rem;
+    color: #ff6600;
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.emoji-display {
+    font-size: 5rem;
+    margin: 1rem 0;
+    transition: transform 0.3s;
+}
+
+.waste-emoji {
+    display: inline-block;
+    animation: emojiPulse 2s ease-in-out infinite;
+}
+
+@keyframes emojiPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.performance-rating {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 1rem;
+}
+
+/* Building Visual */
+.building-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: flex-end;
+}
+
+.building-outline {
+    flex: 1;
+    height: 400px;
+    border: 3px solid #333;
+    border-bottom: 5px solid #333;
+    position: relative;
+    background: linear-gradient(to top, #f0f0f0 0%, #ffffff 100%);
+}
+
+.building-floor {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: #999;
+    border-top: 1px dashed #666;
+    font-size: 0.8rem;
+    color: #666;
+    padding-left: 0.5rem;
+}
+
+.building-floor.ground {
+    bottom: 0;
+    height: 3px;
+    background: #333;
+    border: none;
+    font-weight: bold;
+}
+
+.waste-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(255,102,0,0.8), rgba(255,102,0,0.4));
+    transition: height 0.5s ease;
+    border-top: 3px solid #ff6600;
+}
+
+.scale-indicator {
+    position: relative;
+    height: 400px;
+    width: 60px;
+}
+
+.scale-mark {
+    position: absolute;
+    width: 100%;
+    border-top: 2px solid #666;
+}
+
+.scale-mark span {
+    display: inline-block;
+    padding-left: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+}
+
+/* Benchmark Grid */
+.benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.benchmark-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    border-top: 4px solid #ccc;
+}
+
+.benchmark-card.excellent {
+    border-top-color: #28a745;
+}
+
+.benchmark-card.good {
+    border-top-color: #5cb85c;
+}
+
+.benchmark-card.acceptable {
+    border-top-color: #f0ad4e;
+}
+
+.benchmark-card.attention {
+    border-top-color: #ff9800;
+}
+
+.benchmark-card.poor {
+    border-top-color: #ff5722;
+}
+
+.benchmark-card.critical {
+    border-top-color: #dc3545;
+}
+
+.benchmark-emoji {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.benchmark-card h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.benchmark-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff6600;
+    margin: 0.5rem 0;
+}
+
+.benchmark-desc {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Case Study Grid */
+.case-study-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.case-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-top: 4px solid #ff6600;
+}
+
+.case-card h3 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.case-stats {
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.stat:last-child {
+    border-bottom: none;
+}
+
+.stat.highlight {
+    background: white;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.stat strong {
+    color: #ff6600;
+}
+
+.performance-badge {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.performance-badge.excellent {
+    background: #e8f5e9;
+    color: #28a745;
+}
+
+.performance-badge.good {
+    background: #f1f8f4;
+    color: #5cb85c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .calculator-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .building-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .building-outline {
+        height: 300px;
+    }
+    
+    .scale-indicator {
+        height: 300px;
+    }
+    
+    .benchmark-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .case-study-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.performance-badge.moderate {
+    background: #fff8e1;
+    color: #f57f17;
+}
+
+.performance-badge.high {
+    background: #fdecea;
+    color: #dc3545;
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplicity Scoring System - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/scoring.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+    <script src="js/scoring-criteria.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html" class="active">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Simplicity Scoring System</h1>
+        <p>How each project performs, category by category &mdash; on its own merit</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- About -->
+        <section class="section">
+            <h2 class="section-title">About the Scoring System</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 1rem;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Aligned to the leading <strong>green-building rating</strong>, we actively benchmark the <strong>seven credits that matter most</strong> &mdash;
+                    Energy Use, Indoor Environment Quality (winter & summer comfort, moisture), Embodied Carbon, Sustainable Materials,
+                    Water Use, Construction Waste Minimisation and Sustainable Transport. Each is scored out of 20 and stands on its own merit,
+                    so strengths and weaknesses stay visible instead of averaging into a single star rating.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The score wheel below shows all seven in a single graph: each segment fills from the centre to the score achieved out of 20.
+                    Switch to <strong>Detailed Results</strong> to expand any category and see exactly what it's scored on and why.
+                    The <strong>14 remaining rating credits</strong> &mdash; where Simplicity hits full marks by default &mdash; are shown further down the page.
+                </p>
+            </div>
+        </section>
+
+        <!-- Overall comparison across projects -->
+        <section class="section">
+            <h2 class="section-title">Project-to-Project Comparison</h2>
+            <div id="trendStrip" class="trend-strip">
+                <!-- populated by scoring-view.js -->
+            </div>
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h3>Combined Score Trend <span id="trendBadge" class="trend-badge"></span></h3>
+                    <p class="chart-note">Sum of all seven categories (max 140) per project, in delivery order &mdash; context only, not a rating.</p>
+                    <div class="chart-canvas-container" style="height: 360px;">
+                        <canvas id="totalsTrendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>All Categories, All Projects</h3>
+                    <p class="chart-note">Each axis is one category (out of 20) &mdash; the wider the shape, the stronger the building.</p>
+                    <div class="chart-canvas-container" style="height: 360px;">
+                        <canvas id="categoriesRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Per-project scorecards -->
+        <section class="section">
+            <h2 class="section-title">Project Scorecards</h2>
+            <div class="building-selector" id="projectSelector">
+                <!-- populated by scoring-view.js -->
+            </div>
+
+            <div class="view-toggle">
+                <button type="button" id="viewScorecardBtn" class="view-toggle-btn active" onclick="setScoreView('scorecard')">Score Wheel</button>
+                <button type="button" id="viewDetailBtn" class="view-toggle-btn" onclick="setScoreView('detail')">Detailed Results</button>
+            </div>
+
+            <!-- Scorecard view: the score wheel -->
+            <div id="scorecardView" class="scorecard-panel">
+                <div class="scorecard-grid">
+                    <div class="scorecard-chart">
+                        <div style="position: relative; height: 420px;">
+                            <canvas id="scoreWheelChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="scorecard-side">
+                        <h3 id="scorecardTitle"></h3>
+                        <p id="scorecardMeta" class="scorecard-meta"></p>
+                        <div id="categoryBars" class="category-bars"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed results view (expandable accordion) -->
+            <div id="detailView" class="scorecard-panel" style="display:none;">
+                <h3 id="detailTitle" style="margin-bottom: 0.5rem;"></h3>
+                <p class="scorecard-meta" style="margin-bottom: 1.25rem;">Click any category to expand its criteria, performance band and assessor notes.</p>
+                <div id="detailAccordion" class="detail-accordion"></div>
+            </div>
+
+            <p class="admin-hint">New results, edits, imports and exports are managed on the <a href="admin.html">Admin page</a>.</p>
+        </section>
+
+        <!-- The Simplicity standard: the other 14 rating credits, full marks by default -->
+        <section class="section standard-section">
+            <h2 class="section-title">The Simplicity Standard <span class="standard-pill">Full marks by default</span></h2>
+            <p class="section-lead">
+                The seven credits above are where we push hardest &mdash; because we can always do better. The remaining
+                <strong>14 of the rating's 22 credits</strong> aren't a contest: Simplicity builds to <strong>full marks on these as standard</strong>,
+                so there's no need to score them project-by-project. They're our baseline, not our stretch goal.
+            </p>
+            <div id="standardGroups" class="standard-groups"></div>
+        </section>
+    </div>
+
+    <!-- Sustainable Transport map overlay -->
+    <div id="transportMapOverlay" class="map-overlay" style="display:none;">
+        <div class="map-overlay-inner">
+            <button class="map-close" onclick="closeTransportMap()" title="Close">✕</button>
+            <iframe id="transportMapFrame" title="Auckland Sustainable Transport map" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Seven categories, each on its own merit &mdash; the Simplicity way of scoring</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/scoring-view.js"></script>
+</body>
+</html>

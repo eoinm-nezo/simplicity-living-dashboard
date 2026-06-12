@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auckland Sustainable Transport — Simplicity Living</title>
+<style>
+    :root { --orange:#ff6600; --orange-dark:#cc5200; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,sans-serif; background:#eaf6ff; color:#333; }
+    .map-header { text-align:center; padding:1rem 1rem 0.25rem; }
+    .map-header h1 { font-size:1.4rem; color:var(--orange-dark); }
+    .map-header p { color:#666; font-size:0.9rem; margin-top:0.2rem; }
+    .legend { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem 1.25rem; padding:0.6rem 1rem; font-size:0.85rem; }
+    .legend span { display:inline-flex; align-items:center; gap:0.35rem; }
+    .swatch { width:22px; height:6px; border-radius:3px; display:inline-block; }
+    .map-wrap { padding:0 1rem 1.5rem; }
+    svg { width:100%; height:auto; display:block; max-height:74vh; }
+
+    .dev-pin { animation:pulse 2.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center bottom; }
+    @keyframes pulse { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-5px);} }
+    .dev-label { font-size:15px; font-weight:700; fill:#333; }
+    .dev-sub { font-size:11px; fill:#777; }
+    .amenity { font-size:22px; }
+    .amenity-label { font-size:9px; fill:#888; text-anchor:middle; }
+    .route-rail { fill:none; stroke:#7e57c2; stroke-width:5; stroke-linecap:round; stroke-dasharray:1 14; }
+    .route-bus  { fill:none; stroke:var(--orange); stroke-width:5; stroke-linecap:round; stroke-dasharray:10 10; opacity:0.85; }
+    .cbd-glow { animation:glow 3s ease-in-out infinite; }
+    @keyframes glow { 0%,100%{ opacity:0.35;} 50%{ opacity:0.7;} }
+</style>
+</head>
+<body>
+    <div class="map-header">
+        <h1>🚌 Getting around without the car 🚆</h1>
+        <p>All four Simplicity communities sit on Auckland's rail and bus network, steps from everyday amenities.</p>
+    </div>
+    <div class="legend">
+        <span><span class="swatch" style="background:#7e57c2;"></span> Rail line</span>
+        <span><span class="swatch" style="background:#ff6600;"></span> Bus route</span>
+        <span>🚆 Train</span><span>🚌 Bus</span>
+        <span>🏥 Hospital</span><span>🛍️ Shops</span><span>☕ Café</span><span>🏫 School</span>
+    </div>
+
+    <div class="map-wrap">
+    <svg viewBox="0 0 1000 720" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Rail loop: Northcote -> CBD -> Morningside -> Mt Wellington -> Remuera -> CBD -> Northcote -->
+            <path id="railPath" d="M 430,150 C 430,230 450,250 480,310 C 360,360 300,360 280,400 C 360,430 420,470 470,330 C 560,380 640,400 700,440 C 720,500 740,540 730,580 C 640,540 560,470 480,330 C 460,250 430,230 430,150 Z"/>
+            <!-- Bus loop: inner suburbs ring -->
+            <path id="busPath" d="M 300,420 C 360,300 430,300 480,330 C 560,360 640,380 690,470 C 600,560 470,540 400,470 C 330,500 280,480 300,420 Z"/>
+            <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.25"/>
+            </filter>
+        </defs>
+
+        <!-- Base land -->
+        <rect x="0" y="0" width="1000" height="720" fill="#eaf6ff"/>
+        <path d="M 0,250 Q 250,200 500,250 T 1000,250 L 1000,720 L 0,720 Z" fill="#d6efd0"/>
+        <!-- Waitematā Harbour -->
+        <path d="M 0,180 Q 250,140 500,185 T 1000,180 L 1000,255 Q 750,215 500,255 T 0,255 Z" fill="#9fd3f0"/>
+        <text x="120" y="220" font-size="16" fill="#5a9bc0" font-style="italic">Waitematā Harbour</text>
+        <!-- North Shore strip -->
+        <path d="M 0,0 H 1000 V 175 Q 750,135 500,178 T 0,175 Z" fill="#cdeac4"/>
+
+        <!-- Parks -->
+        <circle cx="560" cy="500" r="46" fill="#bfe3b0"/>
+        <text x="560" y="505" text-anchor="middle" font-size="20">🌳</text>
+        <circle cx="360" cy="330" r="34" fill="#bfe3b0"/>
+        <text x="360" y="337" text-anchor="middle" font-size="16">🌳</text>
+
+        <!-- Auckland Harbour Bridge — carries the route over the water to Lake Road / Northcote -->
+        <g>
+            <!-- pylons into the water -->
+            <rect x="384" y="216" width="9" height="40" rx="2" fill="#8a929b"/>
+            <rect x="535" y="216" width="9" height="40" rx="2" fill="#8a929b"/>
+            <!-- deck -->
+            <rect x="378" y="218" width="172" height="8" rx="3" fill="#9aa3ad" stroke="#7c848d" stroke-width="1"/>
+            <!-- main steel arch -->
+            <path d="M 390,222 Q 464,150 538,222" fill="none" stroke="#aeb6bd" stroke-width="7" stroke-linecap="round"/>
+            <path d="M 402,222 Q 464,168 526,222" fill="none" stroke="#c3cad0" stroke-width="4" stroke-linecap="round"/>
+            <!-- hangers -->
+            <line x1="420" y1="199" x2="420" y2="220" stroke="#aeb6bd" stroke-width="2"/>
+            <line x1="442" y1="189" x2="442" y2="220" stroke="#aeb6bd" stroke-width="2"/>
+            <line x1="464" y1="186" x2="464" y2="220" stroke="#aeb6bd" stroke-width="2"/>
+            <line x1="486" y1="189" x2="486" y2="220" stroke="#aeb6bd" stroke-width="2"/>
+            <line x1="508" y1="199" x2="508" y2="220" stroke="#aeb6bd" stroke-width="2"/>
+            <text x="464" y="245" text-anchor="middle" font-size="10" fill="#5a6470" font-weight="600">Harbour Bridge</text>
+        </g>
+
+        <!-- Routes (styling inline so they render correctly even without the CSS) -->
+        <use href="#railPath" fill="none" stroke="#7e57c2" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 14"/>
+        <use href="#busPath" fill="none" stroke="#ff6600" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 10" opacity="0.85"/>
+
+        <!-- CBD — cartoon skyline of little skyscrapers -->
+        <g transform="translate(480,300)">
+            <ellipse class="cbd-glow" cx="-2" cy="14" rx="58" ry="16" fill="#ffcf99"/>
+            <!-- buildings (base at local y=16) -->
+            <rect x="-44" y="-26" width="15" height="42" rx="1.5" fill="#6d8fb0"/>
+            <rect x="-24" y="-50" width="18" height="66" rx="1.5" fill="#5b7a99"/>
+            <rect x="-3"  y="-36" width="16" height="52" rx="1.5" fill="#7fa3c4"/>
+            <rect x="16"  y="-24" width="14" height="40" rx="1.5" fill="#ff8a4d"/>
+            <rect x="32"  y="-12" width="12" height="28" rx="1.5" fill="#6d8fb0"/>
+            <!-- rooftop bits -->
+            <rect x="-16" y="-57" width="2" height="8" fill="#5b7a99"/>
+            <rect x="4" y="-43" width="2" height="7" fill="#7fa3c4"/>
+            <!-- windows -->
+            <g fill="#dbe8f5">
+                <rect x="-41" y="-22" width="3" height="4"/><rect x="-35" y="-22" width="3" height="4"/>
+                <rect x="-41" y="-14" width="3" height="4"/><rect x="-35" y="-14" width="3" height="4"/>
+                <rect x="-41" y="-6" width="3" height="4"/><rect x="-35" y="-6" width="3" height="4"/>
+                <rect x="-21" y="-46" width="3" height="4"/><rect x="-14" y="-46" width="3" height="4"/>
+                <rect x="-21" y="-38" width="3" height="4"/><rect x="-14" y="-38" width="3" height="4"/>
+                <rect x="-21" y="-30" width="3" height="4"/><rect x="-14" y="-30" width="3" height="4"/>
+                <rect x="-21" y="-22" width="3" height="4"/><rect x="-14" y="-22" width="3" height="4"/>
+                <rect x="-21" y="-14" width="3" height="4"/><rect x="-14" y="-14" width="3" height="4"/>
+                <rect x="0" y="-32" width="3" height="4"/><rect x="6" y="-32" width="3" height="4"/>
+                <rect x="0" y="-24" width="3" height="4"/><rect x="6" y="-24" width="3" height="4"/>
+                <rect x="0" y="-16" width="3" height="4"/><rect x="6" y="-16" width="3" height="4"/>
+            </g>
+            <g fill="#fff3e0">
+                <rect x="19" y="-20" width="3" height="4"/><rect x="24" y="-20" width="3" height="4"/>
+                <rect x="19" y="-12" width="3" height="4"/><rect x="24" y="-12" width="3" height="4"/>
+                <rect x="19" y="-4" width="3" height="4"/><rect x="24" y="-4" width="3" height="4"/>
+            </g>
+            <text x="-2" y="34" text-anchor="middle" font-size="13" font-weight="700" fill="#cc5200">City Centre</text>
+        </g>
+
+        <!-- Amenities near developments -->
+        <g>
+            <text class="amenity" x="500" y="120" text-anchor="middle">🏫</text>
+            <text class="amenity" x="385" y="150" text-anchor="middle">🛍️</text>
+            <text class="amenity" x="250" y="345" text-anchor="middle">☕</text>
+            <text class="amenity" x="200" y="430" text-anchor="middle">🏥</text>
+            <text class="amenity" x="700" y="380" text-anchor="middle">🛍️</text>
+            <text class="amenity" x="780" y="500" text-anchor="middle">☕</text>
+            <text class="amenity" x="640" y="600" text-anchor="middle">🏫</text>
+            <text class="amenity" x="560" y="560" text-anchor="middle">🏥</text>
+        </g>
+
+        <!-- Development pins -->
+        <!-- Lake Road, Northcote (north shore) -->
+        <g transform="translate(430,150)">
+            <g class="dev-pin">
+                <path d="M 0,0 C -16,-26 -16,-44 0,-44 C 16,-44 16,-26 0,0 Z" fill="#ff6600" filter="url(#softShadow)"/>
+                <circle cx="0" cy="-30" r="8" fill="#fff"/><text x="0" y="-26" text-anchor="middle" font-size="10">3</text>
+            </g>
+            <text class="dev-label" x="14" y="-26">Lake Road</text>
+            <text class="dev-sub" x="14" y="-12">Northcote</text>
+        </g>
+        <!-- Morningside (west) -->
+        <g transform="translate(280,400)">
+            <g class="dev-pin">
+                <path d="M 0,0 C -16,-26 -16,-44 0,-44 C 16,-44 16,-26 0,0 Z" fill="#ff6600" filter="url(#softShadow)"/>
+                <circle cx="0" cy="-30" r="8" fill="#fff"/><text x="0" y="-26" text-anchor="middle" font-size="10">4</text>
+            </g>
+            <text class="dev-label" x="-130" y="-26">Morningside Dr</text>
+            <text class="dev-sub" x="-130" y="-12">Morningside</text>
+        </g>
+        <!-- Waiatarua, Remuera (east) -->
+        <g transform="translate(700,440)">
+            <g class="dev-pin">
+                <path d="M 0,0 C -16,-26 -16,-44 0,-44 C 16,-44 16,-26 0,0 Z" fill="#ff6600" filter="url(#softShadow)"/>
+                <circle cx="0" cy="-30" r="8" fill="#fff"/><text x="0" y="-26" text-anchor="middle" font-size="10">2</text>
+            </g>
+            <text class="dev-label" x="14" y="-26">Waiatarua</text>
+            <text class="dev-sub" x="14" y="-12">Remuera</text>
+        </g>
+        <!-- Reiputa, Mt Wellington (south-east) -->
+        <g transform="translate(730,580)">
+            <g class="dev-pin">
+                <path d="M 0,0 C -16,-26 -16,-44 0,-44 C 16,-44 16,-26 0,0 Z" fill="#ff6600" filter="url(#softShadow)"/>
+                <circle cx="0" cy="-30" r="8" fill="#fff"/><text x="0" y="-26" text-anchor="middle" font-size="10">1</text>
+            </g>
+            <text class="dev-label" x="14" y="-26">Reiputa</text>
+            <text class="dev-sub" x="14" y="-12">Mt Wellington</text>
+        </g>
+
+        <!-- Animated train along the rail loop -->
+        <g>
+            <g transform="translate(-2,-2)">
+                <rect x="-22" y="-12" width="44" height="22" rx="7" fill="#7e57c2" stroke="#fff" stroke-width="2"/>
+                <rect x="-16" y="-8" width="10" height="9" rx="2" fill="#e8defb"/>
+                <rect x="-2" y="-8" width="10" height="9" rx="2" fill="#e8defb"/>
+                <circle cx="-12" cy="12" r="3.5" fill="#333"/><circle cx="12" cy="12" r="3.5" fill="#333"/>
+                <text x="0" y="-16" text-anchor="middle" font-size="13">🚆</text>
+            </g>
+            <animateMotion dur="16s" repeatCount="indefinite" rotate="0">
+                <mpath href="#railPath"/>
+            </animateMotion>
+        </g>
+        <!-- A second train, offset -->
+        <g>
+            <g>
+                <rect x="-20" y="-11" width="40" height="20" rx="7" fill="#9575cd" stroke="#fff" stroke-width="2"/>
+                <circle cx="-11" cy="11" r="3" fill="#333"/><circle cx="11" cy="11" r="3" fill="#333"/>
+                <text x="0" y="-14" text-anchor="middle" font-size="12">🚆</text>
+            </g>
+            <animateMotion dur="16s" begin="-8s" repeatCount="indefinite" rotate="0">
+                <mpath href="#railPath"/>
+            </animateMotion>
+        </g>
+
+        <!-- Animated bus along the bus loop -->
+        <g>
+            <g>
+                <rect x="-20" y="-11" width="40" height="22" rx="6" fill="#ff6600" stroke="#fff" stroke-width="2"/>
+                <rect x="-15" y="-7" width="8" height="8" rx="2" fill="#fff3e0"/>
+                <rect x="-4" y="-7" width="8" height="8" rx="2" fill="#fff3e0"/>
+                <rect x="8" y="-7" width="6" height="8" rx="2" fill="#fff3e0"/>
+                <circle cx="-11" cy="13" r="3.5" fill="#333"/><circle cx="11" cy="13" r="3.5" fill="#333"/>
+                <text x="0" y="-15" text-anchor="middle" font-size="13">🚌</text>
+            </g>
+            <animateMotion dur="13s" repeatCount="indefinite" rotate="0">
+                <mpath href="#busPath"/>
+            </animateMotion>
+        </g>
+        <g>
+            <g>
+                <rect x="-18" y="-10" width="36" height="20" rx="6" fill="#ff8833" stroke="#fff" stroke-width="2"/>
+                <circle cx="-10" cy="12" r="3" fill="#333"/><circle cx="10" cy="12" r="3" fill="#333"/>
+                <text x="0" y="-13" text-anchor="middle" font-size="12">🚌</text>
+            </g>
+            <animateMotion dur="13s" begin="-6.5s" repeatCount="indefinite" rotate="0">
+                <mpath href="#busPath"/>
+            </animateMotion>
+        </g>
+    </svg>
+    </div>
+</body>
+</html>

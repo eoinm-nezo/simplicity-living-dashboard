@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Cycle Cost & Maintenance - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/maintenance.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html" class="active">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Life Cycle Cost & Maintenance</h1>
+        <p>Long-term financial analysis and maintenance planning</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Introduction -->
+        <section class="section">
+            <h2 class="section-title">Understanding Life Cycle Costs</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 2rem;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Life cycle costing considers not just the initial construction cost, but the total cost of ownership over the building's lifespan. This includes regular maintenance, repairs, component replacements, and eventual disposal or renovation.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The Simplicity approach focuses on selecting durable materials and construction methods that minimize long-term maintenance while maintaining high performance standards.
+                </p>
+            </div>
+        </section>
+
+        <!-- Time Period Selector -->
+        <section class="section">
+            <h2 class="section-title">Maintenance Schedule</h2>
+            <div class="time-selector">
+                <label for="yearRange">Analysis Period: <strong><span id="yearDisplay">20</span> years</strong></label>
+                <input type="range" id="yearRange" min="5" max="35" value="20" step="5" oninput="updateSchedule()">
+                <div class="range-labels">
+                    <span>5 years</span>
+                    <span>20 years</span>
+                    <span>35 years</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Maintenance Schedule Table -->
+        <section class="section">
+            <div class="schedule-container">
+                <table class="maintenance-table" id="maintenanceTable">
+                    <thead>
+                        <tr>
+                            <th>Maintenance Item</th>
+                            <th>Frequency</th>
+                            <th>Cost per Occurrence</th>
+                            <th>Occurrences</th>
+                            <th>Total Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="4"><strong>Total Maintenance Cost</strong></td>
+                            <td><strong id="totalCost">$0</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Construction Methodology Comparison -->
+        <section class="section">
+            <h2 class="section-title">Construction Methodology Comparison</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; text-align: center;">
+                Total cost of ownership over <span id="comparisonYears">50</span> years comparing three construction approaches
+            </p>
+            
+            <div class="comparison-selector">
+                <label>Comparison Period:</label>
+                <select id="comparisonPeriod" onchange="updateComparison()">
+                    <option value="20">20 Years</option>
+                    <option value="35">35 Years</option>
+                    <option value="50" selected>50 Years</option>
+                </select>
+            </div>
+
+            <div class="chart-wrapper" style="margin-top: 2rem;">
+                <canvas id="comparisonChart" style="height: 400px;"></canvas>
+            </div>
+
+            <div class="methodology-details">
+                <div class="method-card">
+                    <h3>🏗️ Simplicity In-Situ Concrete</h3>
+                    <div class="method-stats">
+                        <div class="stat-item">
+                            <span>Initial Cost:</span>
+                            <strong>Moderate</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Maintenance Cost:</span>
+                            <strong>Low</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Durability:</span>
+                            <strong>Excellent (100+ years)</strong>
+                        </div>
+                        <div class="stat-item highlight">
+                            <span>50-Year Total:</span>
+                            <strong id="simplicityCost">$2.8M</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3>🏭 Precast Concrete</h3>
+                    <div class="method-stats">
+                        <div class="stat-item">
+                            <span>Initial Cost:</span>
+                            <strong>Higher</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Maintenance Cost:</span>
+                            <strong>Moderate</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Durability:</span>
+                            <strong>Very Good (80+ years)</strong>
+                        </div>
+                        <div class="stat-item highlight">
+                            <span>50-Year Total:</span>
+                            <strong id="precastCost">$3.2M</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="method-card">
+                    <h3>🌲 CLT (Cross-Laminated Timber)</h3>
+                    <div class="method-stats">
+                        <div class="stat-item">
+                            <span>Initial Cost:</span>
+                            <strong>High</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Maintenance Cost:</span>
+                            <strong>Higher</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Durability:</span>
+                            <strong>Good (60+ years)</strong>
+                        </div>
+                        <div class="stat-item highlight">
+                            <span>50-Year Total:</span>
+                            <strong id="cltCost">$3.5M</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; border-left: 4px solid #28a745;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                    <strong>Analysis Result:</strong> The Simplicity in-situ concrete methodology provides the lowest total cost of ownership over the building's lifespan, combining reasonable initial costs with minimal maintenance requirements and exceptional durability.
+                </p>
+            </div>
+        </section>
+
+        <!-- Key Maintenance Activities -->
+        <section class="section">
+            <h2 class="section-title">Key Maintenance Activities</h2>
+            <div class="nav-tiles">
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🏠</div>
+                    <h3>Roof Inspection & Maintenance</h3>
+                    <p>Annual inspections, minor repairs every 5 years, major work at 20-25 years</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🌡️</div>
+                    <h3>HVAC Systems</h3>
+                    <p>Annual servicing, filter changes, component replacement every 15-20 years</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🔥</div>
+                    <h3>Life Safety Systems</h3>
+                    <p>6-monthly fire system testing, sprinkler inspection, emergency lighting</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🎨</div>
+                    <h3>Facade & Exterior</h3>
+                    <p>Washing every 2 years, sealant maintenance every 5 years, repaint at 12-15 years</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Life cycle cost analysis based on industry standards and Simplicity project data</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/maintenance.js"></script>
+</body>
+</html>

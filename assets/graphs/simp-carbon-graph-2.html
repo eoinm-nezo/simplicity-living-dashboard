@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Comparison - Cost vs Performance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+        }
+        .chart-container {
+            position: relative;
+            height: 450px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="systemComparisonChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('systemComparisonChart').getContext('2d');
+        
+        // System comparison data: Initial Cost vs Annual Energy Cost
+        const systems = [
+            { name: 'Basic Code\nCompliant', x: 100, y: 52, energy: 190, color: '#999999' },
+            { name: 'Enhanced\nStandard', x: 115, y: 45, energy: 165, color: '#757575' },
+            { name: 'Premium\nPrecast', x: 145, y: 38, energy: 140, color: '#2196F3' },
+            { name: 'CLT\nSystem', x: 155, y: 40, energy: 145, color: '#8BC34A' },
+            { name: 'Simplicity\nIn-Situ', x: 125, y: 35, energy: 120, color: '#ff6600' },
+            { name: 'Ultra High\nPerformance', x: 180, y: 32, energy: 110, color: '#9C27B0' }
+        ];
+        
+        // Create bubble chart data
+        const bubbleData = systems.map(system => ({
+            x: system.x,
+            y: system.y,
+            r: system.energy / 5, // Scale bubble size
+            label: system.name,
+            energy: system.energy,
+            backgroundColor: system.color
+        }));
+        
+        new Chart(ctx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Construction Systems',
+                    data: bubbleData,
+                    backgroundColor: bubbleData.map(d => d.backgroundColor),
+                    borderColor: bubbleData.map(d => d.backgroundColor),
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Cost vs Energy Performance Comparison',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        },
+                        color: '#333',
+                        padding: {
+                            bottom: 20
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].raw.label.replace('\\n', ' ');
+                            },
+                            label: function(context) {
+                                return [
+                                    'Initial Cost Index: ' + context.parsed.x,
+                                    'Annual Energy Cost: $' + context.parsed.y + '/m²',
+                                    'Total Energy Use: ' + context.raw.energy + ' kWh/m²/year'
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Initial Construction Cost (Index, Baseline = 100)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        min: 90,
+                        max: 190,
+                        grid: {
+                            color: '#e0e0e0'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Annual Energy Operating Cost ($/m²/year)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        min: 25,
+                        max: 55,
+                        reverse: true, // Lower cost is better (higher on graph)
+                        grid: {
+                            color: '#e0e0e0'
+                        }
+                    }
+                }
+            },
+            plugins: [{
+                afterDatasetsDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    chart.data.datasets.forEach(function(dataset, i) {
+                        const meta = chart.getDatasetMeta(i);
+                        meta.data.forEach(function(bar, index) {
+                            const data = dataset.data[index];
+                            const label = data.label.replace(/\\n/g, '\n');
+                            
+                            ctx.fillStyle = '#333';
+                            ctx.font = 'bold 11px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            
+                            const lines = label.split('\n');
+                            const x = bar.x;
+                            let y = bar.y - data.r - 15;
+                            
+                            lines.forEach(line => {
+                                ctx.fillText(line, x, y);
+                                y += 12;
+                            });
+                        });
+                    });
+                }
+            }]
+        });
+        
+        // Add note about optimal zone
+        setTimeout(() => {
+            const canvas = document.getElementById('systemComparisonChart');
+            const note = document.createElement('div');
+            note.style.cssText = 'text-align: center; margin-top: 10px; padding: 10px; background: #fff5e6; border-left: 4px solid #ff6600; font-size: 14px;';
+            note.innerHTML = '<strong>Optimal Performance Zone:</strong> Simplicity In-Situ method achieves best balance of initial cost and operational efficiency. Bubble size represents total energy consumption.';
+            canvas.parentElement.appendChild(note);
+        }, 100);
+    </script>
+</body>
+</html>

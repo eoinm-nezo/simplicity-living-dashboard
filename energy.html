@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy Performance Case Study - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/energy.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html" class="active">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Energy Performance Analysis</h1>
+        <p>Detailed building energy modeling using OpenStudio and EnergyPlus</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Introduction to OpenStudio -->
+        <section class="section">
+            <h2 class="section-title">About OpenStudio & EnergyPlus</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    <strong>OpenStudio</strong> is an open-source, cross-platform software development kit (SDK) for building energy modeling (BEM). Developed by the U.S. Department of Energy's National Renewable Energy Laboratory (NREL), OpenStudio provides a comprehensive platform for creating and analyzing whole-building energy models.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    <strong>EnergyPlus</strong> is DOE's state-of-the-art whole-building energy simulation engine that powers OpenStudio. It calculates heating, cooling, lighting, ventilation, and other energy flows in buildings, providing detailed insights into building performance.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    Our Simplicity projects use these industry-leading tools to optimize building design for energy efficiency while maintaining comfort and functionality.
+                </p>
+            </div>
+
+            <!-- Download Links -->
+            <div class="download-section">
+                <h3 style="margin-bottom: 1.5rem; color: #333;">Download Model Files</h3>
+                <div class="download-links">
+                    <a href="https://energyplus.net/" target="_blank" class="download-link">
+                        <img src="https://energyplus.net/sites/all/themes/nrel_bootstrap/img/ep-logo.svg" 
+                             alt="EnergyPlus" 
+                             style="height: 60px; margin-bottom: 1rem;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display:none; font-size: 2rem;">⚡</span>
+                        <p style="margin: 0; font-weight: bold;">EnergyPlus Files</p>
+                    </a>
+                    <a href="https://openstudio.net/" target="_blank" class="download-link">
+                        <img src="https://openstudio.net/assets/img/logo.png" 
+                             alt="OpenStudio" 
+                             style="height: 60px; margin-bottom: 1rem;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display:none; font-size: 2rem;">🏢</span>
+                        <p style="margin: 0; font-weight: bold;">OpenStudio Files</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- OpenStudio Model Viewer -->
+        <section class="section">
+            <h2 class="section-title">3D Building Model</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                Interactive 3D visualization of the building model geometry, thermal zones, and surface properties.
+            </p>
+            <div class="iframe-container">
+                <iframe 
+                    src="assets/openstudio/openstudio-model.html" 
+                    title="OpenStudio 3D Model Viewer">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Energy Analysis Graphs: methodology benchmark -->
+        <section class="section">
+            <h2 class="section-title">Energy Performance Comparison</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
+                We benchmark a typical Simplicity build against traditional methodologies in terms of energy consumption and cost. <strong>Lake Road, Northcote</strong> is used as the example Simplicity Building, compared against a code-minimum baseline, an enhanced standard (better insulation and windows), and a CLT building.
+            </p>
+
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h3>Methodology Comparison &mdash; Energy Consumption</h3>
+                    <div class="chart-canvas-container" style="height: 450px;">
+                        <canvas id="scenarioEnergyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Methodology Comparison &mdash; Cost vs Performance</h3>
+                    <div class="chart-canvas-container" style="height: 450px;">
+                        <canvas id="scenarioCostChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; border-left: 4px solid #28a745;">
+                <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                    <strong>Key Finding:</strong> The Simplicity build system demonstrates the most cost-effective and energy-efficient balance when considering both initial construction and operational performance. Our in-situ concrete approach provides superior thermal mass benefits while minimizing construction complexity.
+                </p>
+            </div>
+        </section>
+
+        <!-- Energy Analysis Graphs: project-vs-project comparison -->
+        <section class="section">
+            <h2 class="section-title">Simplicity Projects Compared</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
+                The same comparison repeated across our four projects &mdash; Reiputa, Waiatarua, Lake Road and Morningside Drive &mdash; showing how each successive design improves on the last. Results come from the OpenStudio energy simulations of the actual projects (entered via the Admin page).
+            </p>
+
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h3>Project Comparison &mdash; Energy Consumption</h3>
+                    <div class="chart-canvas-container" style="height: 450px;">
+                        <canvas id="projectEnergyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Project Comparison &mdash; Cost vs Performance</h3>
+                    <div class="chart-canvas-container" style="height: 450px;">
+                        <canvas id="projectCostChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Energy Report -->
+        <section class="section">
+            <h2 class="section-title">Detailed Energy Simulation Report</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                Complete Nezo OpenStudio energy analysis reports for each project, including annual energy consumption breakdown, monthly profiles, and HVAC system performance metrics. Select a project to view its report.
+            </p>
+            <div class="building-selector" id="reportSelector">
+                <button type="button" class="building-btn active" data-report="assets/reports/nezo-report-reiputa.html" onclick="selectReport(this)">Reiputa<small>Mt Wellington</small></button>
+                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-waiatarua.html" onclick="selectReport(this)">Waiatarua<small>Remuera</small></button>
+                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-lakeroad.html" onclick="selectReport(this)">Lake Road<small>Northcote</small></button>
+                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-morningside.html" onclick="selectReport(this)">Morningside Drive<small>Morningside</small></button>
+            </div>
+            <div class="iframe-container" style="height: 1000px;">
+                <iframe
+                    id="reportFrame"
+                    src="assets/reports/nezo-report-reiputa.html"
+                    title="Nezo OpenStudio Energy Analysis Report">
+                </iframe>
+            </div>
+        </section>
+
+        <!-- Performance Summary -->
+        <section class="section">
+            <h2 class="section-title">Performance Summary</h2>
+            <div class="nav-tiles">
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📉</div>
+                    <h3>21% Energy Savings</h3>
+                    <p>Compared to baseline code-compliant design</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">🌡️</div>
+                    <h3>Superior Thermal Mass</h3>
+                    <p>In-situ concrete provides excellent temperature stability</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">💰</div>
+                    <h3>Optimal Cost-Benefit</h3>
+                    <p>Best balance of energy efficiency and construction economics</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Energy modeling performed with <a href="https://openstudio.net" target="_blank">OpenStudio</a> and <a href="https://energyplus.net" target="_blank">EnergyPlus</a></p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/energy.js"></script>
+</body>
+</html>

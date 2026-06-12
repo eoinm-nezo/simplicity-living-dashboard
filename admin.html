@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/scoring.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+</head>
+<body>
+    <!-- Password gate (UI-only, not real security) -->
+    <div id="adminGate" class="admin-gate">
+        <div class="admin-gate-card">
+            <div class="admin-gate-logo"><span>%</span> Simplicity Living</div>
+            <h2>Admin Access</h2>
+            <p>Enter the admin password to manage project data.</p>
+            <input type="password" id="gatePassword" placeholder="Password" onkeydown="if(event.key==='Enter')checkGate()">
+            <button class="promo-btn" onclick="checkGate()">Unlock</button>
+            <p id="gateError" class="gate-error"></p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Data Administration</h1>
+        <p>All project data lives in one client-side SQLite database &mdash; edit it here, the site updates everywhere</p>
+    </section>
+
+    <div class="container">
+        <p id="adminStatus" class="db-status" style="text-align:center;">Loading database…</p>
+
+        <!-- Tabs -->
+        <div class="admin-tabs" id="adminTabs">
+            <button class="admin-tab active" data-tab="scoring" onclick="showTab('scoring')">🏆 Scoring Results</button>
+            <button class="admin-tab" data-tab="lca" onclick="showTab('lca')">🏗️ Embodied Carbon</button>
+            <button class="admin-tab" data-tab="energy" onclick="showTab('energy')">⚡ Energy Results</button>
+            <button class="admin-tab" data-tab="waste" onclick="showTab('waste')">♻️ Waste Data</button>
+            <button class="admin-tab" data-tab="database" onclick="showTab('database')">💾 Database</button>
+        </div>
+
+        <!-- Scoring -->
+        <section class="admin-panel" id="panel-scoring">
+            <h2 class="section-title">Scoring Assessments</h2>
+            <p class="admin-note">Each row is one assessment. Category scores are out of 20; the combined total is calculated automatically. The Scoring page shows the latest assessment per project.</p>
+            <div class="db-table-wrap"><table class="db-table admin-table" id="table-scoring"></table></div>
+            <button class="promo-btn admin-add-btn" onclick="addRow('scoring')">+ Add assessment</button>
+        </section>
+
+        <!-- LCA -->
+        <section class="admin-panel" id="panel-lca" style="display:none;">
+            <h2 class="section-title">Embodied Carbon &mdash; Life Cycle Modules (kgCO2e/m² GFA)</h2>
+            <p class="admin-note">Drives the Life Cycle Module Breakdown and Carbon Reduction Progress charts on the Embodied Carbon page. Module D (Beyond Life) is usually negative &mdash; it's a credit.</p>
+            <div class="db-table-wrap"><table class="db-table admin-table" id="table-lca"></table></div>
+            <button class="promo-btn admin-add-btn" onclick="addRow('lca')">+ Add project</button>
+        </section>
+
+        <!-- Energy -->
+        <section class="admin-panel" id="panel-energy" style="display:none;">
+            <h2 class="section-title">Energy Simulation Results</h2>
+            <p class="admin-note">Enter the end-use breakdown from your Nezo OpenStudio report (kWh/m²/year), the annual energy cost ($/m²/year) and a relative initial-cost index (baseline = 100). Group <strong>scenario</strong> rows feed the methodology benchmark; <strong>project</strong> rows feed the Simplicity-projects comparison. Tick highlight for the row drawn in Simplicity orange.</p>
+            <div class="db-table-wrap"><table class="db-table admin-table" id="table-energy"></table></div>
+            <button class="promo-btn admin-add-btn" onclick="addRow('energy')">+ Add row</button>
+        </section>
+
+        <!-- Waste -->
+        <section class="admin-panel" id="panel-waste" style="display:none;">
+            <h2 class="section-title">Waste Results</h2>
+            <p class="admin-note">Waste height = volume ÷ floor area × 1000 (mm). Under 50mm rates Excellent on the Waste page.</p>
+            <div class="db-table-wrap"><table class="db-table admin-table" id="table-waste"></table></div>
+            <button class="promo-btn admin-add-btn" onclick="addRow('waste')">+ Add project</button>
+        </section>
+
+        <!-- Database -->
+        <section class="admin-panel" id="panel-database" style="display:none;">
+            <h2 class="section-title">Database Management</h2>
+            <p class="admin-note">The database lives in this browser (localStorage). Export it as a portable <code>.sqlite</code> file to back up to the Drive or share; import to restore. Reset rebuilds the seed data.</p>
+            <div class="db-actions" style="justify-content:flex-start;">
+                <button class="promo-btn" onclick="exportSimplicityDb()">⬇ Export .sqlite</button>
+                <label class="promo-btn db-btn-secondary" style="cursor:pointer;">
+                    ⬆ Import .sqlite
+                    <input type="file" accept=".sqlite,.db,application/x-sqlite3" onchange="adminImport(this)" style="display:none;">
+                </label>
+                <button class="promo-btn db-btn-secondary" style="border-color:#dc3545;color:#dc3545;" onclick="adminReset()">↺ Reset to seed data</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Admin &mdash; data management for all dashboard pages</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link active" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

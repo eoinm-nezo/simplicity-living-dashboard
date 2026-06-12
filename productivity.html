@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Activity & Productivity - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/productivity.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html" class="active">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero">
+        <h1>Site Activity & Productivity</h1>
+        <p>Construction efficiency and carbon productivity analysis</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Build Programme -->
+        <section class="section">
+            <h2 class="section-title">Typical Build Programme</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                Simplified Gantt chart showing key construction phases for a typical Simplicity residential project.
+            </p>
+            <div class="gantt-chart">
+                <div class="gantt-row">
+                    <div class="gantt-label">Foundation</div>
+                    <div class="gantt-bar" style="width: 15%; background: #ff6600;">4 weeks</div>
+                </div>
+                <div class="gantt-row">
+                    <div class="gantt-label">Structure (Walls)</div>
+                    <div class="gantt-bar" style="width: 25%; background: #ff8833; margin-left: 15%;">6 weeks</div>
+                </div>
+                <div class="gantt-row">
+                    <div class="gantt-label">Upper Floors</div>
+                    <div class="gantt-bar" style="width: 30%; background: #ffaa66; margin-left: 40%;">8 weeks</div>
+                </div>
+                <div class="gantt-row">
+                    <div class="gantt-label">Roof & Cladding</div>
+                    <div class="gantt-bar" style="width: 15%; background: #ff6600; margin-left: 70%;">4 weeks</div>
+                </div>
+                <div class="gantt-row">
+                    <div class="gantt-label">Windows & Facade</div>
+                    <div class="gantt-bar" style="width: 20%; background: #cc5200; margin-left: 50%;">5 weeks</div>
+                </div>
+                <div class="gantt-row">
+                    <div class="gantt-label">Fit-out</div>
+                    <div class="gantt-bar" style="width: 25%; background: #994000; margin-left: 75%;">6 weeks</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Construction Elements -->
+        <section class="section">
+            <h2 class="section-title">Core Construction Elements Carbon Analysis</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                Embodied carbon breakdown for primary building systems (A1-A3: Product & Manufacturing, A4-A5: Transport & Construction).
+            </p>
+            <div class="construction-elements">
+                <!-- Foundation -->
+                <div class="element-card">
+                    <div class="element-icon">🏗️</div>
+                    <h3>Foundation</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>85 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=foundation" class="carbon-link">12 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Structural Walls -->
+                <div class="element-card">
+                    <div class="element-icon">🏢</div>
+                    <h3>Concrete Structural Walls</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>140 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=walls" class="carbon-link">18 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upper Floors -->
+                <div class="element-card">
+                    <div class="element-icon">📐</div>
+                    <h3>Suspended Concrete Floors (6 levels)</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>120 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=floors" class="carbon-link">15 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roof -->
+                <div class="element-card">
+                    <div class="element-icon">🏠</div>
+                    <h3>Roof (Concrete + Timber Truss + Steel)</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>95 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=roof" class="carbon-link">14 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Windows -->
+                <div class="element-card">
+                    <div class="element-icon">🪟</div>
+                    <h3>Windows & Glazing</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>55 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=windows" class="carbon-link">8 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cladding -->
+                <div class="element-card">
+                    <div class="element-icon">🎨</div>
+                    <h3>External Cladding</h3>
+                    <div class="carbon-values">
+                        <div class="carbon-item">
+                            <span>A1-A3:</span>
+                            <strong>45 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-item">
+                            <span>A4-A5:</span>
+                            <a href="a4a5-calculator.html?element=cladding" class="carbon-link">7 kgCO2e/m²</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Apartment Layouts & Workforce -->
+        <section class="section">
+            <h2 class="section-title">Apartment Construction Analysis</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
+                Worker requirements and carbon metrics per 10-day construction period for typical apartment layouts.
+            </p>
+            
+            <div class="apartment-grid">
+                <!-- Apartment Type 1 -->
+                <div class="apartment-card">
+                    <h3>Type A - Studio (45m²)</h3>
+                    <div class="apartment-layout">
+                        <div class="layout-diagram">
+                            <div class="room">Living/Bedroom</div>
+                            <div class="room small">Bath</div>
+                            <div class="room small">Kitchen</div>
+                        </div>
+                    </div>
+                    <div class="worker-visualization">
+                        <p style="margin-bottom: 0.5rem;"><strong>Workers per 10-day period:</strong></p>
+                        <div class="workers">
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon inactive">👷</span>
+                            <span class="worker-icon inactive">👷</span>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">3.0 workers</p>
+                    </div>
+                    <div class="carbon-summary">
+                        <div class="carbon-row">
+                            <span>A1-A3:</span>
+                            <strong>320 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-row highlight">
+                            <span>A4-A5:</span>
+                            <strong>48 kgCO2e/m²</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apartment Type 2 -->
+                <div class="apartment-card">
+                    <h3>Type B - 1 Bedroom (65m²)</h3>
+                    <div class="apartment-layout">
+                        <div class="layout-diagram">
+                            <div class="room">Living</div>
+                            <div class="room">Bedroom</div>
+                            <div class="room small">Bath</div>
+                            <div class="room small">Kitchen</div>
+                        </div>
+                    </div>
+                    <div class="worker-visualization">
+                        <p style="margin-bottom: 0.5rem;"><strong>Workers per 10-day period:</strong></p>
+                        <div class="workers">
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon partial">👷</span>
+                            <span class="worker-icon inactive">👷</span>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">3.5 workers</p>
+                    </div>
+                    <div class="carbon-summary">
+                        <div class="carbon-row">
+                            <span>A1-A3:</span>
+                            <strong>305 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-row highlight">
+                            <span>A4-A5:</span>
+                            <strong>46 kgCO2e/m²</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apartment Type 3 -->
+                <div class="apartment-card">
+                    <h3>Type C - 2 Bedroom (85m²)</h3>
+                    <div class="apartment-layout">
+                        <div class="layout-diagram">
+                            <div class="room">Living</div>
+                            <div class="room">Bedroom 1</div>
+                            <div class="room">Bedroom 2</div>
+                            <div class="room small">Bath</div>
+                            <div class="room small">Kitchen</div>
+                        </div>
+                    </div>
+                    <div class="worker-visualization">
+                        <p style="margin-bottom: 0.5rem;"><strong>Workers per 10-day period:</strong></p>
+                        <div class="workers">
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon active">👷</span>
+                            <span class="worker-icon inactive">👷</span>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">4.0 workers</p>
+                    </div>
+                    <div class="carbon-summary">
+                        <div class="carbon-row">
+                            <span>A1-A3:</span>
+                            <strong>295 kgCO2e/m²</strong>
+                        </div>
+                        <div class="carbon-row highlight">
+                            <span>A4-A5:</span>
+                            <strong>44 kgCO2e/m²</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Insights -->
+        <section class="section">
+            <h2 class="section-title">Productivity Insights</h2>
+            <div class="nav-tiles">
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">👷</div>
+                    <h3>Efficient Labor Use</h3>
+                    <p>3-4 workers per apartment reduces coordination complexity and improves quality</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">📉</div>
+                    <h3>Lower A4-A5 Carbon</h3>
+                    <p>Larger apartments show improved carbon efficiency due to optimized construction sequences</p>
+                </div>
+                <div class="nav-tile" style="pointer-events: none;">
+                    <div class="nav-tile-icon">⏱️</div>
+                    <h3>Predictable Timeline</h3>
+                    <p>In-situ concrete methodology enables consistent 10-day construction cycles</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Construction productivity data from actual Simplicity projects</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+</body>
+</html>

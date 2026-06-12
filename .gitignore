@@ -1,0 +1,8 @@
+# Google Drive / OS cruft
+desktop.ini
+.DS_Store
+Thumbs.db
+
+# Dev artifacts
+capture.png
+*.log

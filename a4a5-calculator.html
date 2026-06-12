@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A4–A5 Carbon Calculator - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/calculator.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js"></script>
+    <script src="js/a4a5-data.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <span class="logo-symbol">%</span>
+                <span>Simplicity Living</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta active">A4&ndash;A5 Calculator</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>A4&ndash;A5 Carbon Calculator</h1>
+        <p>Prove that smarter logistics and faster, cleaner sites beat the industry baseline &mdash; not by hiding the materials, but by wasting nothing in transit or execution.</p>
+    </section>
+
+    <div class="container">
+        <p id="calcStatus" class="calc-status"></p>
+
+        <!-- The paradigm shift explainer -->
+        <section class="section">
+            <h2 class="section-title">A different way to count A4 &amp; A5</h2>
+            <div class="paradigm-grid">
+                <div class="paradigm-card old">
+                    <div class="paradigm-icon">📦</div>
+                    <h3>The industry default</h3>
+                    <p>Material-driven. Punch in a quantity, the tool slaps on a generic transport distance and a fat 5&ndash;10% waste penalty. Efficient builders get the same score as sloppy ones.</p>
+                </div>
+                <div class="paradigm-arrow">→</div>
+                <div class="paradigm-card new">
+                    <div class="paradigm-icon">🎯</div>
+                    <h3>The Simplicity way</h3>
+                    <p>Logistics-driven. Mass sets the floor, but your <strong>real distances</strong>, <strong>full trucks</strong>, <strong>tiny waste factor</strong> and <strong>shorter programme</strong> are the levers &mdash; and every saving is shown against the baseline.</p>
+                </div>
+            </div>
+
+            <!-- A4 vs A5 flow -->
+            <div class="stage-flow">
+                <div class="stage-step a1a3">
+                    <span class="stage-code">A1&ndash;A3</span>
+                    <span class="stage-name">Product</span>
+                    <small>Making the materials</small>
+                </div>
+                <div class="stage-link">→</div>
+                <div class="stage-step a4 active">
+                    <span class="stage-code">A4</span>
+                    <span class="stage-name">Transport</span>
+                    <small>Getting them to site</small>
+                </div>
+                <div class="stage-link">→</div>
+                <div class="stage-step a5 active">
+                    <span class="stage-code">A5</span>
+                    <span class="stage-name">Construction</span>
+                    <small>Building it &mdash; energy, fuel &amp; waste</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS: front and centre -->
+        <section class="section">
+            <h2 class="section-title">Your Projects</h2>
+            <p class="section-lead">No logins yet &mdash; just pick a project, or start a new one. Everything you change saves automatically.</p>
+            <div class="project-bar" id="projectBar"></div>
+
+            <div class="project-form" id="projectForm">
+                <div class="pf-grid">
+                    <div class="pf-field pf-wide"><label>Project name</label><input type="text" id="pf_name"></div>
+                    <div class="pf-field"><label>Location</label><input type="text" id="pf_location"></div>
+                    <div class="pf-field"><label>GFA (m²)</label><input type="number" id="pf_gfa" min="0"></div>
+                    <div class="pf-field"><label>Storeys</label><input type="number" id="pf_storeys" min="0"></div>
+                    <div class="pf-field"><label>Apartments / floor</label><input type="number" id="pf_apts" min="0"></div>
+                    <div class="pf-field"><label>Buildings</label><input type="number" id="pf_buildings" min="0"></div>
+                </div>
+                <div class="pf-actions">
+                    <button class="promo-btn" onclick="saveProjectMeta()">Save project</button>
+                    <button class="promo-btn db-btn-secondary" onclick="duplicateProject()">⧉ Copy as scenario</button>
+                    <button class="promo-btn db-btn-secondary" style="border-color:#dc3545;color:#dc3545;" onclick="deleteProject()">Delete</button>
+                </div>
+            </div>
+        </section>
+
+        <div id="calcBody">
+            <!-- ===================== A4 ===================== -->
+            <section class="section">
+                <h2 class="section-title">A4 &middot; Transport to Site</h2>
+                <p class="section-lead">Add the major materials and where they come from. We convert volumes to mass, run the <strong>industry baseline</strong> (BRANZ default distances, 10% waste, part-full trucks) against <strong>Simplicity's optimised logistics</strong> (2% waste, full trucks), and show the carbon you save.</p>
+
+                <div class="materials-card">
+                    <h3>Materials &amp; supply origins</h3>
+                    <div class="db-table-wrap">
+                        <table class="db-table materials-table">
+                            <thead>
+                                <tr><th>Material</th><th>Quantity</th><th>Supply origin</th><th style="text-align:right;">Mass</th><th></th></tr>
+                            </thead>
+                            <tbody id="materialsBody"></tbody>
+                        </table>
+                    </div>
+                    <button class="promo-btn admin-add-btn" onclick="addMaterial()">+ Add material</button>
+                </div>
+
+                <!-- A4 KPI cards -->
+                <div class="kpi-row">
+                    <div class="kpi-card baseline">
+                        <div class="kpi-icon">📦</div>
+                        <div class="kpi-value"><span id="a4Baseline">0</span></div>
+                        <div class="kpi-label">Baseline A4 (kgCO₂e)</div>
+                        <div class="kpi-sub"><span id="a4BasePerM2">0</span> kg/m²</div>
+                    </div>
+                    <div class="kpi-card optimised">
+                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-value"><span id="a4Optimised">0</span></div>
+                        <div class="kpi-label">Simplicity A4 (kgCO₂e)</div>
+                        <div class="kpi-sub"><span id="a4OptPerM2">0</span> kg/m²</div>
+                    </div>
+                    <div class="kpi-card delta">
+                        <div class="kpi-icon">📉</div>
+                        <div class="kpi-value"><span id="a4Delta">0</span></div>
+                        <div class="kpi-label">Carbon saved (kgCO₂e)</div>
+                        <div class="kpi-sub"><span id="a4DeltaPct">0%</span> below baseline</div>
+                    </div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <h3>Where the savings come from</h3>
+                    <div class="chart-canvas-container" style="height: 420px;">
+                        <canvas id="a4Chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Multi-leg journey explainer -->
+                <div class="journey-card">
+                    <h3>Every material is a multi-leg journey</h3>
+                    <div class="journey-flow">
+                        <div class="journey-node"><span class="journey-icon">🏭</span><span>Factory / quarry</span></div>
+                        <div class="journey-leg"><span class="journey-mode">🚢 Sea freight</span><small>container ship, runs full</small></div>
+                        <div class="journey-node"><span class="journey-icon">⚓</span><span>Port of entry</span></div>
+                        <div class="journey-leg"><span class="journey-mode">🚚 Road</span><small>load factor &amp; waste apply here</small></div>
+                        <div class="journey-node site"><span class="journey-icon">🏗️</span><span>Auckland site</span></div>
+                    </div>
+                    <p class="journey-note">Sea distances use container-freight factors; the local road leg is where Simplicity's full trucks and low waste cut the most carbon. Distances come from the BRANZ Transport Scenarios database; factors from MfE 2023 (ME1781).</p>
+                </div>
+            </section>
+
+            <!-- ===================== A5 ===================== -->
+            <section class="section">
+                <h2 class="section-title">A5 &middot; Construction &amp; Installation</h2>
+                <p class="section-lead">A5 is the physical act of building &mdash; site energy, machine fuel and construction waste. Scrub through the programme week by week and watch how the trades stack up. The default approach is linear; the Simplicity approach overlaps trades for a shorter, sharper programme.</p>
+
+                <!-- Scenario toggle -->
+                <div class="building-selector" id="a5ScenarioToggle">
+                    <button type="button" class="building-btn" data-scenario="baseline" onclick="setA5Scenario('baseline')">Baseline<small>linear, sequential</small></button>
+                    <button type="button" class="building-btn active" data-scenario="simplicity" onclick="setA5Scenario('simplicity')">Simplicity<small>overlapped, faster</small></button>
+                </div>
+                <p id="a5ScenarioSummary" class="a5-summary"></p>
+
+                <div class="chart-wrapper">
+                    <h3>Weekly site activity by trade</h3>
+                    <div class="chart-canvas-container" style="height: 380px;">
+                        <canvas id="a5Chart"></canvas>
+                    </div>
+                    <div class="slider-row">
+                        <span id="weekLabel" class="slider-week">Week 1</span>
+                        <input type="range" id="weekSlider" min="1" max="80" value="1" oninput="onWeekChange(this.value)">
+                        <span id="weekPhase" class="slider-phase"></span>
+                    </div>
+                </div>
+
+                <!-- Live metric cards -->
+                <div class="metric-row">
+                    <div class="metric-card" style="border-top-color:#ff6600;">
+                        <div class="metric-icon">👷</div>
+                        <div class="metric-value" id="metric_people">0</div>
+                        <div class="metric-label">People on site</div>
+                    </div>
+                    <div class="metric-card" style="border-top-color:#795548;">
+                        <div class="metric-icon">📦</div>
+                        <div class="metric-value" id="metric_material">0</div>
+                        <div class="metric-label">Material (t/week)</div>
+                    </div>
+                    <div class="metric-card" style="border-top-color:#607D8B;">
+                        <div class="metric-icon">🏗️</div>
+                        <div class="metric-value" id="metric_equipment">0</div>
+                        <div class="metric-label">Equipment (mach-hrs)</div>
+                    </div>
+                    <div class="metric-card" style="border-top-color:#f57f17;">
+                        <div class="metric-icon">⛽</div>
+                        <div class="metric-value" id="metric_fuel">0</div>
+                        <div class="metric-label">Fuel (L diesel)</div>
+                    </div>
+                    <div class="metric-card" style="border-top-color:#2196F3;">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-value" id="metric_electricity">0</div>
+                        <div class="metric-label">Electricity (kWh)</div>
+                    </div>
+                </div>
+
+                <!-- Baseline vs Simplicity comparison -->
+                <div class="comparison-card">
+                    <h3>The speed dividend: Baseline vs Simplicity</h3>
+                    <div id="a5Comparison"></div>
+                </div>
+
+                <!-- Site data sources (imagined) -->
+                <div class="site-tools-card">
+                    <h3>Where the real A5 numbers will come from</h3>
+                    <p class="section-lead">A5 today is mostly guesswork from floor area. To prove Simplicity's efficiency we capture verifiable primary data on site. The figures above are placeholders &mdash; these are the tools that will feed real data in:</p>
+                    <div class="site-tools-grid" id="siteTools"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>A4 distances: BRANZ Transport Scenarios &middot; Emission factors: MfE 2023 (ME1781) &middot; A5 figures are placeholders pending site data</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="js/a4a5-calculator.js"></script>
+</body>
+</html>
