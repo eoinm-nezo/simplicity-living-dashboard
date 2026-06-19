@@ -85,6 +85,14 @@ function fillProjectForm() {
 }
 
 function newProject() {
+    if (!window.sbIsLoggedIn || !window.sbIsLoggedIn()) {
+        _showA4AuthNudge(() => _createProject());
+    } else {
+        _createProject();
+    }
+}
+
+function _createProject() {
     const now = new Date().toISOString();
     const data = { gfa: 5000, storeys: 6, apartmentsPerFloor: 8, buildings: 1, materials: [], a5Scenario: 'simplicity' };
     dbRun('INSERT INTO a4a5_projects (name, location, data_json, created_at, updated_at) VALUES (?,?,?,?,?)',
@@ -93,6 +101,36 @@ function newProject() {
     const created = projects[projects.length - 1];
     selectProject(created.id);
     flash('New project created — edit its details and materials below.');
+}
+
+function _showA4AuthNudge(proceed) {
+    window._a4NudgeProceed = proceed;
+    const existing = document.getElementById('a4AuthNudgeOverlay');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.id = 'a4AuthNudgeOverlay';
+    el.className = 'auth-overlay';
+    el.innerHTML = `
+        <div class="auth-card" style="max-width:440px;">
+            <div class="auth-card-header">
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="auth-logo">
+                <button class="auth-x" onclick="document.getElementById('a4AuthNudgeOverlay').remove()">✕</button>
+            </div>
+            <div style="padding:1.5rem;">
+                <h3 style="margin:0 0 0.5rem;font-size:1.05rem;">Save your scenarios to your account</h3>
+                <p style="color:#555;font-size:0.9rem;line-height:1.6;margin:0 0 1.25rem;">
+                    Create a free account to save your A4–A5 scenarios to the cloud — access them from any device and keep them between sessions.<br><br>
+                    <strong>You can continue without an account</strong>, but your work will only be saved in this browser session.
+                </p>
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+                    <button class="auth-nudge-btn-primary" onclick="document.getElementById('a4AuthNudgeOverlay').remove(); openAuthModal('signup');">Create account</button>
+                    <button class="auth-nudge-btn-secondary" onclick="document.getElementById('a4AuthNudgeOverlay').remove(); openAuthModal('signin');">Sign in</button>
+                    <button style="margin-left:auto;background:none;border:none;color:#888;font-size:0.88rem;cursor:pointer;text-decoration:underline;" onclick="document.getElementById('a4AuthNudgeOverlay').remove(); window._a4NudgeProceed && window._a4NudgeProceed();">Continue without account →</button>
+                </div>
+            </div>
+        </div>`;
+    el.addEventListener('click', e => { if (e.target === el) { el.remove(); proceed(); } });
+    document.body.appendChild(el);
 }
 
 function saveProjectMeta() {

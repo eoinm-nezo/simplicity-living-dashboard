@@ -21,14 +21,43 @@ let project = { name: '', type: 'Apartment', notes: '' };
 let scores = {};
 let selfWheelChart = null;
 
+const SESSION_KEY = 'simplicity_scoring_session';
+
+function _saveSession() {
+    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ step, project, scores })); } catch(e) {}
+}
+function _clearSession() {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
+}
+function _loadSession() {
+    try { const s = sessionStorage.getItem(SESSION_KEY); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+}
+
 // ── Public API ───────────────────────────────────────────────────────────────
 
 window.openSelfScorer = function () {
+    const saved = _loadSession();
+    if (saved && saved.project && saved.project.name) {
+        step    = saved.step || 0;
+        project = Object.assign({ name: '', type: 'Apartment', notes: '' }, saved.project);
+        scores  = Object.assign(Object.fromEntries(CAT_KEYS.map(k => [k, null])), saved.scores);
+    } else {
+        step = 0;
+        project = { name: '', type: 'Apartment', notes: '' };
+        scores  = {};
+        CAT_KEYS.forEach(k => { scores[k] = null; });
+    }
+    document.getElementById('selfScorerOverlay').style.display = 'flex';
+    if (step === 8) renderResults();
+    else render();
+};
+
+window.selfStartFresh = function () {
+    _clearSession();
     step = 0;
     project = { name: '', type: 'Apartment', notes: '' };
-    scores = {};
+    scores  = {};
     CAT_KEYS.forEach(k => { scores[k] = null; });
-    document.getElementById('selfScorerOverlay').style.display = 'flex';
     render();
 };
 
@@ -46,22 +75,22 @@ window.selfGoNext = function () {
         project.name = name;
         project.type = document.getElementById('selfProjectType').value;
         project.notes = document.getElementById('selfProjectNotes').value.trim();
-        step = 1; render(); return;
+        step = 1; _saveSession(); render(); return;
     }
     if (step >= 1 && step <= 7) {
         const key = CAT_KEYS[step - 1];
         if (scores[key] === null || scores[key] === undefined) {
             document.getElementById('selfBandError').style.display = 'block'; return;
         }
-        if (step < 7) { step++; render(); }
-        else { step = 8; renderResults(); }
+        if (step < 7) { step++; _saveSession(); render(); }
+        else { step = 8; _saveSession(); renderResults(); }
         return;
     }
 };
 
 window.selfGoBack = function () {
-    if (step === 8) { step = 7; render(); return; }
-    if (step > 0) { step--; render(); }
+    if (step === 8) { step = 7; _saveSession(); render(); return; }
+    if (step > 0) { step--; _saveSession(); render(); }
 };
 
 window.selfSelectBand = function (key, score) {
@@ -77,28 +106,15 @@ window.selfSaveLocal = async function () {
     const btn = document.getElementById('selfSaveBtn');
     btn.disabled = true;
     btn.textContent = 'Saving…';
-
-    if (window.sbIsLoggedIn && window.sbIsLoggedIn()) {
-        const { error } = await window.sbSaveAssessment(project, scores);
-        if (error) {
-            btn.textContent = '✗ Error';
-            btn.disabled = false;
-            console.error('Supabase save error:', error.message);
-        } else {
-            btn.textContent = '✓ Saved to your account';
-            window.selfLoadAssessments();
-        }
+    const { error } = await window.sbSaveAssessment(project, scores);
+    if (error) {
+        btn.textContent = '✗ Error saving';
+        btn.disabled = false;
+        console.error('Supabase save error:', error.message);
     } else {
-        const saved = JSON.parse(localStorage.getItem('simplicity_self_assessments_v1') || '[]');
-        saved.push({
-            id: Date.now(),
-            created_at: new Date().toISOString(),
-            project: { ...project },
-            scores: { ...scores },
-            total: CAT_KEYS.reduce((a, k) => a + (scores[k] || 0), 0)
-        });
-        localStorage.setItem('simplicity_self_assessments_v1', JSON.stringify(saved));
-        btn.textContent = '✓ Saved locally';
+        btn.textContent = '✓ Saved to your account';
+        _clearSession();
+        window.selfLoadAssessments();
     }
 };
 
@@ -194,7 +210,33 @@ function render() {
 }
 
 function renderDetails(el) {
+    const loggedIn  = window.sbIsLoggedIn && window.sbIsLoggedIn();
+    const hasSession = project.name; // restored from sessionStorage
+
+    const nudge = loggedIn ? '' : `
+        <div class="auth-nudge">
+            <div class="auth-nudge-body">
+                <span class="auth-nudge-icon">💾</span>
+                <div>
+                    <strong>Create a free account to save your results</strong>
+                    <p>Sign in to save assessments to your account, access them from any device, and track improvements over time. You can complete the scoring without an account — you just won't be able to save.</p>
+                </div>
+            </div>
+            <div class="auth-nudge-actions">
+                <button class="auth-nudge-btn-primary" onclick="openAuthModal('signup')">Create account</button>
+                <button class="auth-nudge-btn-secondary" onclick="openAuthModal('signin')">Sign in</button>
+            </div>
+        </div>`;
+
+    const resumeBanner = hasSession ? `
+        <div class="self-resume-bar">
+            Resuming <strong>${esc(project.name)}</strong> &mdash;
+            <button class="self-resume-fresh" onclick="selfStartFresh()">Start fresh instead</button>
+        </div>` : '';
+
     el.innerHTML = `
+        ${nudge}
+        ${resumeBanner}
         <div class="self-details-form">
             <p class="self-intro">Rate your project against the same seven categories used to benchmark Simplicity builds.
             Takes about 2 minutes — select a performance band for each category.</p>
@@ -305,7 +347,12 @@ function renderResults() {
                 }).join('')}
             </div>
             <div class="self-result-actions">
-                <button id="selfSaveBtn" class="self-btn secondary" onclick="selfSaveLocal()">💾 Save locally</button>
+                ${(window.sbIsLoggedIn && window.sbIsLoggedIn())
+                    ? `<button id="selfSaveBtn" class="self-btn secondary" onclick="selfSaveLocal()">💾 Save to my account</button>`
+                    : `<div class="auth-nudge-save">
+                        <p>Sign in to save this assessment to your account</p>
+                        <button class="auth-nudge-btn-primary" onclick="openAuthModal()">Sign In / Create Account</button>
+                       </div>`}
                 <button class="self-btn primary" onclick="selfPrintPDF()">🖨️ Export PDF</button>
             </div>
         </div>`;

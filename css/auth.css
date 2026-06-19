@@ -149,3 +149,54 @@
     font-weight: 600; cursor: pointer; font-size: 0.9rem;
     text-decoration: underline;
 }
+
+/* ── Auth nudge (sign-in prompt inside tools) ─────────────────────────────── */
+.auth-nudge {
+    background: #fff8f2; border: 1.5px solid #ffd5b0;
+    border-radius: 10px; padding: 1rem 1.1rem;
+    margin-bottom: 1rem;
+}
+.auth-nudge-body {
+    display: flex; gap: 0.85rem; align-items: flex-start;
+    margin-bottom: 0.85rem;
+}
+.auth-nudge-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
+.auth-nudge-body strong { font-size: 0.92rem; color: #cc4400; display: block; margin-bottom: 0.25rem; }
+.auth-nudge-body p { font-size: 0.83rem; color: #666; margin: 0; line-height: 1.5; }
+.auth-nudge-actions { display: flex; gap: 0.6rem; }
+
+.auth-nudge-btn-primary {
+    background: #ff6600; color: white; border: none;
+    padding: 0.45rem 1rem; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+}
+.auth-nudge-btn-primary:hover { background: #e55500; }
+
+.auth-nudge-btn-secondary {
+    background: white; color: #ff6600; border: 1.5px solid #ff6600;
+    padding: 0.45rem 1rem; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.auth-nudge-btn-secondary:hover { background: #fff0e8; }
+
+/* Save nudge at results step */
+.auth-nudge-save {
+    display: flex; align-items: center; gap: 0.85rem;
+    background: #fff8f2; border: 1.5px solid #ffd5b0;
+    border-radius: 10px; padding: 0.65rem 1rem;
+}
+.auth-nudge-save p { margin: 0; font-size: 0.85rem; color: #555; flex: 1; }
+
+/* Resume session banner */
+.self-resume-bar {
+    background: #f0f7ff; border: 1px solid #bdd7f5;
+    border-radius: 8px; padding: 0.55rem 1rem;
+    font-size: 0.85rem; color: #2c5f8a; margin-bottom: 0.75rem;
+}
+.self-resume-fresh {
+    background: none; border: none; color: #2c5f8a;
+    font-size: 0.85rem; cursor: pointer; text-decoration: underline;
+    padding: 0; margin-left: 0.3rem;
+}
