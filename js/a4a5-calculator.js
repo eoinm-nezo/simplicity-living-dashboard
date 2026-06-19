@@ -101,6 +101,7 @@ function _createProject() {
     const created = projects[projects.length - 1];
     selectProject(created.id);
     flash('New project created — edit its details and materials below.');
+    window.trackEvent?.('a4a5_project_created', {});
 }
 
 function _showA4AuthNudge(proceed) {

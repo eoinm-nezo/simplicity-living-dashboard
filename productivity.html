@@ -80,7 +80,26 @@
             <div class="construction-elements">
                 <!-- Foundation -->
                 <div class="element-card">
-                    <div class="element-icon">🏗️</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="52">
+                            <!-- column stub above ground -->
+                            <rect x="18" y="2" width="12" height="14" fill="#e0e0e0" stroke="#555" stroke-width="1.5"/>
+                            <!-- widening kicker to footing -->
+                            <polygon points="18,16 30,16 36,20 12,20" fill="#d8d8d8" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
+                            <!-- pad footing -->
+                            <rect x="6" y="20" width="36" height="10" rx="1" fill="#d0d0d0" stroke="#555" stroke-width="1.5"/>
+                            <!-- rebar in footing (orange dashed) -->
+                            <line x1="6" y1="24" x2="42" y2="24" stroke="#ff6600" stroke-width="1.5" stroke-dasharray="3,2"/>
+                            <!-- ground line -->
+                            <line x1="0" y1="32" x2="48" y2="32" stroke="#555" stroke-width="2"/>
+                            <!-- soil hatching -->
+                            <line x1="4"  y1="33" x2="8"  y2="38" stroke="#999" stroke-width="1"/>
+                            <line x1="12" y1="33" x2="16" y2="38" stroke="#999" stroke-width="1"/>
+                            <line x1="21" y1="33" x2="25" y2="38" stroke="#999" stroke-width="1"/>
+                            <line x1="30" y1="33" x2="34" y2="38" stroke="#999" stroke-width="1"/>
+                            <line x1="38" y1="33" x2="42" y2="38" stroke="#999" stroke-width="1"/>
+                        </svg>
+                    </div>
                     <h3>Foundation</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -96,7 +115,27 @@
 
                 <!-- Structural Walls -->
                 <div class="element-card">
-                    <div class="element-icon">🏢</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                            <!-- concrete wall cross-section (plan view) with engineering hatch + rebar -->
+                            <rect x="6" y="6" width="36" height="36" rx="1" fill="#e0e0e0" stroke="#555" stroke-width="1.5"/>
+                            <!-- 45° diagonal concrete hatch (manually bounded) -->
+                            <line x1="6"  y1="18" x2="18" y2="6"  stroke="#bbb" stroke-width="1"/>
+                            <line x1="6"  y1="30" x2="30" y2="6"  stroke="#bbb" stroke-width="1"/>
+                            <line x1="6"  y1="42" x2="42" y2="6"  stroke="#bbb" stroke-width="1"/>
+                            <line x1="18" y1="42" x2="42" y2="18" stroke="#bbb" stroke-width="1"/>
+                            <line x1="30" y1="42" x2="42" y2="30" stroke="#bbb" stroke-width="1"/>
+                            <!-- rebar positions (orange dots) -->
+                            <circle cx="13" cy="13" r="3" fill="#ff6600"/>
+                            <circle cx="24" cy="13" r="3" fill="#ff6600"/>
+                            <circle cx="35" cy="13" r="3" fill="#ff6600"/>
+                            <circle cx="13" cy="35" r="3" fill="#ff6600"/>
+                            <circle cx="24" cy="35" r="3" fill="#ff6600"/>
+                            <circle cx="35" cy="35" r="3" fill="#ff6600"/>
+                            <!-- border over hatch -->
+                            <rect x="6" y="6" width="36" height="36" rx="1" fill="none" stroke="#555" stroke-width="1.5"/>
+                        </svg>
+                    </div>
                     <h3>Concrete Structural Walls</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -112,7 +151,21 @@
 
                 <!-- Upper Floors -->
                 <div class="element-card">
-                    <div class="element-icon">📐</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                            <!-- column stubs above slab -->
+                            <rect x="4"  y="4"  width="10" height="14" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                            <rect x="34" y="4"  width="10" height="14" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                            <!-- suspended slab spanning between columns -->
+                            <rect x="4"  y="18" width="40" height="12" rx="1" fill="#e0e0e0" stroke="#555" stroke-width="1.5"/>
+                            <!-- rebar in slab (two layers) -->
+                            <line x1="6"  y1="22" x2="42" y2="22" stroke="#ff6600" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="6"  y1="26" x2="42" y2="26" stroke="#ff6600" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <!-- column stubs below slab -->
+                            <rect x="4"  y="30" width="10" height="14" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                            <rect x="34" y="30" width="10" height="14" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                        </svg>
+                    </div>
                     <h3>Suspended Concrete Floors (6 levels)</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -128,7 +181,22 @@
 
                 <!-- Roof -->
                 <div class="element-card">
-                    <div class="element-icon">🏠</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 46" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="52">
+                            <!-- pitched roof body -->
+                            <polygon points="24,3 45,27 3,27" fill="#e0e0e0" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/>
+                            <!-- collar tie (structural cross-member) -->
+                            <line x1="13" y1="20" x2="35" y2="20" stroke="#555" stroke-width="1.5"/>
+                            <!-- connector nodes in orange -->
+                            <circle cx="13" cy="20" r="2.5" fill="#ff6600"/>
+                            <circle cx="35" cy="20" r="2.5" fill="#ff6600"/>
+                            <!-- ridge apex -->
+                            <circle cx="24" cy="3"  r="2.5" fill="#555"/>
+                            <!-- wall tops below eaves -->
+                            <rect x="3"  y="27" width="9"  height="13" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                            <rect x="36" y="27" width="9"  height="13" fill="#d8d8d8" stroke="#555" stroke-width="1.5"/>
+                        </svg>
+                    </div>
                     <h3>Roof (Concrete + Timber Truss + Steel)</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -144,7 +212,26 @@
 
                 <!-- Windows -->
                 <div class="element-card">
-                    <div class="element-icon">🪟</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                            <!-- window head -->
+                            <rect x="4"  y="5"  width="40" height="4" rx="1" fill="#c8c8c8" stroke="#555" stroke-width="1.5"/>
+                            <!-- outer frame with glazing background -->
+                            <rect x="6"  y="9"  width="36" height="30" rx="1" fill="#cce8f4" stroke="#444" stroke-width="2"/>
+                            <!-- vertical mullion -->
+                            <line x1="24" y1="9"  x2="24" y2="39" stroke="#444" stroke-width="2"/>
+                            <!-- horizontal transom -->
+                            <line x1="6"  y1="24" x2="42" y2="24" stroke="#444" stroke-width="2"/>
+                            <!-- glazing sheen top-left pane -->
+                            <line x1="9"  y1="12" x2="13" y2="12" stroke="#8fd0ef" stroke-width="1.5"/>
+                            <line x1="9"  y1="15" x2="15" y2="15" stroke="#8fd0ef" stroke-width="1.5"/>
+                            <!-- glazing sheen top-right pane -->
+                            <line x1="27" y1="12" x2="31" y2="12" stroke="#8fd0ef" stroke-width="1.5"/>
+                            <line x1="27" y1="15" x2="33" y2="15" stroke="#8fd0ef" stroke-width="1.5"/>
+                            <!-- window sill -->
+                            <rect x="4"  y="39" width="40" height="4" rx="1" fill="#c8c8c8" stroke="#555" stroke-width="1.5"/>
+                        </svg>
+                    </div>
                     <h3>Windows & Glazing</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -160,7 +247,39 @@
 
                 <!-- Cladding -->
                 <div class="element-card">
-                    <div class="element-icon">🎨</div>
+                    <div class="element-icon">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+                            <!-- mortar background -->
+                            <rect x="4" y="4" width="40" height="40" rx="1" fill="#c8a882"/>
+                            <!-- running bond brick pattern — alternating offset rows -->
+                            <!-- Row 1 (offset: half + full + half) -->
+                            <rect x="4"  y="4"  width="16" height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="20" y="4"  width="16" height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="36" y="4"  width="8"  height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- Row 2 (aligned: half + full + full) -->
+                            <rect x="4"  y="11" width="8"  height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="12" y="11" width="16" height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="28" y="11" width="16" height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- Row 3 (offset) -->
+                            <rect x="4"  y="18" width="16" height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="20" y="18" width="16" height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="36" y="18" width="8"  height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- Row 4 (aligned) -->
+                            <rect x="4"  y="25" width="8"  height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="12" y="25" width="16" height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="28" y="25" width="16" height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- Row 5 (offset) -->
+                            <rect x="4"  y="32" width="16" height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="20" y="32" width="16" height="7" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="36" y="32" width="8"  height="7" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- Row 6 (aligned, partial) -->
+                            <rect x="4"  y="39" width="8"  height="5" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="12" y="39" width="16" height="5" rx="0.5" fill="#c07040" stroke="#c8a882" stroke-width="1.5"/>
+                            <rect x="28" y="39" width="16" height="5" rx="0.5" fill="#b86030" stroke="#c8a882" stroke-width="1.5"/>
+                            <!-- outer border -->
+                            <rect x="4" y="4" width="40" height="40" rx="1" fill="none" stroke="#888" stroke-width="1"/>
+                        </svg>
+                    </div>
                     <h3>External Cladding</h3>
                     <div class="carbon-values">
                         <div class="carbon-item">
@@ -323,5 +442,6 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/analytics.js"></script>
 </body>
 </html>

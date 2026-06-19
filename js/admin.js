@@ -1,9 +1,9 @@
 // Simplicity Living - Admin page
-// UI-only password gate (password: "Simple") + CRUD editors over every table
-// in the shared client-side SQLite database.
+// Password gate + Supabase admin-email auto-unlock + CRUD editors + analytics
 
 const ADMIN_PASSWORD = 'Simple';
 const ADMIN_SESSION_KEY = 'simplicity_admin_ok';
+const ADMIN_EMAILS = ['eoinm@nezo-app.com'];
 
 // ---------------------------------------------------------------------------
 // Table editor configs
@@ -92,11 +92,19 @@ function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
 // ---------------------------------------------------------------------------
 // Gate
 // ---------------------------------------------------------------------------
+function _unlockAdmin() {
+    sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+    document.getElementById('adminGate').style.display = 'none';
+}
+
+window._checkAdminAuth = function (user) {
+    if (user && ADMIN_EMAILS.includes(user.email)) _unlockAdmin();
+};
+
 function checkGate() {
     const input = document.getElementById('gatePassword');
     if (input.value === ADMIN_PASSWORD) {
-        sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
-        document.getElementById('adminGate').style.display = 'none';
+        _unlockAdmin();
     } else {
         document.getElementById('gateError').textContent = 'Incorrect password.';
         input.select();
@@ -128,6 +136,7 @@ function showTab(tab) {
     document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.admin-panel').forEach(p => p.style.display = 'none');
     document.getElementById('panel-' + tab).style.display = 'block';
+    if (tab === 'analytics') renderAnalytics();
 }
 
 // ---------------------------------------------------------------------------
@@ -288,4 +297,98 @@ function flashStatus(msg) {
         el.textContent = 'Database ready — changes save instantly to this browser. Export from the Database tab to back up.';
         el.style.color = '';
     }, 2500);
+}
+
+// ---------------------------------------------------------------------------
+// Analytics panel
+// ---------------------------------------------------------------------------
+async function renderAnalytics() {
+    const panel = document.getElementById('panel-analytics');
+    if (!panel) return;
+    if (!window.sbLoadAnalytics) {
+        panel.innerHTML = '<p class="admin-note" style="color:#dc3545;">Analytics not available — sign in to your admin account first.</p>';
+        return;
+    }
+    panel.innerHTML = '<p class="admin-note">Loading analytics…</p>';
+
+    const { data: events, error } = await window.sbLoadAnalytics(30);
+    if (error) {
+        panel.innerHTML = `<p class="admin-note" style="color:#dc3545;">Could not load: ${error.message}</p>`;
+        return;
+    }
+    const rows = events || [];
+
+    const uniqueAnons = new Set(rows.map(e => e.anon_id)).size;
+    const uniqueUsers = new Set(rows.filter(e => e.user_id).map(e => e.user_id)).size;
+    const pageViews   = rows.filter(e => e.event === 'page_view');
+    const toolRows    = rows.filter(e => e.event !== 'page_view');
+
+    const pageCounts = {};
+    pageViews.forEach(e => { pageCounts[e.page] = (pageCounts[e.page] || 0) + 1; });
+    const topPages = Object.entries(pageCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+    const toolCounts = {};
+    toolRows.forEach(e => { toolCounts[e.event] = (toolCounts[e.event] || 0) + 1; });
+
+    const userAct = {};
+    rows.filter(e => e.user_id).forEach(e => {
+        if (!userAct[e.user_id]) userAct[e.user_id] = { events: 0, tools: new Set() };
+        userAct[e.user_id].events++;
+        if (e.event !== 'page_view') userAct[e.user_id].tools.add(e.event);
+    });
+
+    panel.innerHTML = `
+        <h2 class="section-title">App Analytics <span style="font-size:0.8rem;font-weight:400;color:#888;">(last 30 days)</span></h2>
+
+        <div class="analytics-stats">
+            <div class="analytics-stat">
+                <span class="analytics-num">${uniqueAnons}</span>
+                <span class="analytics-lbl">Unique Visitors</span>
+            </div>
+            <div class="analytics-stat">
+                <span class="analytics-num">${uniqueUsers}</span>
+                <span class="analytics-lbl">Signed-In Users</span>
+            </div>
+            <div class="analytics-stat">
+                <span class="analytics-num">${pageViews.length}</span>
+                <span class="analytics-lbl">Page Views</span>
+            </div>
+            <div class="analytics-stat">
+                <span class="analytics-num">${toolRows.length}</span>
+                <span class="analytics-lbl">Tool Actions</span>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+            <div>
+                <h3 class="analytics-sub">Page Popularity</h3>
+                ${topPages.length
+                    ? topPages.map(([p, n]) => `<div class="analytics-row"><span>${p || 'home'}</span><strong>${n}</strong></div>`).join('')
+                    : '<p class="admin-note">No page view data yet.</p>'}
+            </div>
+            <div>
+                <h3 class="analytics-sub">Tool Actions</h3>
+                ${Object.entries(toolCounts).length
+                    ? Object.entries(toolCounts).sort((a,b) => b[1]-a[1]).map(([ev, n]) => `<div class="analytics-row"><span>${ev}</span><strong>${n}</strong></div>`).join('')
+                    : '<p class="admin-note">No tool events yet.</p>'}
+            </div>
+        </div>
+
+        <h3 class="analytics-sub" style="margin-top:1.75rem;">Signed-In User Activity</h3>
+        ${Object.keys(userAct).length
+            ? `<div class="db-table-wrap"><table class="db-table admin-table" style="font-size:0.85rem;">
+                <thead><tr><th>User ID</th><th>Events</th><th>Tools Used</th></tr></thead>
+                <tbody>${Object.entries(userAct).map(([uid, a]) =>
+                    `<tr>
+                        <td style="font-family:monospace;font-size:0.78rem;">${uid.slice(0,18)}…</td>
+                        <td>${a.events}</td>
+                        <td>${[...a.tools].join(', ') || '—'}</td>
+                    </tr>`).join('')}
+                </tbody>
+               </table></div>`
+            : '<p class="admin-note">No signed-in user activity yet.</p>'}
+
+        <div style="margin-top:1.25rem;">
+            <button class="promo-btn db-btn-secondary" onclick="renderAnalytics()">↺ Refresh</button>
+        </div>`;
 }

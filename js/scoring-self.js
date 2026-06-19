@@ -83,7 +83,7 @@ window.selfGoNext = function () {
             document.getElementById('selfBandError').style.display = 'block'; return;
         }
         if (step < 7) { step++; _saveSession(); render(); }
-        else { step = 8; _saveSession(); renderResults(); }
+        else { step = 8; _saveSession(); renderResults(); window.trackEvent?.('scoring_complete', { project: project.name, type: project.type }); }
         return;
     }
 };

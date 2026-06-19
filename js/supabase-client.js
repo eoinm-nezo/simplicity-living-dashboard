@@ -19,11 +19,13 @@ async function initSupabaseAuth() {
         _renderNavBadge();
         _authListeners.forEach(fn => fn(_user, event));
         if (window.selfLoadAssessments) window.selfLoadAssessments();
+        window._checkAdminAuth?.(_user);
     });
     const { data: { session } } = await _db.auth.getSession();
     _user = session?.user ?? null;
     _renderNavBadge();
     if (window.selfLoadAssessments) window.selfLoadAssessments();
+    window._checkAdminAuth?.(_user);
     return _user;
 }
 
@@ -93,6 +95,16 @@ window.sbLoadA4A5Projects = async () => {
 
 window.sbDeleteA4A5Project = async id =>
     _db.from('a4a5_user_projects').delete().eq('id', id).eq('user_id', _user.id);
+
+// ── Analytics (admin only) ───────────────────────────────────────────────────
+
+window.sbLoadAnalytics = async (days = 30) => {
+    const since = new Date(Date.now() - days * 86400000).toISOString();
+    return _db.from('analytics_events')
+        .select('*')
+        .gte('created_at', since)
+        .order('created_at', { ascending: false });
+};
 
 // ── Nav badge ────────────────────────────────────────────────────────────────
 

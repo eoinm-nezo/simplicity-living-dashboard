@@ -17,7 +17,7 @@
         <div class="admin-gate-card">
             <div class="admin-gate-logo"><img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" style="height:40px;"></div>
             <h2>Admin Access</h2>
-            <p>Enter the admin password to manage project data.</p>
+            <p>Enter the admin password, or sign in to your admin account using the nav bar above.</p>
             <input type="password" id="gatePassword" placeholder="Password" onkeydown="if(event.key==='Enter')checkGate()">
             <button class="promo-btn" onclick="checkGate()">Unlock</button>
             <p id="gateError" class="gate-error"></p>
@@ -60,6 +60,7 @@
             <button class="admin-tab" data-tab="energy" onclick="showTab('energy')">⚡ Energy Results</button>
             <button class="admin-tab" data-tab="waste" onclick="showTab('waste')">♻️ Waste Data</button>
             <button class="admin-tab" data-tab="database" onclick="showTab('database')">💾 Database</button>
+            <button class="admin-tab" data-tab="analytics" onclick="showTab('analytics')">📊 Analytics</button>
         </div>
 
         <!-- Scoring -->
@@ -94,6 +95,11 @@
             <button class="promo-btn admin-add-btn" onclick="addRow('waste')">+ Add project</button>
         </section>
 
+        <!-- Analytics -->
+        <section class="admin-panel" id="panel-analytics" style="display:none;">
+            <p class="admin-note">Click the Analytics tab to load data.</p>
+        </section>
+
         <!-- Database -->
         <section class="admin-panel" id="panel-database" style="display:none;">
             <h2 class="section-title">Database Management</h2>
@@ -123,5 +129,6 @@
     <script src="js/admin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
+    <script src="js/analytics.js"></script>
 </body>
 </html>
