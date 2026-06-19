@@ -652,3 +652,229 @@
     transition:all 0.2s ease;
 }
 .map-close:hover { background:var(--simplicity-orange); color:white; transform:rotate(90deg); }
+
+/* ── Score Your Project — button ─────────────────────────────────────────── */
+.btn-score-self {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ff6600;
+    color: white;
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255,102,0,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-score-self:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,102,0,0.45); }
+
+/* ── Self-scorer modal ───────────────────────────────────────────────────── */
+.self-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.self-card {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+}
+
+.self-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.5rem 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.self-step-label { font-size: 1.05rem; font-weight: 700; color: #222; }
+.self-step-num { font-size: 0.8rem; font-weight: 400; color: #888; }
+
+.self-close {
+    background: none; border: none;
+    font-size: 1.2rem; cursor: pointer;
+    color: #999; padding: 0.3rem 0.6rem; border-radius: 6px; line-height: 1;
+}
+.self-close:hover { background: #f5f5f5; color: #333; }
+
+.self-progress-track { height: 3px; background: #f0f0f0; flex-shrink: 0; }
+.self-progress-fill { height: 100%; background: #ff6600; transition: width 0.4s ease; width: 0%; }
+
+.self-body {
+    flex: 1; overflow-y: auto; padding: 1.5rem;
+    scrollbar-width: thin; scrollbar-color: #ddd transparent;
+}
+
+.self-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.5rem;
+    border-top: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.self-btn {
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+}
+.self-btn.primary { background: #ff6600; color: white; }
+.self-btn.primary:hover { background: #e55500; }
+.self-btn.secondary { background: #f5f5f5; color: #444; border: 1px solid #e0e0e0; }
+.self-btn.secondary:hover { background: #ebebeb; }
+.self-btn:disabled { opacity: 0.55; cursor: default; }
+
+/* ── Details form ────────────────────────────────────────────────────────── */
+.self-details-form { max-width: 480px; margin: 0 auto; }
+.self-intro { color: #555; margin-bottom: 1.5rem; line-height: 1.65; font-size: 0.97rem; }
+.self-label {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    font-weight: 600; color: #333; font-size: 0.92rem; margin-bottom: 1rem;
+}
+.self-input {
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 0.95rem; font-family: inherit;
+    transition: border-color 0.15s;
+}
+.self-input:focus { outline: none; border-color: #ff6600; }
+.self-input-error { border-color: #dc3545 !important; }
+.self-textarea { resize: vertical; min-height: 60px; }
+.self-req { color: #dc3545; }
+.self-optional { font-weight: 400; color: #999; font-size: 0.82em; }
+
+/* ── Category step ───────────────────────────────────────────────────────── */
+.self-cat-header {
+    padding: 0.75rem 1rem; background: #fafafa;
+    border-radius: 8px; margin-bottom: 1rem;
+}
+.self-cat-credits {
+    font-size: 0.75rem; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.35rem;
+}
+.self-cat-intro { color: #444; line-height: 1.6; margin: 0; font-size: 0.93rem; }
+
+.self-criteria-list { margin-bottom: 1.1rem; }
+.self-criterion {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0.4rem 0.75rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 0.86rem;
+    align-items: start;
+}
+.self-crit-name { font-weight: 600; color: #333; }
+.self-crit-desc { color: #666; line-height: 1.45; }
+
+.self-band-prompt { font-weight: 600; color: #333; margin: 0.5rem 0 0.65rem; font-size: 0.95rem; }
+.self-error { color: #dc3545; font-size: 0.85rem; margin-top: 0.4rem; }
+
+/* ── Band picker ─────────────────────────────────────────────────────────── */
+.band-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+}
+
+.band-btn {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0.65rem 0.4rem;
+    border: 2px solid #e4e4e4; border-radius: 10px;
+    background: white; cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s, background 0.15s;
+    gap: 0.15rem;
+}
+.band-btn:hover {
+    border-color: var(--bc);
+    transform: translateY(-2px);
+    background: #fafafa;
+}
+.band-btn.selected {
+    border-color: var(--bc);
+    background: #f8f8f8;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+.band-score { font-size: 1.1rem; font-weight: 800; color: var(--bc); }
+.band-label { font-size: 0.73rem; font-weight: 600; color: #555; text-align: center; }
+
+/* ── Results ─────────────────────────────────────────────────────────────── */
+.self-results { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.self-result-top {
+    display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.self-wheel-wrap { flex-shrink: 0; }
+
+.self-result-meta { flex: 1; padding-top: 0.25rem; }
+.self-result-name { font-size: 1.35rem; font-weight: 800; color: #111; margin-bottom: 0.2rem; }
+.self-result-type { color: #888; font-size: 0.88rem; margin-bottom: 0.9rem; }
+.self-total-row { display: flex; align-items: baseline; gap: 0.3rem; flex-wrap: wrap; }
+.self-total-num { font-size: 2.8rem; font-weight: 900; color: #ff6600; line-height: 1; }
+.self-total-max { font-size: 1rem; color: #aaa; }
+.self-overall-band { font-size: 0.78rem; font-weight: 700; color: white; border-radius: 12px; padding: 0.2rem 0.6rem; margin-left: 0.4rem; }
+.self-comp { font-size: 0.88rem; font-weight: 600; margin: 0.4rem 0 0; }
+
+.self-cat-scores { display: flex; flex-direction: column; gap: 0.45rem; }
+.self-cat-row {
+    display: grid;
+    grid-template-columns: 22px 1fr 120px 42px 96px;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.86rem;
+}
+.self-cat-icon { text-align: center; }
+.self-cat-name { color: #333; font-weight: 500; }
+.self-bar-track { background: #f0f0f0; border-radius: 4px; height: 7px; }
+.self-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.self-cat-pts { font-weight: 700; text-align: right; }
+.self-band-chip { font-size: 0.7rem; font-weight: 700; color: white; border-radius: 10px; padding: 0.15rem 0.45rem; text-align: center; }
+
+.self-result-actions {
+    display: flex; gap: 0.7rem; justify-content: center;
+    padding-top: 0.75rem; border-top: 1px solid #f0f0f0;
+}
+
+/* ── Print / PDF ─────────────────────────────────────────────────────────── */
+@media print {
+    body > *:not(.self-overlay) { display: none !important; }
+    .self-overlay {
+        position: static !important;
+        background: none !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+    .self-card {
+        max-height: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    .self-header, .self-progress-track, .self-footer,
+    .self-close, .self-result-actions, .self-body > *:not(.self-results) { display: none !important; }
+    .self-body { overflow: visible !important; padding: 0 !important; }
+    .self-results { gap: 0.75rem; }
+    .self-result-top { page-break-inside: avoid; }
+    .self-step-label { display: block; font-size: 1.2rem; padding: 0.75rem 0; border-bottom: 2px solid #ff6600; margin-bottom: 0.75rem; }
+}

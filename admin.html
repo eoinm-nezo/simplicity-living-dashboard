@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="css/admin.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script src="js/simplicity-db.js"></script>
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Password gate (UI-only, not real security) -->
     <div id="adminGate" class="admin-gate">
         <div class="admin-gate-card">
-            <div class="admin-gate-logo"><span>%</span> Simplicity Living</div>
+            <div class="admin-gate-logo"><img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" style="height:40px;"></div>
             <h2>Admin Access</h2>
             <p>Enter the admin password to manage project data.</p>
             <input type="password" id="gatePassword" placeholder="Password" onkeydown="if(event.key==='Enter')checkGate()">
@@ -27,8 +28,7 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
-                <span class="logo-symbol">%</span>
-                <span>Simplicity Living</span>
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -40,6 +40,7 @@
                 <li><a href="scoring.html">Scoring</a></li>
                 <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
             </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
         </div>
     </nav>
 
@@ -120,5 +121,7 @@
     </footer>
 
     <script src="js/admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 </body>
 </html>

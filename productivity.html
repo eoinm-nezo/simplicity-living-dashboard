@@ -6,14 +6,14 @@
     <title>Site Activity & Productivity - Simplicity Living</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/productivity.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
-                <span class="logo-symbol">%</span>
-                <span>Simplicity Living</span>
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -25,6 +25,7 @@
                 <li><a href="scoring.html">Scoring</a></li>
                 <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
             </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
         </div>
     </nav>
 
@@ -320,5 +321,7 @@
             </a>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 </body>
 </html>

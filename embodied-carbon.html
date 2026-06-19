@@ -8,14 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script src="js/simplicity-db.js"></script>
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
-                <span class="logo-symbol">%</span>
-                <span>Simplicity Living</span>
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -27,6 +27,7 @@
                 <li><a href="scoring.html">Scoring</a></li>
                 <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
             </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
         </div>
     </nav>
 
@@ -41,7 +42,7 @@
         <section class="section">
             <h2 class="section-title">Project Carbon Assessment</h2>
             <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
-                Our embodied carbon analysis uses <strong>Nezo App</strong>, a leading carbon assessment platform, to track and analyze the carbon footprint of materials and construction processes across all Simplicity projects. This comprehensive assessment covers stages A1-A3 (product and manufacturing) and A4-A5 (transport and construction).
+                Our embodied carbon analysis uses <strong>Nezo App</strong>, a leading carbon assessment platform, to track and analyze the carbon footprint of materials and construction processes across all Simplicity projects. This comprehensive assessment covers stages A1-A3 (product and manufacturing).
             </p>
             <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
                 The interactive assessment below provides detailed insights into our carbon reduction strategies and demonstrates how Simplicity's in-situ concrete methodology delivers superior carbon performance compared to traditional construction methods.
@@ -612,5 +613,7 @@
             selectLcaProject(rows.length - 1);
         }).catch(err => console.warn('LCA DB load failed, using built-in data:', err));
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 </body>
 </html>

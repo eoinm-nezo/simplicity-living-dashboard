@@ -1,0 +1,151 @@
+/* Auth — nav badge + sign-in modal */
+
+/* ── Nav badge ────────────────────────────────────────────────────────────── */
+.auth-nav-badge { position: relative; flex-shrink: 0; }
+
+.auth-signin-btn {
+    background: #ff6600; color: white; border: none;
+    padding: 0.45rem 1.1rem; border-radius: 20px;
+    font-size: 0.88rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+}
+.auth-signin-btn:hover { background: #e55500; }
+
+.auth-user-wrap { position: relative; }
+
+.auth-avatar-btn {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: none; border: 1.5px solid #e0e0e0;
+    border-radius: 20px; padding: 0.3rem 0.75rem 0.3rem 0.35rem;
+    cursor: pointer; font-size: 0.88rem; color: #333;
+    transition: border-color 0.15s, background 0.15s;
+}
+.auth-avatar-btn:hover { border-color: #ff6600; background: #fff8f5; }
+
+.auth-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #ff6600; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+}
+.auth-display-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auth-chevron { font-size: 0.7rem; color: #999; }
+
+.auth-dropdown {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: white; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    border: 1px solid #eee; min-width: 200px;
+    z-index: 1500; overflow: hidden;
+}
+.auth-dd-email {
+    padding: 0.7rem 1rem; font-size: 0.8rem; color: #888;
+    border-bottom: 1px solid #f0f0f0; word-break: break-all;
+}
+.auth-dd-btn {
+    display: block; width: 100%; text-align: left;
+    padding: 0.65rem 1rem; background: none; border: none;
+    font-size: 0.9rem; color: #333; cursor: pointer;
+}
+.auth-dd-btn:hover { background: #fff5f0; color: #ff6600; }
+
+/* ── Modal overlay ────────────────────────────────────────────────────────── */
+.auth-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 3000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+}
+
+.auth-card {
+    background: white; border-radius: 16px;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    overflow: hidden;
+}
+
+.auth-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid #f5f5f5;
+}
+.auth-logo { height: 36px; width: auto; }
+.auth-x {
+    background: none; border: none; font-size: 1.1rem;
+    cursor: pointer; color: #aaa; padding: 0.2rem 0.5rem; border-radius: 6px;
+}
+.auth-x:hover { background: #f5f5f5; color: #333; }
+
+.auth-tabs {
+    display: flex; border-bottom: 1px solid #f0f0f0;
+}
+.auth-tab {
+    flex: 1; padding: 0.75rem; background: none; border: none;
+    font-size: 0.9rem; font-weight: 600; color: #aaa; cursor: pointer;
+    border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
+}
+.auth-tab.active { color: #ff6600; border-bottom-color: #ff6600; }
+
+.auth-msg {
+    margin: 0.5rem 1.5rem 0; font-size: 0.85rem;
+    min-height: 1.2em; border-radius: 6px; padding: 0;
+}
+.auth-msg.error   { color: #dc3545; }
+.auth-msg.success { color: #28a745; }
+.auth-msg.info    { color: #888; }
+
+#auth-form-signin, #auth-form-signup {
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+}
+
+.auth-lbl {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    font-size: 0.85rem; font-weight: 600; color: #444;
+}
+.auth-inp {
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 0.95rem; font-family: inherit;
+    transition: border-color 0.15s;
+}
+.auth-inp:focus { outline: none; border-color: #ff6600; }
+
+.auth-submit {
+    width: 100%; padding: 0.7rem;
+    background: #ff6600; color: white; border: none;
+    border-radius: 8px; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; margin-top: 0.25rem;
+    transition: background 0.15s;
+}
+.auth-submit:hover { background: #e55500; }
+
+/* ── Your Assessments panel (scoring page) ────────────────────────────────── */
+.your-assessments {
+    margin-top: 1.5rem;
+    background: #fff8f5; border: 1px solid #ffe0cc;
+    border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.your-assessments h3 { font-size: 1rem; color: #cc4400; margin: 0 0 0.75rem; }
+.your-assess-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.55rem 0; border-bottom: 1px solid #ffe0cc; font-size: 0.88rem;
+}
+.your-assess-row:last-child { border-bottom: none; }
+.your-assess-name { font-weight: 600; color: #333; }
+.your-assess-meta { color: #888; font-size: 0.8rem; }
+.your-assess-score { font-weight: 700; color: #ff6600; }
+.your-assess-del {
+    background: none; border: none; color: #ccc;
+    cursor: pointer; font-size: 1rem; padding: 0 0.3rem;
+}
+.your-assess-del:hover { color: #dc3545; }
+.your-assess-login {
+    text-align: center; color: #888; font-size: 0.9rem; padding: 0.5rem 0;
+}
+.your-assess-login button {
+    background: none; border: none; color: #ff6600;
+    font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    text-decoration: underline;
+}

@@ -10,14 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script src="js/simplicity-db.js"></script>
     <script src="js/scoring-criteria.js"></script>
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
-                <span class="logo-symbol">%</span>
-                <span>Simplicity Living</span>
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -29,6 +29,7 @@
                 <li><a href="scoring.html" class="active">Scoring</a></li>
                 <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
             </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
         </div>
     </nav>
 
@@ -55,6 +56,17 @@
                     Switch to <strong>Detailed Results</strong> to expand any category and see exactly what it's scored on and why.
                     The <strong>14 remaining rating credits</strong> &mdash; where Simplicity hits full marks by default &mdash; are shown further down the page.
                 </p>
+            </div>
+            <div style="text-align:center; margin-top:1.5rem;">
+                <button class="btn-score-self" onclick="openSelfScorer()">✏️ Score Your Project</button>
+            </div>
+        </section>
+
+        <!-- Your saved assessments -->
+        <section class="section">
+            <h2 class="section-title">Your Assessments</h2>
+            <div class="your-assessments" id="yourAssessmentsPanel">
+                <div class="your-assess-login"><p>Loading…</p></div>
             </div>
         </section>
 
@@ -132,6 +144,26 @@
         </section>
     </div>
 
+    <!-- Score Your Project modal -->
+    <div id="selfScorerOverlay" class="self-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="selfStepLabel">
+        <div class="self-card">
+            <div class="self-header">
+                <span id="selfStepLabel" class="self-step-label">Your Project</span>
+                <button class="self-close" onclick="closeSelfScorer()" title="Close">✕</button>
+            </div>
+            <div class="self-progress-track">
+                <div class="self-progress-fill" id="selfProgress"></div>
+            </div>
+            <div class="self-body" id="selfScorerBody">
+                <!-- rendered by scoring-self.js -->
+            </div>
+            <div class="self-footer" id="selfFooter">
+                <button class="self-btn secondary" id="selfBackBtn" onclick="selfGoBack()" style="visibility:hidden;">← Back</button>
+                <button class="self-btn primary"   id="selfNextBtn" onclick="selfGoNext()">Start Scoring →</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Sustainable Transport map overlay -->
     <div id="transportMapOverlay" class="map-overlay" style="display:none;">
         <div class="map-overlay-inner">
@@ -152,5 +184,8 @@
     </footer>
 
     <script src="js/scoring-view.js"></script>
+    <script src="js/scoring-self.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 </body>
 </html>

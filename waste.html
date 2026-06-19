@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="css/waste.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script src="js/simplicity-db.js"></script>
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
-                <span class="logo-symbol">%</span>
-                <span>Simplicity Living</span>
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -27,6 +27,7 @@
                 <li><a href="scoring.html">Scoring</a></li>
                 <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
             </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
         </div>
     </nav>
 
@@ -289,5 +290,7 @@
             });
         }).catch(err => console.warn('Waste DB load failed, keeping static cards:', err));
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 </body>
 </html>
