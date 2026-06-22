@@ -59,21 +59,15 @@
             <div class="download-section">
                 <h3 style="margin-bottom: 1.5rem; color: #333;">Download Model Files</h3>
                 <div class="download-links">
-                    <a href="https://energyplus.net/" target="_blank" class="download-link">
-                        <img src="https://energyplus.net/sites/all/themes/nrel_bootstrap/img/ep-logo.svg" 
-                             alt="EnergyPlus" 
-                             style="height: 60px; margin-bottom: 1rem;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <span style="display:none; font-size: 2rem;">⚡</span>
-                        <p style="margin: 0; font-weight: bold;">EnergyPlus Files</p>
+                    <a href="assets/downloads/simplicity-energyplus-model.pdf" target="_blank" class="download-link" download>
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">⚡</span>
+                        <p style="margin: 0 0 0.25rem; font-weight: bold;">Assumed Energy Benchmark</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
                     </a>
-                    <a href="https://openstudio.net/" target="_blank" class="download-link">
-                        <img src="https://openstudio.net/assets/img/logo.png" 
-                             alt="OpenStudio" 
-                             style="height: 60px; margin-bottom: 1rem;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <span style="display:none; font-size: 2rem;">🏢</span>
-                        <p style="margin: 0; font-weight: bold;">OpenStudio Files</p>
+                    <a href="assets/downloads/simplicity-openstudio-model.pdf" target="_blank" class="download-link" download>
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">🏢</span>
+                        <p style="margin: 0 0 0.25rem; font-weight: bold;">Nezo Energy Modelling Guide</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
                     </a>
                 </div>
             </div>
@@ -85,9 +79,14 @@
             <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
                 Interactive 3D visualization of the building model geometry, thermal zones, and surface properties.
             </p>
+            <div class="building-selector" id="modelSelector" style="margin-bottom: 1rem;">
+                <button type="button" class="building-btn active" data-model="assets/openstudio/openstudio-model.html" onclick="selectModel(this)">Waiatarua<small>Remuera</small></button>
+                <button type="button" class="building-btn" data-model="assets/openstudio/openstudio-model-northcote.html" onclick="selectModel(this)">Lake Road<small>Northcote</small></button>
+            </div>
             <div class="iframe-container">
-                <iframe 
-                    src="assets/openstudio/openstudio-model.html" 
+                <iframe
+                    id="modelFrame"
+                    src="assets/openstudio/openstudio-model.html"
                     title="OpenStudio 3D Model Viewer">
                 </iframe>
             </div>
@@ -200,6 +199,13 @@
         </div>
     </footer>
 
+    <script>
+        function selectModel(btn) {
+            document.querySelectorAll('#modelSelector .building-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('modelFrame').src = btn.dataset.model;
+        }
+    </script>
     <script src="js/energy.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
