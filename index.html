@@ -7,6 +7,137 @@
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/auth.css">
+    <style>
+        /* ── Performance Overview toggle ───────────────────────────────── */
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-header-row .section-title { margin-bottom: 0; }
+        .view-tabs {
+            display: flex;
+            gap: 3px;
+            background: #f0f0f0;
+            padding: 4px;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+        .view-tab {
+            background: none;
+            border: none;
+            padding: 0.4rem 1.1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #aaa;
+            transition: all 0.2s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .view-tab.active { background: white; color: #333; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+        .view-tab:hover:not(.active) { color: #555; }
+
+        /* ── LCA table ─────────────────────────────────────────────────── */
+        .lca-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+        .lca-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .lca-table th, .lca-table td {
+            padding: 0.55rem 0.85rem;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        .lca-table th:first-child, .lca-table td:first-child {
+            text-align: left;
+            min-width: 210px;
+        }
+        .lca-table thead th {
+            background: #f5f5f5;
+            font-size: 0.74rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            font-weight: 700;
+        }
+        .lca-table thead th:first-child { text-align: left; }
+        .lca-table .col-bench { color: #999; }
+        .lca-desc { font-size: 0.74rem; color: #bbb; display: block; margin-top: 2px; line-height: 1.3; }
+        .lca-est  { color: #f9a825; font-weight: 700; }
+        .lca-table .better { background: #f1f8f2; color: #2e7d32; font-weight: 600; }
+        .lca-table .worse  { background: #fff3f3; color: #c62828; font-weight: 600; }
+        .lca-table tfoot td {
+            font-weight: 700;
+            border-top: 2px solid #ddd;
+            border-bottom: none;
+            background: #fafafa;
+        }
+        .saving-pill {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 10px;
+            padding: 1px 7px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+        .lca-note {
+            font-size: 0.75rem;
+            color: #bbb;
+            margin-top: 0.75rem;
+            line-height: 1.5;
+        }
+
+        /* ── Report download card (matches energy page download-link) ───── */
+        .report-download {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 1.5rem 1.75rem;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .report-download:hover {
+            background: white;
+            border-color: #ff6600;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        .report-download .rd-icon {
+            font-size: 2.6rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .report-download .rd-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.15rem; }
+        .report-download .rd-sub { font-size: 0.85rem; color: #888; line-height: 1.45; }
+        .report-download .rd-cta {
+            margin-left: auto;
+            flex-shrink: 0;
+            background: #ff6600;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.55rem 1.3rem;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+        .report-download:hover .rd-cta { background: #cc5200; }
+        @media (max-width: 700px) {
+            .section-header-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .report-download { flex-direction: column; text-align: center; }
+            .report-download .rd-cta { margin-left: 0; }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -97,30 +228,58 @@
 
         <!-- Performance Metrics Charts -->
         <section class="section">
-            <h2 class="section-title">Project Performance Overview</h2>
-            <div class="charts-container">
-                <!-- Embodied Carbon Chart -->
-                <div class="chart-wrapper">
-                    <h3>Embodied Carbon Performance</h3>
-                    <div class="chart-canvas-container">
-                        <canvas id="carbonChart"></canvas>
+            <div class="section-header-row">
+                <h2 class="section-title">Project Performance Overview</h2>
+                <div class="view-tabs" role="tablist">
+                    <button class="view-tab active" onclick="showView('charts',this)" role="tab">Charts</button>
+                    <button class="view-tab" onclick="showView('lca',this)" role="tab">Lifecycle Overview</button>
+                </div>
+            </div>
+
+            <!-- Charts view (default) -->
+            <div id="chartsView">
+                <div class="charts-container">
+                    <!-- Embodied Carbon Chart -->
+                    <div class="chart-wrapper">
+                        <h3>Embodied Carbon Performance</h3>
+                        <div class="chart-canvas-container">
+                            <canvas id="carbonChart"></canvas>
+                        </div>
                     </div>
+
+                    <!-- Energy Usage Chart -->
+                    <div class="chart-wrapper">
+                        <h3>Energy Usage Performance</h3>
+                        <div class="toggle-container">
+                            <span>Energy (kWh)</span>
+                            <div class="toggle-switch" id="energyToggle" onclick="toggleEnergyChart()">
+                                <div class="toggle-slider"></div>
+                            </div>
+                            <span>Carbon (kgCO&#8322;e)</span>
+                        </div>
+                        <div class="chart-canvas-container">
+                            <canvas id="energyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lifecycle Overview (hidden until toggled) -->
+            <div id="lcaView" style="display:none">
+                <div id="lcaTableContainer"></div>
+                <div class="chart-canvas-container" style="height:220px;margin-top:1.75rem;">
+                    <canvas id="lcaChart"></canvas>
                 </div>
 
-                <!-- Energy Usage Chart -->
-                <div class="chart-wrapper">
-                    <h3>Energy Usage Performance</h3>
-                    <div class="toggle-container">
-                        <span>Energy (kWh)</span>
-                        <div class="toggle-switch" id="energyToggle" onclick="toggleEnergyChart()">
-                            <div class="toggle-slider"></div>
-                        </div>
-                        <span>Carbon (kgCO2e)</span>
-                    </div>
-                    <div class="chart-canvas-container">
-                        <canvas id="energyChart"></canvas>
-                    </div>
-                </div>
+                <!-- Download the full descriptive platform report -->
+                <a href="assets/reports/simplicity-platform-report.html" target="_blank" rel="noopener" class="report-download">
+                    <span class="rd-icon">&#128202;</span>
+                    <span>
+                        <span class="rd-title">The Simplicity Performance Platform: Full Report</span>
+                        <span class="rd-sub">The complete story behind these numbers: how Nezo measures embodied carbon, energy, productivity, waste, maintenance &amp; scoring across all four projects. Opens print-ready, just choose &ldquo;Save as PDF&rdquo;.</span>
+                    </span>
+                    <span class="rd-cta">View / Save PDF &rarr;</span>
+                </a>
             </div>
         </section>
     </div>

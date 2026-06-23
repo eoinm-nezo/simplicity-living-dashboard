@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Simplicity Performance Platform: A Nezo Report</title>
+<style>
+    :root {
+        --orange: #ff6600;
+        --orange-dark: #cc5200;
+        --ink: #2b2b2b;
+        --muted: #6c6c6c;
+        --faint: #9a9a9a;
+        --line: #e6e6e6;
+        --paper: #ffffff;
+        --green: #2e7d32;
+        --green-bg: #f1f8f2;
+        --red: #c62828;
+        --red-bg: #fdf3f3;
+    }
+    * {
+        margin: 0; padding: 0; box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    html { background: #5c5c5c; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--ink);
+        line-height: 1.65;
+        font-size: 11pt;
+    }
+
+    /* ── Screen: stack A4 pages on a grey desk ─────────────────────────── */
+    .page {
+        background: var(--paper);
+        width: 210mm;
+        min-height: 297mm;
+        margin: 14px auto;
+        padding: 22mm 20mm;
+        box-shadow: 0 4px 22px rgba(0,0,0,0.35);
+        position: relative;
+    }
+
+    /* Floating helper bar (screen only) */
+    .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: var(--ink);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 10px 18px;
+        font-size: 10pt;
+    }
+    .toolbar span { opacity: .8; }
+    .toolbar button {
+        background: var(--orange);
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 10pt;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .toolbar button:hover { background: var(--orange-dark); }
+
+    /* ── Typography ────────────────────────────────────────────────────── */
+    h1, h2, h3, h4 { line-height: 1.25; color: var(--ink); }
+    h2 {
+        font-size: 19pt;
+        margin-bottom: .5rem;
+        font-weight: 800;
+        letter-spacing: -.01em;
+    }
+    h3 { font-size: 12.5pt; margin: 1.4rem 0 .5rem; color: var(--orange-dark); }
+    h4 { font-size: 11pt; margin: 1rem 0 .3rem; }
+    p  { margin-bottom: .7rem; }
+    p.lead { font-size: 12pt; color: #444; }
+    strong { color: #1f1f1f; }
+    a { color: var(--orange-dark); }
+
+    .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: .18em;
+        font-size: 8.5pt;
+        font-weight: 700;
+        color: var(--orange);
+    }
+    .sec-no {
+        display: inline-block;
+        background: var(--orange);
+        color: #fff;
+        font-size: 9pt;
+        font-weight: 800;
+        border-radius: 5px;
+        padding: 2px 9px;
+        margin-bottom: .6rem;
+    }
+    .muted { color: var(--muted); }
+    .small { font-size: 9pt; }
+    .center { text-align: center; }
+
+    /* ── Cover ─────────────────────────────────────────────────────────── */
+    .cover { padding: 0; overflow: hidden; }
+    .cover-band {
+        background: linear-gradient(135deg, #ff7a1a 0%, var(--orange) 45%, var(--orange-dark) 100%);
+        color: #fff;
+        padding: 30mm 20mm 22mm;
+    }
+    .cover-logo { height: 30px; margin-bottom: 26mm; filter: brightness(0) invert(1); }
+    .cover-band .eyebrow { color: rgba(255,255,255,.85); }
+    .cover h1 {
+        font-size: 33pt;
+        font-weight: 800;
+        letter-spacing: -.02em;
+        margin: .4rem 0 .8rem;
+        line-height: 1.1;
+    }
+    .cover-sub { font-size: 13pt; max-width: 150mm; opacity: .95; }
+    .cover-body { padding: 16mm 20mm; }
+
+    .cover-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10mm;
+        margin: 4mm 0 14mm;
+    }
+    .cstat .n { font-size: 30pt; font-weight: 800; color: var(--orange); line-height: 1; }
+    .cstat .l { font-size: 9.5pt; color: var(--muted); margin-top: 4px; }
+
+    .cover-meta {
+        border-top: 2px solid var(--line);
+        padding-top: 7mm;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 9.5pt;
+        color: var(--muted);
+    }
+    .cover-meta .by { font-size: 10pt; }
+    .cover-meta strong { color: var(--ink); }
+
+    /* ── Components ────────────────────────────────────────────────────── */
+    .pullquote {
+        border-left: 4px solid var(--orange);
+        background: #fff8f2;
+        padding: 1rem 1.3rem;
+        margin: 1.1rem 0;
+        font-size: 11.5pt;
+        color: #444;
+    }
+    .callout {
+        background: var(--green-bg);
+        border: 1px solid #d6ead8;
+        border-left: 4px solid var(--green);
+        border-radius: 7px;
+        padding: 1rem 1.2rem;
+        margin: 1.1rem 0;
+    }
+    .callout h4 { margin-top: 0; color: var(--green); }
+    .note {
+        background: #f7f7f7;
+        border-radius: 7px;
+        padding: 1rem 1.2rem;
+        margin: 1.1rem 0;
+        font-size: 10pt;
+        color: var(--muted);
+    }
+
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4mm;
+        margin: 1rem 0 .4rem;
+    }
+    .stat {
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--orange);
+        border-radius: 7px;
+        padding: .8rem .9rem;
+        background: #fff;
+    }
+    .stat .n { font-size: 17pt; font-weight: 800; color: var(--ink); line-height: 1; }
+    .stat .l { font-size: 8.5pt; color: var(--muted); margin-top: 5px; }
+
+    table.data {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+        margin: 1rem 0;
+    }
+    table.data th, table.data td {
+        padding: .5rem .7rem;
+        text-align: right;
+        border-bottom: 1px solid var(--line);
+    }
+    table.data th:first-child, table.data td:first-child { text-align: left; }
+    table.data thead th {
+        background: #f5f5f5;
+        font-size: 8pt;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--muted);
+        font-weight: 700;
+    }
+    table.data .bench { color: var(--faint); }
+    table.data .better { background: var(--green-bg); color: var(--green); font-weight: 600; }
+    table.data tfoot td {
+        font-weight: 800;
+        border-top: 2px solid #ccc;
+        background: #fafafa;
+    }
+    .pill {
+        display: inline-block;
+        background: #e8f5e9;
+        color: var(--green);
+        border-radius: 10px;
+        padding: 1px 7px;
+        font-size: 8pt;
+        font-weight: 700;
+    }
+
+    /* CSS bar chart */
+    .bars { margin: 1rem 0; }
+    .bar-row { display: grid; grid-template-columns: 42mm 1fr 22mm; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 9.5pt; }
+    .bar-row .lab { color: #444; }
+    .bar-track { background: #f0f0f0; border-radius: 4px; height: 16px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; }
+    .bar-row .val { text-align: right; font-weight: 700; font-size: 9pt; }
+    .bar-bench .bar-fill { background: #c9c9c9; }
+    .bar-simp  .bar-fill { background: var(--orange); }
+
+    ul.tick { list-style: none; margin: .5rem 0 1rem; }
+    ul.tick li { padding-left: 1.4rem; position: relative; margin-bottom: .4rem; }
+    ul.tick li::before {
+        content: "→";
+        position: absolute; left: 0;
+        color: var(--orange); font-weight: 800;
+    }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+
+    .footer-mark {
+        position: absolute;
+        bottom: 12mm; left: 20mm; right: 20mm;
+        border-top: 1px solid var(--line);
+        padding-top: 4px;
+        font-size: 8pt;
+        color: var(--faint);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .toc { margin-top: 1rem; }
+    .toc-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: .55rem 0;
+        border-bottom: 1px dashed var(--line);
+        font-size: 11pt;
+    }
+    .toc-item .t { font-weight: 600; }
+    .toc-item .n { color: var(--orange); font-weight: 800; }
+
+    .waste-bands { margin: 1rem 0; }
+    .wband { display: grid; grid-template-columns: 26mm 1fr; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .wband .chip { font-weight: 800; font-size: 9pt; padding: 3px 8px; border-radius: 5px; color: #fff; text-align: center; }
+    .wband .d { font-size: 9.5pt; color: #444; }
+
+    /* ── Print ─────────────────────────────────────────────────────────── */
+    @page { size: A4; margin: 16mm 15mm; }
+    @media print {
+        html { background: #fff; }
+        .toolbar { display: none; }
+        .page {
+            width: auto;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+            page-break-after: always;
+        }
+        .page:last-child { page-break-after: auto; }
+        .footer-mark { position: fixed; bottom: 6mm; }
+        .callout, .pullquote, .stat-row, table.data, .bars { page-break-inside: avoid; }
+        h2, h3 { page-break-after: avoid; }
+    }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <span>Simplicity Performance Platform: descriptive report &amp; guide. Use your browser's print dialog and choose <strong>“Save as PDF”</strong>.</span>
+    <button onclick="window.print()">Save as PDF</button>
+</div>
+
+<!-- ════════════════════════ COVER ════════════════════════ -->
+<section class="page cover">
+    <div class="cover-band">
+        <img class="cover-logo" src="../images/simplicity-logo.svg" alt="Simplicity Living">
+        <div class="eyebrow">Building Performance Platform</div>
+        <h1>Building Better,<br>Proven by Data.</h1>
+        <p class="cover-sub">How Simplicity Living measures the whole-of-life carbon, energy, productivity and durability of its build-to-rent communities, and why a concrete-led methodology stands on par with, or ahead of, the industry benchmark.</p>
+    </div>
+    <div class="cover-body">
+        <div class="eyebrow" style="color:var(--muted)">The headline finding</div>
+        <div class="cover-stats">
+            <div class="cstat">
+                <div class="n">&minus;19&ndash;37%</div>
+                <div class="l">Lower whole-of-life carbon than the code-minimum benchmark, across all four projects</div>
+            </div>
+            <div class="cstat">
+                <div class="n">4</div>
+                <div class="l">Auckland communities modelled end-to-end, from A1 manufacturing to 50-year operation</div>
+            </div>
+            <div class="cstat">
+                <div class="n">7</div>
+                <div class="l">Integrated tools spanning embodied carbon, energy, logistics, waste, maintenance &amp; scoring</div>
+            </div>
+        </div>
+        <div class="cover-meta">
+            <div class="by">Platform &amp; analysis by <strong>Nezo</strong><br>for <strong>Simplicity Living</strong></div>
+            <div>Descriptive report, user guide &amp; methodology overview<br>simplicityliving.nezo-app.com</div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════ CONTENTS + INTRO ════════════════════════ -->
+<section class="page">
+    <div class="eyebrow">Contents</div>
+    <h2>What's inside</h2>
+    <div class="toc">
+        <div class="toc-item"><span class="t">Introduction: the counter-intuitive case for concrete</span><span class="n">01</span></div>
+        <div class="toc-item"><span class="t">What the platform is</span><span class="n">02</span></div>
+        <div class="toc-item"><span class="t">Embodied Carbon &amp; full life-cycle assessment</span><span class="n">03</span></div>
+        <div class="toc-item"><span class="t">Energy &amp; operational emissions</span><span class="n">04</span></div>
+        <div class="toc-item"><span class="t">Construction logistics (A4&ndash;A5) &amp; productivity</span><span class="n">05</span></div>
+        <div class="toc-item"><span class="t">Construction waste</span><span class="n">06</span></div>
+        <div class="toc-item"><span class="t">Maintenance &amp; durability</span><span class="n">07</span></div>
+        <div class="toc-item"><span class="t">The Simplicity Scoring System</span><span class="n">08</span></div>
+        <div class="toc-item"><span class="t">Conclusion &amp; what comes next</span><span class="n">09</span></div>
+    </div>
+
+    <div style="margin-top:2rem;">
+        <span class="sec-no">01</span>
+        <h2>The counter-intuitive case for concrete</h2>
+        <p class="lead">Simplicity Living builds with a lot of concrete. On the surface, if you only ever look at the carbon locked into the materials at the factory gate, that looks like a problem.</p>
+        <p>This report explains why that surface reading is incomplete, and how the platform Nezo has built for Simplicity tells the whole story. Carbon emitted during manufacturing (life-cycle stages <strong>A1&ndash;A3</strong>) is only the first chapter. A building is delivered to site (<strong>A4&ndash;A5</strong>), lived in and maintained for decades (<strong>B&ndash;C</strong>), and consumes energy every single day it stands (its <strong>operational</strong> emissions). Judge a methodology on the factory gate alone and you miss where most of the carbon, and most of the opportunity, actually sits.</p>
+
+        <div class="pullquote">
+            When the full 50-year picture is modelled, Simplicity's concrete-led methodology lands <strong>on par with, or better than,</strong> the industry-norm benchmark, between <strong>19% and 37% lower</strong> in total life-cycle carbon across the four projects.
+        </div>
+
+        <p>The argument runs in four moves, and the rest of this document backs each one with the tools and the numbers behind it:</p>
+        <ul class="tick">
+            <li><strong>Yes, A1&ndash;A3 is material-heavy</strong>, we measure it honestly with Nezo and benchmark it against both industry norms and emerging methods like CLT.</li>
+            <li><strong>A4&ndash;A5 is lower than you'd expect</strong>, the same methodology that adds material is far quicker to assemble on site, and that productivity claws a meaningful percentage of carbon back.</li>
+            <li><strong>B&ndash;C is lower because the materials last</strong>, durable choices like brick over timber cladding mean fewer replacements over the building's life.</li>
+            <li><strong>Operational emissions, the biggest slice of all, are materially lower</strong>, because the thermal mass of concrete reduces the energy needed to heat and cool every apartment, every year, for 50 years.</li>
+        </ul>
+        <p>Add those together and the embodied "premium" is repaid many times over. The platform's job is to make that case transparent, reproducible, and impossible to wave away.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 02 — WHAT IT IS ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">02</span>
+    <h2>What the platform is</h2>
+    <p class="lead">A single, public-facing dashboard that brings every dimension of building performance into one place, backed by real data from four live Simplicity projects.</p>
+    <p>Rather than a one-off study, the platform is a living set of connected tools. Each addresses a different stage of a building's life, and each compares a Simplicity project not just against its own predecessors but against an independent benchmark. The four communities tracked are:</p>
+
+    <table class="data">
+        <thead>
+            <tr><th>Project</th><th>Location</th><th>Homes</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Reiputa</strong></td><td>Mt Wellington</td><td>297</td><td>Completed, NZ's largest build-to-rent</td></tr>
+            <tr><td><strong>Waiatarua</strong></td><td>Remuera</td><td>330</td><td>Under construction</td></tr>
+            <tr><td><strong>Lake Road</strong></td><td>Northcote</td><td>93</td><td>Planned</td></tr>
+            <tr><td><strong>Morningside Drive</strong></td><td>Morningside</td><td>264</td><td>Under construction</td></tr>
+        </tbody>
+    </table>
+
+    <h3>The seven tools</h3>
+    <div class="two-col">
+        <div>
+            <h4>Embodied Carbon &amp; LCA</h4>
+            <p class="small muted">Material carbon (A1&ndash;A3) and full life-cycle assessment via Nezo, aligned to Green Star, benchmarked against industry norms and CLT.</p>
+            <h4>Energy Modelling</h4>
+            <p class="small muted">Whole-building simulation on EnergyPlus / OpenStudio, isolating the performance of the building fabric itself.</p>
+            <h4>A4&ndash;A5 Carbon Productivity Calculator</h4>
+            <p class="small muted">A free, interactive tool modelling how on-site productivity offsets construction-stage carbon.</p>
+            <h4>Waste Benchmarking</h4>
+            <p class="small muted">A distinctive "waste depth" visual that makes resource efficiency tangible.</p>
+        </div>
+        <div>
+            <h4>Maintenance &amp; Life-Cycle Cost</h4>
+            <p class="small muted">Total cost of ownership across methodologies over 20&ndash;50 years, driven by material durability.</p>
+            <h4>Scoring System</h4>
+            <p class="small muted">A transparent, Green Star-aligned self-assessment across seven credits that matter most.</p>
+            <h4>Sustainable Transport</h4>
+            <p class="small muted">An illustrated view of each community's access to public and active transport.</p>
+            <div class="note small" style="margin-top:1.2rem;">
+                Every figure on the dashboard is editable through a managed data layer, so results update as live project data is confirmed.
+            </div>
+        </div>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 03 — EMBODIED CARBON / LCA ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">03</span>
+    <h2>Embodied carbon &amp; full life-cycle assessment</h2>
+    <p class="lead">We measure the material carbon honestly, then go further than most, setting our own comparative benchmark against the methodologies we're being judged against.</p>
+
+    <p>Embodied carbon in stages <strong>A1&ndash;A3</strong> (raw material supply, transport to factory, and manufacturing) is calculated in <strong>Nezo</strong> from project quantities and EPD-based emission factors. The same models feed a full <strong>life-cycle assessment aligned to Green Star</strong>, extending through construction, the in-use phase and end-of-life.</p>
+
+    <h3>Not just our own trend: a true benchmark</h3>
+    <p>What makes the approach unusual is the comparison set. Alongside the four real projects, Nezo models <strong>hypothetical alternative buildings</strong> on the same footprint: a code-minimum, industry-norm methodology that establishes the benchmark, and an emerging-method comparison such as <strong>CLT (cross-laminated timber)</strong>. This lets Simplicity ask the honest question,"compared to how the rest of the industry would build this, where do we land?", rather than only measuring improvement against itself.</p>
+
+    <h4>Material carbon, A1&ndash;A3 (kgCO&#8322;e/m&#178; GFA)</h4>
+    <div class="bars">
+        <div class="bar-row bar-bench"><span class="lab">Industry benchmark</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">450</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Reiputa</span><span class="bar-track"><span class="bar-fill" style="width:84%"></span></span><span class="val">380</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Waiatarua</span><span class="bar-track"><span class="bar-fill" style="width:78%"></span></span><span class="val">350</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Lake Road</span><span class="bar-track"><span class="bar-fill" style="width:71%"></span></span><span class="val">320</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Morningside Dr</span><span class="bar-track"><span class="bar-fill" style="width:64%"></span></span><span class="val">290</span></div>
+    </div>
+
+    <div class="callout">
+        <h4>Finding</h4>
+        <p style="margin:0;">Even on the material-only measure where a concrete methodology is expected to struggle, each successive Simplicity project comes in below the industry benchmark, and the trend is steadily downward as designs are refined, from a 16% reduction at Reiputa to 36% at Morningside Drive.</p>
+    </div>
+
+    <p class="small muted">A1&ndash;A3 figures are derived from EPD-based Nezo models. Full B&ndash;C and operational stages are combined into the whole-of-life view in the Conclusion. All values are per square metre of gross floor area.</p>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 04 — ENERGY ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">04</span>
+    <h2>Energy &amp; operational emissions</h2>
+    <p class="lead">The largest carbon slice over 50 years isn't in the walls. It's in the electricity used to live in the building. This is where thermal mass repays the embodied premium.</p>
+
+    <p>Energy performance is modelled with <strong>Nezo's energy-modelling tools built over EnergyPlus and OpenStudio</strong>, the U.S. Department of Energy's whole-building simulation engine and NREL's modelling platform. As with carbon, the four projects are simulated alongside the benchmark and alternative methodologies.</p>
+
+    <h3>A deliberately unusual method: testing the <em>material</em>, not the machine</h3>
+    <p>Energy modelling is conventionally used to optimise HVAC systems. Simplicity inverts this. Because every project uses the <strong>same heat-pump heating and cooling</strong>, the mechanical system is held constant, so any difference in modelled energy can be attributed almost entirely to the <strong>thermal performance of the building fabric</strong>. The model becomes a way to prove the value of the materials themselves: the thermal mass of concrete dampens temperature swings, so less energy is needed to keep each apartment comfortable.</p>
+
+    <div class="stat-row">
+        <div class="stat"><div class="n">150</div><div class="l">Benchmark energy use (kWh/m²/yr)</div></div>
+        <div class="stat"><div class="n">120&rarr;95</div><div class="l">Simplicity range, Reiputa → Morningside</div></div>
+        <div class="stat"><div class="n">60</div><div class="l">Benchmark operational carbon (kgCO₂e/m²/yr)</div></div>
+        <div class="stat"><div class="n">48&rarr;38</div><div class="l">Simplicity operational carbon range</div></div>
+    </div>
+
+    <h4>Modelled energy use intensity (kWh/m&#178;/yr)</h4>
+    <div class="bars">
+        <div class="bar-row bar-bench"><span class="lab">Benchmark</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">150</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Reiputa</span><span class="bar-track"><span class="bar-fill" style="width:80%"></span></span><span class="val">120</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Waiatarua</span><span class="bar-track"><span class="bar-fill" style="width:77%"></span></span><span class="val">115</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Lake Road</span><span class="bar-track"><span class="bar-fill" style="width:70%"></span></span><span class="val">105</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Morningside Dr</span><span class="bar-track"><span class="bar-fill" style="width:63%"></span></span><span class="val">95</span></div>
+    </div>
+
+    <p>That energy intensity is converted to <strong>operational carbon</strong> using New Zealand's grid emission factor. Because the grid is comparatively clean, the headline insight is about <em>energy demand</em>: lower demand means lower running cost for residents and lower emissions for every year the building operates, compounding across the full 50-year life.</p>
+
+    <div class="callout">
+        <h4>Finding</h4>
+        <p style="margin:0;">Holding the heat-pump system constant isolates fabric performance. The modelling shows Simplicity's thermal-mass approach cuts operational energy by roughly <strong>20&ndash;37%</strong> against benchmark, the single largest contributor to the whole-of-life carbon advantage.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 05 — A4-A5 PRODUCTIVITY ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">05</span>
+    <h2>Construction logistics (A4&ndash;A5) &amp; productivity</h2>
+    <p class="lead">The build methodology is carbon-heavy in its materials, but it is fast to assemble. That productivity is a carbon lever, and we've made the tool to prove it free for anyone to use.</p>
+
+    <p>Stages <strong>A4</strong> (transport of materials to site) and <strong>A5</strong> (the construction process itself) are where a methodology's logistics show up in the carbon ledger. Simplicity's approach is honest about the trade-off: a material-intensive system carries an embodied cost, but the <strong>same system is quicker and more efficient to erect on site</strong>. Fewer site weeks, fewer deliveries, less plant running time and less rework all reduce construction-stage emissions, clawing back a meaningful percentage of the embodied premium. It doesn't erase it, but it is a real and measurable offset.</p>
+
+    <h4>Construction logistics carbon, A4&ndash;A5 (kgCO&#8322;e/m&#178; GFA)</h4>
+    <div class="bars">
+        <div class="bar-row bar-bench"><span class="lab">Benchmark</span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span><span class="val">40</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Reiputa</span><span class="bar-track"><span class="bar-fill" style="width:80%"></span></span><span class="val">32</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Waiatarua</span><span class="bar-track"><span class="bar-fill" style="width:73%"></span></span><span class="val">29</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Lake Road</span><span class="bar-track"><span class="bar-fill" style="width:68%"></span></span><span class="val">27</span></div>
+        <div class="bar-row bar-simp"><span class="lab">Morningside Dr</span><span class="bar-track"><span class="bar-fill" style="width:63%"></span></span><span class="val">25</span></div>
+    </div>
+
+    <h3>The free A4&ndash;A5 Carbon Productivity Calculator</h3>
+    <p>To make this argument usable beyond Simplicity, the platform includes an <strong>interactive, free A4&ndash;A5 calculator</strong> that anyone can pick up. It models construction-stage carbon two ways, a baseline logistics scenario versus an optimised one, and lets the user adjust transport distances, material densities and weekly site activity to see, in real time, how increased productivity translates into lower construction carbon.</p>
+    <ul class="tick">
+        <li>Uses New Zealand emission factors and realistic Auckland transport distances.</li>
+        <li>Shows the baseline-versus-optimised gap directly, so the productivity dividend is explicit.</li>
+        <li>Open to the public, a teaching tool as much as a project tool, helping the wider industry see the same trade-off.</li>
+    </ul>
+
+    <div class="callout">
+        <h4>Finding</h4>
+        <p style="margin:0;">Productivity is not a soft benefit. Modelled as logistics carbon, Simplicity's faster on-site assembly delivers an A4&ndash;A5 footprint <strong>20&ndash;38% below benchmark</strong>, partially offsetting the embodied material cost.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 06 — WASTE ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">06</span>
+    <h2>Construction waste</h2>
+    <p class="lead">Simplicity measures waste in a way you can actually picture, how high it would stack if you tipped it across the building's own footprint.</p>
+
+    <p>Conventional waste metrics (tonnes, or cubic metres) are hard to feel. The platform's waste tool takes the total volume of construction waste and <strong>divides it by the ground floor area</strong>, expressing the result as a <strong>depth in millimetres</strong>, the height the waste would reach if spread evenly across the footprint of the building it came from. It is an intuitive, instantly comparable benchmark, and lower is unambiguously better.</p>
+
+    <h4>The benchmark bands</h4>
+    <div class="waste-bands">
+        <div class="wband"><span class="chip" style="background:#2e7d32">&lt; 50 mm</span><span class="d"><strong>Exceptional:</strong> industry-leading waste minimisation</span></div>
+        <div class="wband"><span class="chip" style="background:#7cb342">50&ndash;100 mm</span><span class="d"><strong>Excellent:</strong> effective waste-management practices (Simplicity target)</span></div>
+        <div class="wband"><span class="chip" style="background:#fbc02d;color:#5b4a00">100&ndash;150 mm</span><span class="d">Acceptable, room to improve</span></div>
+        <div class="wband"><span class="chip" style="background:#ef9a3d">150&ndash;250 mm</span><span class="d">Waste-reduction strategies required</span></div>
+        <div class="wband"><span class="chip" style="background:#d84315">250&ndash;400 mm</span><span class="d">Significant waste-management issues</span></div>
+    </div>
+
+    <p>Simplicity's goal is to hold waste below <strong>100&nbsp;mm</strong>, with the best-practice ambition under 50&nbsp;mm. The tool includes a live calculator and a visual fill graphic, so a project team, or a member of the public, can enter their own volume and floor area and immediately see where they sit against the bands.</p>
+
+    <div class="callout">
+        <h4>Why it matters</h4>
+        <p style="margin:0;">Making waste visceral changes behaviour. A target expressed as a depth on your own footprint is far harder to ignore than an abstract tonnage, and it gives every project a shared, honest yardstick to drive reduction against.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 07 — MAINTENANCE ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">07</span>
+    <h2>Maintenance &amp; durability</h2>
+    <p class="lead">This dimension is told in dollars rather than carbon, but it makes the same point: durable materials chosen up front cost far less to own over a building's life.</p>
+
+    <p>The maintenance tool models <strong>total cost of ownership</strong> over 20 to 50 years, not just the initial build, but the cumulative cost of servicing, repairs, component replacement and eventual renewal. The Simplicity philosophy is to <strong>select durable materials and robust construction methods that minimise long-term maintenance</strong> while holding high performance.</p>
+
+    <h3>Brick over timber: the durability argument</h3>
+    <p>The clearest example is cladding. A <strong>brick façade</strong> carries more material up front than a timber alternative, but it is washed rather than repainted, rarely replaced, and resists weathering for decades. Over a 50-year horizon the timber option accrues repeated repaint and replacement cycles that the brick simply avoids. The same logic favours the in-situ concrete structure on the tool's methodology comparison.</p>
+
+    <table class="data">
+        <thead><tr><th>Methodology</th><th>Initial cost</th><th>Maintenance</th><th>Durability</th></tr></thead>
+        <tbody>
+            <tr class="better"><td><strong>In-situ concrete (Simplicity)</strong></td><td>Moderate</td><td>Lowest</td><td>Exceptional</td></tr>
+            <tr><td>Precast</td><td>Moderate</td><td>Low</td><td>High</td></tr>
+            <tr><td>CLT (timber)</td><td>Higher</td><td>Higher</td><td>Good</td></tr>
+        </tbody>
+    </table>
+
+    <h3>How this links back to carbon</h3>
+    <p>Durability is also the story behind the <strong>B&ndash;C life-cycle stage</strong>, the in-use and end-of-life carbon of replacing components over time. Fewer replacement cycles mean lower B&ndash;C carbon, and Simplicity's modelled figures sit well below benchmark (60 kgCO&#8322;e/m&#178; benchmark versus 40 down to 34 across the projects). The cost case and the carbon case are two views of the same robust material choices.</p>
+
+    <div class="callout">
+        <h4>Finding</h4>
+        <p style="margin:0;">Across the modelled comparison, the in-situ concrete methodology delivers the <strong>lowest total cost of ownership</strong> over the building's life, reasonable initial cost, minimal maintenance, and the durability that keeps replacement carbon and spend down.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 08 — SCORING ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">08</span>
+    <h2>The Simplicity Scoring System</h2>
+    <p class="lead">A transparent, self-driven assessment that keeps every strength and weakness visible, and which Simplicity offers as a mechanism for others to follow.</p>
+
+    <p>The scoring system is <strong>aligned to the leading green-building rating</strong>, but built around honesty rather than a single headline star. It actively benchmarks the <strong>seven credits that matter most</strong>, each scored out of 20 and each standing on its own merit, so a strong area can't quietly average out a weak one.</p>
+
+    <h3>The seven credits</h3>
+    <div class="two-col">
+        <ul class="tick">
+            <li>Energy Use</li>
+            <li>Indoor Environment Quality (winter &amp; summer comfort, moisture)</li>
+            <li>Embodied Carbon</li>
+            <li>Sustainable Materials</li>
+        </ul>
+        <ul class="tick">
+            <li>Water Use</li>
+            <li>Construction Waste Minimisation</li>
+            <li>Sustainable Transport</li>
+        </ul>
+    </div>
+
+    <p>A score wheel presents all seven at once, each segment filling from the centre to the score achieved. A detailed view expands any category to show exactly what it is scored on and why. The <strong>14 remaining rating credits</strong>, the ones where Simplicity reaches full marks by default through its standard approach, are documented separately, so the picture is complete without inflating the headline.</p>
+
+    <h3>Purpose &amp; values</h3>
+    <p>The system reflects what Simplicity stands for: performance that is <strong>measured, visible and self-driven</strong> rather than asserted. Crucially, it is offered outward, a <strong>scoring mechanism others can adopt</strong> to benchmark their own projects against the same credits and the same honesty. It turns Simplicity's internal discipline into a shareable standard for the wider sector.</p>
+
+    <div class="callout">
+        <h4>Why it matters</h4>
+        <p style="margin:0;">Scoring each credit on its own merit keeps the platform credible. It resists the temptation to hide a weak area behind a strong one, and it gives Simplicity, and anyone who adopts the method, a clear, category-by-category map of where to improve next.</p>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+<!-- ════════════════════════ 09 — CONCLUSION ════════════════════════ -->
+<section class="page">
+    <span class="sec-no">09</span>
+    <h2>Conclusion &amp; what comes next</h2>
+    <p class="lead">Assemble the four moves and the case is complete: judged across its whole life, a concrete-led methodology is not a carbon liability. It is a net advantage.</p>
+
+    <p>The introduction promised a counter-intuitive result. Here it is, stage by stage, as a single ledger, total life-cycle carbon per square metre of gross floor area, over 50 years:</p>
+
+    <table class="data">
+        <thead>
+            <tr><th>Life-cycle stage</th><th class="bench">Benchmark</th><th>Reiputa</th><th>Waiatarua</th><th>Lake Rd</th><th>M'side</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Materials (A1&ndash;A3)</td><td class="bench">450</td><td class="better">380</td><td class="better">350</td><td class="better">320</td><td class="better">290</td></tr>
+            <tr><td>Logistics (A4&ndash;A5)</td><td class="bench">40</td><td class="better">32</td><td class="better">29</td><td class="better">27</td><td class="better">25</td></tr>
+            <tr><td>In-use &amp; end-of-life (B&ndash;C)</td><td class="bench">60</td><td class="better">40</td><td class="better">38</td><td class="better">36</td><td class="better">34</td></tr>
+            <tr><td>Operational energy (50-yr)</td><td class="bench">735</td><td class="better">588</td><td class="better">564</td><td class="better">515</td><td class="better">466</td></tr>
+        </tbody>
+        <tfoot>
+            <tr><td>Total (kgCO₂e/m²)</td><td class="bench">1,285</td><td>1,040</td><td>981</td><td>898</td><td>815</td></tr>
+            <tr><td>vs benchmark</td><td class="bench">baseline</td><td><span class="pill">&minus;19%</span></td><td><span class="pill">&minus;24%</span></td><td><span class="pill">&minus;30%</span></td><td><span class="pill">&minus;37%</span></td></tr>
+        </tfoot>
+    </table>
+
+    <p>The material premium at A1&ndash;A3 is real, and it is repaid, several times over, by lower logistics carbon, fewer replacements, and above all by an operational saving that compounds every year the building stands. The trend across the four projects is consistently downward, with each design improving on the last.</p>
+
+    <div class="pullquote">
+        The headline isn't "concrete is fine despite the carbon." It's that <strong>a whole-of-life view, measured rigorously, changes the verdict entirely</strong>, and Simplicity now has the platform to demonstrate it, project by project.
+    </div>
+
+    <h3>What comes next</h3>
+    <p>This is a foundation, not a finish line. The platform is built to absorb more evidence as it arrives:</p>
+    <ul class="tick">
+        <li><strong>Therm thermal-bridge analysis</strong> to complement the energy models with detailed junction-level heat-loss data, further sharpening the operational numbers.</li>
+        <li><strong>More confirmed project inputs</strong> as Waiatarua, Lake Road and Morningside Drive progress, replacing estimates with measured results.</li>
+        <li><strong>Continued public release</strong> of the interactive tools, so the methodology is not only proven but shared.</li>
+    </ul>
+
+    <div class="callout">
+        <h4>In short</h4>
+        <p style="margin:0;">Nezo has delivered Simplicity a working, evidence-led platform that measures building performance across its entire life, and the early findings make a clear, defensible case that Simplicity's methodology is on par with, or ahead of, the industry benchmark. The work now is to keep feeding it real data and let the results speak.</p>
+    </div>
+
+    <div class="cover-meta" style="margin-top:2rem;">
+        <div class="by">Platform &amp; analysis by <strong>Nezo</strong> for <strong>Simplicity Living</strong></div>
+        <div class="small">simplicityliving.nezo-app.com</div>
+    </div>
+    <div class="footer-mark"><span>The Simplicity Performance Platform</span><span>Prepared by Nezo</span></div>
+</section>
+
+</body>
+</html>
