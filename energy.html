@@ -40,32 +40,31 @@
 
     <!-- Main Content -->
     <div class="container">
-        <!-- Introduction to OpenStudio -->
+
+        <!-- 1. About OpenStudio & EnergyPlus -->
         <section class="section">
-            <h2 class="section-title">About OpenStudio & EnergyPlus</h2>
+            <h2 class="section-title">About OpenStudio &amp; EnergyPlus</h2>
             <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
                 <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    <strong>OpenStudio</strong> is an open-source, cross-platform software development kit (SDK) for building energy modeling (BEM). Developed by the U.S. Department of Energy's National Renewable Energy Laboratory (NREL), OpenStudio provides a comprehensive platform for creating and analyzing whole-building energy models.
+                    <strong>OpenStudio</strong> is an open-source, cross-platform software development kit (SDK) for building energy modeling (BEM). Developed by the U.S. Department of Energy's National Renewable Energy Laboratory (NREL), OpenStudio provides a comprehensive platform for creating and analysing whole-building energy models.
                 </p>
                 <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
                     <strong>EnergyPlus</strong> is DOE's state-of-the-art whole-building energy simulation engine that powers OpenStudio. It calculates heating, cooling, lighting, ventilation, and other energy flows in buildings, providing detailed insights into building performance.
                 </p>
                 <p style="font-size: 1.1rem; line-height: 1.8;">
-                    Our Simplicity projects use these industry-leading tools to optimize building design for energy efficiency while maintaining comfort and functionality.
+                    Our Simplicity projects use these industry-leading tools to optimise building design for energy efficiency while maintaining comfort and functionality.
                 </p>
             </div>
-
-            <!-- Download Links -->
             <div class="download-section">
                 <h3 style="margin-bottom: 1.5rem; color: #333;">Download Model Files</h3>
                 <div class="download-links">
                     <a href="assets/downloads/simplicity-energyplus-model.pdf" target="_blank" class="download-link" download>
-                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">⚡</span>
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">&#9889;</span>
                         <p style="margin: 0 0 0.25rem; font-weight: bold;">Assumed Energy Benchmark</p>
                         <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
                     </a>
                     <a href="assets/downloads/simplicity-openstudio-model.pdf" target="_blank" class="download-link" download>
-                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">🏢</span>
+                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">&#127970;</span>
                         <p style="margin: 0 0 0.25rem; font-weight: bold;">Nezo Energy Modelling Guide</p>
                         <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
                     </a>
@@ -73,32 +72,12 @@
             </div>
         </section>
 
-        <!-- OpenStudio Model Viewer -->
-        <section class="section">
-            <h2 class="section-title">3D Building Model</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                Interactive 3D visualization of the building model geometry, thermal zones, and surface properties.
-            </p>
-            <div class="building-selector" id="modelSelector" style="margin-bottom: 1rem;">
-                <button type="button" class="building-btn active" data-model="assets/openstudio/openstudio-model.html" onclick="selectModel(this)">Waiatarua<small>Remuera</small></button>
-                <button type="button" class="building-btn" data-model="assets/openstudio/openstudio-model-northcote.html" onclick="selectModel(this)">Lake Road<small>Northcote</small></button>
-            </div>
-            <div class="iframe-container">
-                <iframe
-                    id="modelFrame"
-                    src="assets/openstudio/openstudio-model.html"
-                    title="OpenStudio 3D Model Viewer">
-                </iframe>
-            </div>
-        </section>
-
-        <!-- Energy Analysis Graphs: methodology benchmark -->
+        <!-- 2. Energy Performance Comparison (moved up) -->
         <section class="section">
             <h2 class="section-title">Energy Performance Comparison</h2>
             <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
                 We benchmark a typical Simplicity build against traditional methodologies in terms of energy consumption and cost. <strong>Lake Road, Northcote</strong> is used as the example Simplicity Building, compared against a code-minimum baseline, an enhanced standard (better insulation and windows), and a CLT building.
             </p>
-
             <div class="charts-container">
                 <div class="chart-wrapper">
                     <h3>Methodology Comparison &mdash; Energy Consumption</h3>
@@ -113,21 +92,19 @@
                     </div>
                 </div>
             </div>
-
             <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; border-left: 4px solid #28a745;">
                 <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
-                    <strong>Key Finding:</strong> The Simplicity build system demonstrates the most cost-effective and energy-efficient balance when considering both initial construction and operational performance. Our in-situ concrete approach provides superior thermal mass benefits while minimizing construction complexity.
+                    <strong>Key Finding:</strong> The Simplicity build system demonstrates the most cost-effective and energy-efficient balance when considering both initial construction and operational performance. Our in-situ concrete approach provides superior thermal mass benefits while minimising construction complexity.
                 </p>
             </div>
         </section>
 
-        <!-- Energy Analysis Graphs: project-vs-project comparison -->
+        <!-- 3. Simplicity Projects Compared (moved up) -->
         <section class="section">
             <h2 class="section-title">Simplicity Projects Compared</h2>
             <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
                 The same comparison repeated across our four projects &mdash; Reiputa, Waiatarua, Lake Road and Morningside Drive &mdash; showing how each successive design improves on the last. Results come from the OpenStudio energy simulations of the actual projects (entered via the Admin page).
             </p>
-
             <div class="charts-container">
                 <div class="chart-wrapper">
                     <h3>Project Comparison &mdash; Energy Consumption</h3>
@@ -144,7 +121,370 @@
             </div>
         </section>
 
-        <!-- Detailed Energy Report -->
+        <!-- 4. 3D Building Model -->
+        <section class="section">
+            <h2 class="section-title">3D Building Model</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                Interactive 3D visualisation of the building model geometry, thermal zones, and surface properties.
+            </p>
+            <div class="building-selector" id="modelSelector" style="margin-bottom: 1rem;">
+                <button type="button" class="building-btn active" data-model="assets/openstudio/openstudio-model.html" onclick="selectModel(this)">Waiatarua<small>Remuera</small></button>
+                <button type="button" class="building-btn" data-model="assets/openstudio/openstudio-model-northcote.html" onclick="selectModel(this)">Lake Road<small>Northcote</small></button>
+            </div>
+            <div class="iframe-container">
+                <iframe id="modelFrame" src="assets/openstudio/openstudio-model.html" title="OpenStudio 3D Model Viewer"></iframe>
+            </div>
+        </section>
+
+        <!-- 5. Apartment Energy Deep Dive + Thermal Analysis -->
+        <section class="section">
+            <h2 class="section-title">Apartment Energy Breakdown &amp; Thermal Analysis</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
+                A single <strong>Northcote N12</strong> apartment (~65&nbsp;m&#178;) as the unit of analysis &mdash; showing where electricity is consumed, what that means in operational carbon, and how the choice of building fabric (in-situ concrete vs CLT) changes the heating and cooling load over the building&rsquo;s life.
+            </p>
+
+            <!-- Floor plan + appliance charts -->
+            <div class="deep-dive-grid">
+
+                <!-- Annotated floor plan -->
+                <div class="floor-plan-card">
+                    <h3>Typical Apartment Layout &mdash; Energy Hotspots</h3>
+                    <svg viewBox="0 0 540 330" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+                        <defs>
+                            <filter id="pinShadow" x="-40%" y="-40%" width="180%" height="180%">
+                                <feDropShadow dx="0" dy="1" stdDeviation="2.5" flood-opacity="0.3"/>
+                            </filter>
+                        </defs>
+                        <!-- Exterior wall mass -->
+                        <rect x="0" y="0" width="540" height="330" rx="4" fill="#c5c0b8"/>
+                        <!-- Room fills -->
+                        <rect x="12" y="12" width="320" height="190" fill="#f5f1eb"/>
+                        <rect x="338" y="12" width="190" height="190" fill="#fdf8ef"/>
+                        <rect x="12" y="208" width="200" height="110" fill="#eef4ee"/>
+                        <rect x="218" y="208" width="156" height="110" fill="#eef4ee"/>
+                        <rect x="380" y="208" width="72" height="110" fill="#eaf3f8"/>
+                        <rect x="458" y="208" width="70" height="110" fill="#eaf3f8"/>
+                        <!-- Interior walls -->
+                        <rect x="332" y="12" width="6" height="190" fill="#aaa"/>
+                        <rect x="12" y="202" width="516" height="6" fill="#aaa"/>
+                        <rect x="212" y="208" width="6" height="110" fill="#aaa"/>
+                        <rect x="374" y="208" width="6" height="110" fill="#aaa"/>
+                        <rect x="452" y="208" width="6" height="110" fill="#aaa"/>
+                        <!-- Window glazing strips -->
+                        <rect x="50"  y="8" width="90" height="8" fill="#b3d4eb" rx="1"/>
+                        <rect x="165" y="8" width="80" height="8" fill="#b3d4eb" rx="1"/>
+                        <rect x="370" y="8" width="120" height="8" fill="#b3d4eb" rx="1"/>
+                        <rect x="8"   y="240" width="8" height="60" fill="#b3d4eb" rx="1"/>
+                        <rect x="524" y="30"  width="8" height="100" fill="#b3d4eb" rx="1"/>
+                        <!-- Room labels -->
+                        <text x="172" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Living / Dining</text>
+                        <text x="172" y="115" text-anchor="middle" font-size="10" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">6.5 &times; 4.0 m &nbsp;&bull;&nbsp; ~26 m&#178;</text>
+                        <text x="433" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Kitchen</text>
+                        <text x="433" y="115" text-anchor="middle" font-size="10" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">3.5 &times; 4.0 m</text>
+                        <text x="112" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Bedroom 1</text>
+                        <text x="112" y="272" text-anchor="middle" font-size="10" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">4.0 &times; 2.8 m</text>
+                        <text x="296" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Bedroom 2</text>
+                        <text x="296" y="272" text-anchor="middle" font-size="10" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">3.2 &times; 2.8 m</text>
+                        <text x="416" y="263" text-anchor="middle" font-size="11" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Bath</text>
+                        <text x="493" y="252" text-anchor="middle" font-size="10" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">WC /</text>
+                        <text x="493" y="264" text-anchor="middle" font-size="10" font-weight="600" fill="#666" font-family="system-ui,-apple-system,sans-serif">Laundry</text>
+                        <!-- 1: Hot Water Cylinder (red) — WC/Laundry -->
+                        <circle cx="471" cy="240" r="17" fill="#c62828" filter="url(#pinShadow)"/>
+                        <text x="471" y="245" text-anchor="middle" font-size="13" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">1</text>
+                        <!-- 2: Heat Pump (purple) — Living room wall-mount -->
+                        <circle cx="310" cy="30" r="17" fill="#7b1fa2" filter="url(#pinShadow)"/>
+                        <text x="310" y="35" text-anchor="middle" font-size="13" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">2</text>
+                        <!-- 3: Cooking / Oven (orange) — Kitchen -->
+                        <circle cx="380" cy="175" r="17" fill="#e65100" filter="url(#pinShadow)"/>
+                        <text x="380" y="180" text-anchor="middle" font-size="13" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">3</text>
+                        <!-- 4: Refrigerator (blue) — Kitchen -->
+                        <circle cx="512" cy="50" r="17" fill="#1565c0" filter="url(#pinShadow)"/>
+                        <text x="512" y="55" text-anchor="middle" font-size="13" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">4</text>
+                        <!-- 5: Washing Machine (teal) — WC/Laundry -->
+                        <circle cx="493" cy="300" r="15" fill="#00695c" filter="url(#pinShadow)"/>
+                        <text x="493" y="305" text-anchor="middle" font-size="12" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">5</text>
+                        <!-- 6: Lighting (amber) — distributed across rooms -->
+                        <circle cx="50"  cy="35"  r="13" fill="#f9a825" opacity="0.9" filter="url(#pinShadow)"/>
+                        <text x="50"  y="39"  text-anchor="middle" font-size="10" font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">6</text>
+                        <circle cx="433" cy="40"  r="11" fill="#f9a825" opacity="0.75"/>
+                        <text x="433" y="44"  text-anchor="middle" font-size="9"  font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">6</text>
+                        <circle cx="112" cy="220" r="11" fill="#f9a825" opacity="0.75"/>
+                        <text x="112" y="224" text-anchor="middle" font-size="9"  font-weight="bold" fill="white" font-family="system-ui,-apple-system,sans-serif">6</text>
+                        <!-- Compass + scale bar -->
+                        <text x="22" y="322" font-size="10" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">N&#8593;</text>
+                        <line x1="45" y1="320" x2="125" y2="320" stroke="#aaa" stroke-width="1.5"/>
+                        <line x1="45" y1="316" x2="45" y2="324" stroke="#aaa" stroke-width="1.5"/>
+                        <line x1="125" y1="316" x2="125" y2="324" stroke="#aaa" stroke-width="1.5"/>
+                        <text x="85" y="314" text-anchor="middle" font-size="9" fill="#aaa" font-family="system-ui,-apple-system,sans-serif">4 m</text>
+                    </svg>
+                    <!-- Hotspot legend -->
+                    <div class="fp-legend">
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#c62828">1</span>
+                            <div><div>Hot Water Cylinder</div><div class="fp-legend-sub">3,400 kWh/yr &bull; 334 kg CO&#8322;e</div></div>
+                        </div>
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#7b1fa2">2</span>
+                            <div><div>Space Heating &mdash; Heat Pump</div><div class="fp-legend-sub">1,200 kWh/yr &bull; 118 kg CO&#8322;e</div></div>
+                        </div>
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#e65100">3</span>
+                            <div><div>Cooking &amp; Oven</div><div class="fp-legend-sub">620 kWh/yr &bull; 61 kg CO&#8322;e</div></div>
+                        </div>
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#1565c0">4</span>
+                            <div><div>Refrigerator / Freezer</div><div class="fp-legend-sub">480 kWh/yr &bull; 47 kg CO&#8322;e</div></div>
+                        </div>
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#00695c">5</span>
+                            <div><div>Washing Machine &amp; Dryer</div><div class="fp-legend-sub">420 kWh/yr &bull; 41 kg CO&#8322;e</div></div>
+                        </div>
+                        <div class="fp-legend-item">
+                            <span class="fp-num" style="background:#f9a825">6</span>
+                            <div><div>Lighting (all rooms)</div><div class="fp-legend-sub">380 kWh/yr &bull; 37 kg CO&#8322;e</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appliance charts column -->
+                <div>
+                    <div class="chart-wrapper" style="margin-bottom: 1.5rem;">
+                        <h3>Electricity Use by Appliance (kWh / year)</h3>
+                        <div class="chart-canvas-container" style="height: 290px;">
+                            <canvas id="applianceEnergyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3>Operational Carbon by Appliance (kg CO&#8322;e / year)</h3>
+                        <div class="chart-canvas-container" style="height: 290px;">
+                            <canvas id="applianceCarbonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OpenStudio end-use category cards -->
+            <h3 style="margin-top: 2.5rem; margin-bottom: 0.5rem; color: #333; font-size: 1.1rem;">OpenStudio Energy Model Categories</h3>
+            <p style="font-size: 0.95rem; color: #666; margin-bottom: 1rem; line-height: 1.6;">
+                Individual appliances roll up into four end-use categories used across all OpenStudio simulations &mdash; consistent across projects and comparable against NZ benchmarks.
+            </p>
+            <div class="end-use-grid">
+                <div class="end-use-card" style="border-top-color: #1976d2;">
+                    <div class="end-use-kwh" style="color: #1976d2;">1,200</div>
+                    <div class="end-use-sub">kWh &bull; 118 kg CO&#8322;e / apt / yr</div>
+                    <div class="end-use-name">Heating</div>
+                    <div class="end-use-desc">Heat pump heating mode. Low in Auckland&rsquo;s mild climate.</div>
+                </div>
+                <div class="end-use-card" style="border-top-color: #388e3c;">
+                    <div class="end-use-kwh" style="color: #388e3c;">200</div>
+                    <div class="end-use-sub">kWh &bull; 20 kg CO&#8322;e / apt / yr</div>
+                    <div class="end-use-name">Cooling</div>
+                    <div class="end-use-desc">Heat pump cooling mode. Concrete thermal mass reduces peak demand.</div>
+                </div>
+                <div class="end-use-card" style="border-top-color: #f9a825;">
+                    <div class="end-use-kwh" style="color: #f9a825;">380</div>
+                    <div class="end-use-sub">kWh &bull; 37 kg CO&#8322;e / apt / yr</div>
+                    <div class="end-use-name">Lighting</div>
+                    <div class="end-use-desc">All interior and common area lighting. LED assumed throughout.</div>
+                </div>
+                <div class="end-use-card" style="border-top-color: #e65100;">
+                    <div class="end-use-kwh" style="color: #e65100;">5,460</div>
+                    <div class="end-use-sub">kWh &bull; 535 kg CO&#8322;e / apt / yr</div>
+                    <div class="end-use-name">Equipment</div>
+                    <div class="end-use-desc">HWC + cooking + appliances + electronics. Dominant end-use category.</div>
+                </div>
+            </div>
+
+            <!-- Thermal Performance section -->
+            <div class="thermal-section">
+                <h3>Thermal Performance &amp; Construction Fabric</h3>
+                <p style="font-size: 1rem; line-height: 1.8; color: #555; margin-bottom: 0.75rem;">
+                    To complement the whole-building energy model, we are developing <strong>Therm</strong> thermal-bridge analysis for each key junction detail &mdash; wall corners, slab edges, window reveals. These isothermal simulations quantify how heat migrates through the fabric beyond what simplified R-value calculations capture. The corrected U-values and linear thermal-bridge psi (&psi;) values feed directly into the EnergyPlus construction definitions.
+                </p>
+                <p style="font-size: 1rem; line-height: 1.8; color: #555;">
+                    The two diagrams below illustrate the concept: temperature isotherms flowing from the warm interior through the wall construction to the cold exterior, and why in-situ concrete mass with a well-placed insulation layer changes the gradient &mdash; and therefore the annual heating/cooling load &mdash; so significantly compared to a CLT or timber-frame alternative.
+                </p>
+
+                <div class="thermal-grid">
+
+                    <!-- Wall cross-section comparison -->
+                    <div class="thermal-card">
+                        <h4>Wall Construction Cross-Section &mdash; Isotherm Comparison</h4>
+                        <svg viewBox="0 0 560 295" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+                            <defs>
+                                <linearGradient id="thGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%"   stop-color="#ef5350" stop-opacity="0.65"/>
+                                    <stop offset="22%"  stop-color="#ff9800" stop-opacity="0.5"/>
+                                    <stop offset="48%"  stop-color="#ffeb3b" stop-opacity="0.38"/>
+                                    <stop offset="73%"  stop-color="#66bb6a" stop-opacity="0.32"/>
+                                    <stop offset="100%" stop-color="#42a5f5" stop-opacity="0.62"/>
+                                </linearGradient>
+                                <linearGradient id="thGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%"   stop-color="#ef5350" stop-opacity="0.65"/>
+                                    <stop offset="17%"  stop-color="#ff9800" stop-opacity="0.5"/>
+                                    <stop offset="42%"  stop-color="#ffeb3b" stop-opacity="0.42"/>
+                                    <stop offset="68%"  stop-color="#66bb6a" stop-opacity="0.32"/>
+                                    <stop offset="100%" stop-color="#42a5f5" stop-opacity="0.62"/>
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Panel 1: In-situ Concrete -->
+                            <text x="128" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#333" font-family="system-ui,-apple-system,sans-serif">In-situ Concrete</text>
+                            <text x="128" y="29" text-anchor="middle" font-size="10" fill="#ff6600" font-family="system-ui,-apple-system,sans-serif">Simplicity System</text>
+                            <!-- Layers -->
+                            <rect x="5"   y="42" width="44"  height="220" fill="#ffcdd2"/>
+                            <rect x="49"  y="42" width="80"  height="220" fill="#b0bec5"/>
+                            <rect x="129" y="42" width="26"  height="220" fill="#fff9c4"/>
+                            <rect x="155" y="42" width="10"  height="220" fill="#9e9e9e"/>
+                            <rect x="165" y="42" width="90"  height="220" fill="#bbdefb"/>
+                            <!-- Isotherm dashes in concrete layer -->
+                            <line x1="65"  y1="42" x2="65"  y2="262" stroke="#90a4ae" stroke-width="0.8" stroke-dasharray="3,3"/>
+                            <line x1="80"  y1="42" x2="80"  y2="262" stroke="#90a4ae" stroke-width="0.8" stroke-dasharray="3,3"/>
+                            <line x1="95"  y1="42" x2="95"  y2="262" stroke="#90a4ae" stroke-width="0.8" stroke-dasharray="3,3"/>
+                            <line x1="110" y1="42" x2="110" y2="262" stroke="#90a4ae" stroke-width="0.8" stroke-dasharray="3,3"/>
+                            <!-- Gradient overlay -->
+                            <rect x="5" y="42" width="250" height="220" fill="url(#thGrad1)" pointer-events="none"/>
+                            <!-- Layer boundaries -->
+                            <line x1="49"  y1="42" x2="49"  y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="129" y1="42" x2="129" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="155" y1="42" x2="155" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="165" y1="42" x2="165" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <!-- Layer labels (rotated) -->
+                            <text x="27"  y="152" text-anchor="middle" font-size="9" fill="#c62828" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,27,152)">INTERIOR 22&#176;C</text>
+                            <text x="89"  y="152" text-anchor="middle" font-size="9" fill="#546e7a" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,89,152)">200mm CONCRETE</text>
+                            <text x="142" y="152" text-anchor="middle" font-size="9" fill="#827717" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,142,152)">60mm PIR</text>
+                            <text x="210" y="152" text-anchor="middle" font-size="9" fill="#1565c0" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,210,152)">EXTERIOR 5&#176;C</text>
+                            <!-- R-value badge -->
+                            <rect x="14" y="268" width="232" height="18" rx="3" fill="#e8f5e9"/>
+                            <text x="130" y="280" text-anchor="middle" font-size="9.5" fill="#2e7d32" font-weight="700" font-family="system-ui,sans-serif">R-value ~3.4 m&#178;K/W &nbsp;&#183;&nbsp; Thermal mass: HIGH</text>
+
+                            <!-- Divider -->
+                            <line x1="282" y1="10" x2="282" y2="290" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,4"/>
+
+                            <!-- Panel 2: CLT Timber -->
+                            <text x="420" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#333" font-family="system-ui,-apple-system,sans-serif">CLT Timber</text>
+                            <text x="420" y="29" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,-apple-system,sans-serif">Comparison Case</text>
+                            <!-- Layers -->
+                            <rect x="295" y="42" width="44"  height="220" fill="#ffcdd2"/>
+                            <rect x="339" y="42" width="54"  height="220" fill="#d7ccc8"/>
+                            <rect x="393" y="42" width="36"  height="220" fill="#fff9c4"/>
+                            <rect x="429" y="42" width="10"  height="220" fill="#9e9e9e"/>
+                            <rect x="439" y="42" width="116" height="220" fill="#bbdefb"/>
+                            <!-- CLT lamination lines -->
+                            <line x1="339" y1="62"  x2="393" y2="62"  stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="82"  x2="393" y2="82"  stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="102" x2="393" y2="102" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="122" x2="393" y2="122" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="142" x2="393" y2="142" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="162" x2="393" y2="162" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="182" x2="393" y2="182" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="202" x2="393" y2="202" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="222" x2="393" y2="222" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <line x1="339" y1="242" x2="393" y2="242" stroke="#bcaaa4" stroke-width="0.9"/>
+                            <!-- Gradient overlay -->
+                            <rect x="295" y="42" width="260" height="220" fill="url(#thGrad2)" pointer-events="none"/>
+                            <!-- Layer boundaries -->
+                            <line x1="339" y1="42" x2="339" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="393" y1="42" x2="393" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="429" y1="42" x2="429" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <line x1="439" y1="42" x2="439" y2="262" stroke="#777" stroke-width="1.5"/>
+                            <!-- Layer labels -->
+                            <text x="317" y="152" text-anchor="middle" font-size="9" fill="#c62828" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,317,152)">INTERIOR 22&#176;C</text>
+                            <text x="366" y="152" text-anchor="middle" font-size="9" fill="#5d4037" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,366,152)">140mm CLT</text>
+                            <text x="411" y="152" text-anchor="middle" font-size="9" fill="#827717" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,411,152)">90mm BATTS</text>
+                            <text x="497" y="152" text-anchor="middle" font-size="9" fill="#1565c0" font-weight="600" font-family="system-ui,sans-serif" transform="rotate(-90,497,152)">EXTERIOR 5&#176;C</text>
+                            <!-- R-value badge -->
+                            <rect x="302" y="268" width="248" height="18" rx="3" fill="#e8f5e9"/>
+                            <text x="426" y="280" text-anchor="middle" font-size="9.5" fill="#2e7d32" font-weight="700" font-family="system-ui,sans-serif">R-value ~2.9 m&#178;K/W &nbsp;&#183;&nbsp; Thermal mass: LOW</text>
+                        </svg>
+                    </div>
+
+                    <!-- Corner thermal bridge detail -->
+                    <div class="thermal-card">
+                        <h4>Corner Junction &mdash; Thermal Bridge Effect</h4>
+                        <svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;max-width:260px;margin:0 auto;">
+                            <defs>
+                                <radialGradient id="cornerGrad" cx="145" cy="145" r="195" fx="145" fy="145" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%"   stop-color="#ef5350" stop-opacity="0.75"/>
+                                    <stop offset="18%"  stop-color="#ff9800" stop-opacity="0.6"/>
+                                    <stop offset="38%"  stop-color="#ffeb3b" stop-opacity="0.5"/>
+                                    <stop offset="60%"  stop-color="#66bb6a" stop-opacity="0.4"/>
+                                    <stop offset="85%"  stop-color="#29b6f6" stop-opacity="0.55"/>
+                                    <stop offset="100%" stop-color="#1565c0" stop-opacity="0.68"/>
+                                </radialGradient>
+                            </defs>
+                            <!-- Exterior background -->
+                            <rect x="0" y="0" width="260" height="260" fill="#e3f2fd"/>
+                            <!-- Interior room (top-left, warm) -->
+                            <rect x="0" y="0" width="145" height="145" fill="#fff8f0"/>
+                            <!-- Horizontal wall segment -->
+                            <rect x="0"   y="145" width="200" height="50" fill="#b0bec5"/>
+                            <!-- Vertical wall segment -->
+                            <rect x="145" y="0"   width="50"  height="145" fill="#b0bec5"/>
+                            <!-- Corner block (thermal bridge zone) -->
+                            <rect x="145" y="145" width="50"  height="50"  fill="#90a4ae"/>
+                            <!-- Thermal gradient over wall material -->
+                            <rect x="0"   y="145" width="200" height="50"  fill="url(#cornerGrad)" pointer-events="none"/>
+                            <rect x="145" y="0"   width="50"  height="145" fill="url(#cornerGrad)" pointer-events="none"/>
+                            <rect x="145" y="145" width="50"  height="50"  fill="url(#cornerGrad)" pointer-events="none"/>
+                            <!-- Thin insulation strip on room face -->
+                            <rect x="0"   y="145" width="200" height="9"   fill="#fff176" opacity="0.85"/>
+                            <rect x="145" y="0"   width="9"   height="145" fill="#fff176" opacity="0.85"/>
+                            <!-- Simplified isotherm contours -->
+                            <path d="M 145,120 Q 145,145 120,145" stroke="#ffb300" stroke-width="1.3" fill="none" stroke-dasharray="3,2" opacity="0.8"/>
+                            <path d="M 145,100 Q 145,145 100,145" stroke="#fdd835" stroke-width="1.3" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+                            <path d="M 145,80  Q 145,145 80,145"  stroke="#a5d6a7" stroke-width="1.3" fill="none" stroke-dasharray="3,2" opacity="0.65"/>
+                            <path d="M 195,200 Q 195,196 200,196" stroke="#29b6f6" stroke-width="1.3" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+                            <!-- Zone labels -->
+                            <text x="72" y="68"  text-anchor="middle" font-size="11" font-weight="700" fill="#c62828" font-family="system-ui,sans-serif">INTERIOR</text>
+                            <text x="72" y="82"  text-anchor="middle" font-size="10" fill="#c62828" font-family="system-ui,sans-serif">22&#176;C</text>
+                            <text x="228" y="228" text-anchor="middle" font-size="11" font-weight="700" fill="#1565c0" font-family="system-ui,sans-serif">EXTERIOR</text>
+                            <text x="228" y="242" text-anchor="middle" font-size="10" fill="#1565c0" font-family="system-ui,sans-serif">5&#176;C</text>
+                            <!-- Thermal bridge callout -->
+                            <rect x="138" y="139" width="63" height="62" fill="none" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="201" y1="170" x2="240" y2="165" stroke="#e53935" stroke-width="1"/>
+                            <text x="216" y="158" font-size="8.5" fill="#e53935" font-weight="700" font-family="system-ui,sans-serif">Thermal</text>
+                            <text x="216" y="170" font-size="8.5" fill="#e53935" font-weight="700" font-family="system-ui,sans-serif">bridge</text>
+                            <text x="216" y="182" font-size="8"   fill="#e53935" font-family="system-ui,sans-serif">corner zone</text>
+                        </svg>
+                        <p style="font-size: 0.82rem; color: #777; margin-top: 0.75rem; line-height: 1.55;">
+                            At a wall corner two exterior surfaces converge, creating a zone of higher heat flux than mid-wall. Therm quantifies this as a linear thermal bridge (&psi; value) applied as a correction to the EnergyPlus whole-building model.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Lifecycle carbon argument -->
+                <div class="lifecycle-callout">
+                    <h4>The Lifecycle Carbon Argument: Embodied vs Operational</h4>
+                    <p style="font-size: 0.95rem; color: #555; line-height: 1.7;">
+                        In-situ concrete is embodied-carbon intensive at construction &mdash; but it pays back through reduced operational carbon across the 50&#8288;+&nbsp;year building life. Higher thermal mass means the building absorbs heat during the day and releases it overnight, cutting the hours the heat pump runs and lowering annual electricity demand and associated grid emissions.
+                    </p>
+                    <div class="lifecycle-flow">
+                        <div class="lc-step" style="border-top: 3px solid #c62828;">
+                            <div class="lc-title">1 &mdash; Construction</div>
+                            <div class="lc-val">High A1&ndash;A3 embodied C<br>in concrete &amp; reinforcing</div>
+                        </div>
+                        <div class="lc-arrow">&#8594;</div>
+                        <div class="lc-step" style="border-top: 3px solid #7b1fa2;">
+                            <div class="lc-title">2 &mdash; Thermal Mass</div>
+                            <div class="lc-val">Concrete stabilises indoor temps, reduces peak HVAC demand</div>
+                        </div>
+                        <div class="lc-arrow">&#8594;</div>
+                        <div class="lc-step" style="border-top: 3px solid #388e3c;">
+                            <div class="lc-title">3 &mdash; Lower Energy</div>
+                            <div class="lc-val">~21% less heating &amp; cooling kWh/yr vs code minimum</div>
+                        </div>
+                        <div class="lc-arrow">&#8594;</div>
+                        <div class="lc-step" style="border-top: 3px solid #ff6600;">
+                            <div class="lc-title">4 &mdash; Lower Lifecycle C</div>
+                            <div class="lc-val">Operational savings outweigh embodied premium by year ~20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Detailed Energy Simulation Report -->
         <section class="section">
             <h2 class="section-title">Detailed Energy Simulation Report</h2>
             <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
@@ -157,30 +497,26 @@
                 <button type="button" class="building-btn" data-report="assets/reports/nezo-report-morningside.html" onclick="selectReport(this)">Morningside Drive<small>Morningside</small></button>
             </div>
             <div class="iframe-container" style="height: 1000px;">
-                <iframe
-                    id="reportFrame"
-                    src="assets/reports/nezo-report-reiputa.html"
-                    title="Nezo OpenStudio Energy Analysis Report">
-                </iframe>
+                <iframe id="reportFrame" src="assets/reports/nezo-report-reiputa.html" title="Nezo OpenStudio Energy Analysis Report"></iframe>
             </div>
         </section>
 
-        <!-- Performance Summary -->
+        <!-- 7. Performance Summary -->
         <section class="section">
             <h2 class="section-title">Performance Summary</h2>
             <div class="nav-tiles">
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">📉</div>
+                    <div class="nav-tile-icon">&#128201;</div>
                     <h3>21% Energy Savings</h3>
                     <p>Compared to baseline code-compliant design</p>
                 </div>
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">🌡️</div>
+                    <div class="nav-tile-icon">&#127777;&#65039;</div>
                     <h3>Superior Thermal Mass</h3>
                     <p>In-situ concrete provides excellent temperature stability</p>
                 </div>
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">💰</div>
+                    <div class="nav-tile-icon">&#128176;</div>
                     <h3>Optimal Cost-Benefit</h3>
                     <p>Best balance of energy efficiency and construction economics</p>
                 </div>

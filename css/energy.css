@@ -41,3 +41,213 @@
     height: auto;
     object-fit: contain;
 }
+
+/* ─── Apartment Energy Deep Dive ─────────────────────────────────────── */
+.deep-dive-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-top: 1.5rem;
+}
+
+.floor-plan-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.floor-plan-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.fp-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.75rem;
+    margin-top: 1rem;
+}
+
+.fp-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #444;
+}
+
+.fp-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.fp-legend-sub {
+    font-size: 0.73rem;
+    color: #999;
+}
+
+/* End-use category cards */
+.end-use-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.end-use-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    border-top: 4px solid;
+}
+
+.end-use-kwh {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-top: 0.25rem;
+}
+
+.end-use-sub {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 0.15rem;
+}
+
+.end-use-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #444;
+    margin-top: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.end-use-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.3rem;
+    line-height: 1.4;
+}
+
+/* Thermal section */
+.thermal-section {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 2px solid #eee;
+}
+
+.thermal-section > h3 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.thermal-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.thermal-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.thermal-card h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.lifecycle-callout {
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+    border: 1px solid #ffe0b2;
+    border-left: 4px solid #ff6600;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+}
+
+.lifecycle-callout h4 {
+    color: #333;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.lifecycle-flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+}
+
+.lc-step {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.lc-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.lc-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.lc-val {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.2rem;
+    line-height: 1.3;
+}
+
+.lc-arrow {
+    font-size: 1.4rem;
+    color: #ff6600;
+    font-weight: 700;
+    padding: 0 0.4rem;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+@media (max-width: 900px) {
+    .deep-dive-grid  { grid-template-columns: 1fr; }
+    .end-use-grid    { grid-template-columns: repeat(2, 1fr); }
+    .thermal-grid    { grid-template-columns: 1fr; }
+    .lifecycle-flow  { flex-direction: column; align-items: stretch; }
+    .lc-arrow        { transform: rotate(90deg); align-self: center; }
+}

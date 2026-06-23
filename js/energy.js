@@ -156,3 +156,55 @@ function selectReport(btn) {
     btn.classList.add('active');
     document.getElementById('reportFrame').src = btn.dataset.report;
 }
+
+// ─── Apartment Energy Deep Dive ───────────────────────────────────────────────
+const APARTMENT_APPLIANCES = [
+    { label: 'Hot Water Cylinder',   kwh: 3400, color: '#c62828', border: '#b71c1c' },
+    { label: 'Space Heating',        kwh: 1200, color: '#7b1fa2', border: '#6a1b9a' },
+    { label: 'Cooking & Oven',       kwh: 620,  color: '#e65100', border: '#bf360c' },
+    { label: 'Refrigerator/Freezer', kwh: 480,  color: '#1565c0', border: '#0d47a1' },
+    { label: 'Other Electronics',    kwh: 450,  color: '#78909c', border: '#546e7a' },
+    { label: 'Washing & Dryer',      kwh: 420,  color: '#00695c', border: '#004d40' },
+    { label: 'Lighting',             kwh: 380,  color: '#f9a825', border: '#f57f17' },
+    { label: 'Dishwasher',           kwh: 290,  color: '#e91e63', border: '#c2185b' }
+];
+// NZ Ministry for the Environment 2024 grid emission factor
+const NZ_GRID_EF = 0.098; // kgCO₂e / kWh
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sorted = [...APARTMENT_APPLIANCES].sort((a, b) => b.kwh - a.kwh);
+    const labels  = sorted.map(a => a.label);
+    const bgColors = sorted.map(a => a.color + 'CC');
+    const bdColors = sorted.map(a => a.border);
+
+    const baseOpts = (xTitle) => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x.toLocaleString()} ${xTitle}` } }
+        },
+        scales: {
+            x: { beginAtZero: true, grid: { color: '#eee' }, ticks: { font: { size: 11 } },
+                 title: { display: true, text: xTitle, font: { size: 11, weight: 'bold' } } },
+            y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        }
+    });
+
+    const kwhCtx = document.getElementById('applianceEnergyChart');
+    if (kwhCtx) new Chart(kwhCtx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'kWh/year', data: sorted.map(a => a.kwh),
+            backgroundColor: bgColors, borderColor: bdColors, borderWidth: 1, borderRadius: 4 }] },
+        options: baseOpts('kWh / year')
+    });
+
+    const co2Ctx = document.getElementById('applianceCarbonChart');
+    if (co2Ctx) new Chart(co2Ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'kg CO₂e/year', data: sorted.map(a => Math.round(a.kwh * NZ_GRID_EF)),
+            backgroundColor: bgColors, borderColor: bdColors, borderWidth: 1, borderRadius: 4 }] },
+        options: baseOpts('kg CO₂e / year  (NZ grid: 0.098 kg/kWh)')
+    });
+});
