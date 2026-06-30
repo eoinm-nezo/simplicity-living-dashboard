@@ -1,0 +1,40 @@
+name: Supabase keep-alive
+
+# Pings the Supabase REST API on a schedule so the free-tier project
+# (faltilsbkrrmjugxhako) is not auto-paused for inactivity during the
+# current stop-start development phase.
+#
+# Notes:
+#  - Scheduled workflows only run from the repository's DEFAULT branch (main).
+#  - SUPABASE_KEY below is the public "publishable" key, already shipped in
+#    js/supabase-client.js, so it is safe to keep here. To move it out of the
+#    file later, add it as an Actions secret and swap the env value for
+#    ${{ secrets.SUPABASE_KEY }}.
+#  - The query hits an RLS-protected table; anonymous requests return an empty
+#    list, but the query still runs against Postgres, which counts as activity.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1,3,5"   # 06:00 UTC every Mon / Wed / Fri (max gap ~3 days)
+  workflow_dispatch:           # also runnable on demand from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: https://faltilsbkrrmjugxhako.supabase.co
+      SUPABASE_KEY: sb_publishable_Lx64Hp7qIUHnSzMdphDTRw_O2kF-nsD
+    steps:
+      - name: Query Supabase REST API
+        run: |
+          echo "Pinging Supabase to keep the project active..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/self_assessments?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}")
+          echo "HTTP status: ${status}"
+          if [ "${status}" -lt 200 ] || [ "${status}" -ge 400 ]; then
+            echo "::error::Keep-alive request failed (HTTP ${status})"
+            exit 1
+          fi
+          echo "Supabase keep-alive succeeded."
