@@ -58,18 +58,21 @@
         font-size: 10pt;
     }
     .toolbar span { opacity: .8; }
-    .toolbar button {
+    .toolbar .dl-btn {
         background: var(--orange);
         color: #fff;
         border: none;
-        padding: 8px 18px;
+        padding: 9px 20px;
         border-radius: 50px;
         font-weight: 700;
         font-size: 10pt;
         cursor: pointer;
         font-family: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        display: inline-block;
     }
-    .toolbar button:hover { background: var(--orange-dark); }
+    .toolbar .dl-btn:hover { background: var(--orange-dark); }
 
     /* ── Typography ────────────────────────────────────────────────────── */
     h1, h2, h3, h4 { line-height: 1.25; color: var(--ink); }
@@ -276,30 +279,45 @@
     .wband .d { font-size: 9.5pt; color: #444; }
 
     /* ── Print ─────────────────────────────────────────────────────────── */
-    @page { size: A4; margin: 16mm 15mm; }
+    @page { size: A4; margin: 12mm; }
     @media print {
-        html { background: #fff; }
+        html, body { background: #fff; }
         .toolbar { display: none; }
+        /* Flow the document continuously so pages fill naturally — no forced
+           per-section breaks (those left half-blank sheets whenever a section
+           ran slightly over one page). */
         .page {
             width: auto;
             min-height: 0;
             margin: 0;
             padding: 0;
             box-shadow: none;
-            page-break-after: always;
+            overflow: visible;
         }
-        .page:last-child { page-break-after: auto; }
-        .footer-mark { position: fixed; bottom: 6mm; }
-        .callout, .pullquote, .stat-row, table.data, .bars { page-break-inside: avoid; }
-        h2, h3 { page-break-after: avoid; }
+        .footer-mark { display: none; }         /* screen-only desk element */
+        .cover { page-break-after: always; }    /* cover keeps its own sheet */
+
+        /* Cover sized for a 297mm screen page; tighten so it fits one printed sheet */
+        .cover-band { padding: 17mm 16mm 13mm; }
+        .cover-logo { margin-bottom: 13mm; }
+        .cover h1 { font-size: 29pt; }
+        .cover-body { padding: 9mm 16mm 0; }
+        .cover-stats { gap: 8mm; margin: 3mm 0 7mm; }
+        .cstat .n { font-size: 25pt; white-space: nowrap; }
+
+        /* keep whole components from splitting across sheets */
+        .callout, .pullquote, .stat-row, .cover-stats, table.data,
+        .bars, .bar-row, .wband, .toc-item, .two-col,
+        .lifecycle, .end-use-card { page-break-inside: avoid; break-inside: avoid; }
+        h2, h3, h4 { page-break-after: avoid; break-after: avoid; }
     }
 </style>
 </head>
 <body>
 
 <div class="toolbar">
-    <span>Simplicity Performance Platform: descriptive report &amp; guide. Use your browser's print dialog and choose <strong>“Save as PDF”</strong>.</span>
-    <button onclick="window.print()">Save as PDF</button>
+    <span>Simplicity Performance Platform: descriptive report &amp; guide.</span>
+    <a class="dl-btn" href="simplicity-platform-report.pdf" download="Simplicity Performance Platform.pdf">&#8595;&nbsp; Download PDF</a>
 </div>
 
 <!-- ════════════════════════ COVER ════════════════════════ -->
