@@ -4,14 +4,12 @@
 // SQLite DB (a4a5_projects). See js/a4a5-data.js for reference data.
 
 const EF = A4A5_DATA.emissionFactors;
-const REF_GFA = 9500; // reference GFA the A5 metric scales are calibrated to
 
 let projects = [];
 let current = null;        // { id, name, location, data }
 let a4Chart = null;
-let a5Chart = null;
-let a5Scenario = 'simplicity';
-let a5SliderWeek = 1;
+// A5 weekly-activity model now lives on the Site Activity page (js/site-activity.js);
+// this public calculator links out to per-element activity calculators instead.
 
 // ---------------------------------------------------------------------------
 // Init
@@ -64,14 +62,11 @@ function selectProject(id) {
     try { data = JSON.parse(row.data_json || '{}'); } catch (e) { data = {}; }
     if (!data.materials) data.materials = [];
     current = { id: row.id, name: row.name, location: row.location, data };
-    a5Scenario = data.a5Scenario || 'simplicity';
-    a5SliderWeek = 1;
 
     renderProjectBar();
     fillProjectForm();
     renderMaterials();
     renderA4();
-    renderA5();
 }
 
 function fillProjectForm() {
@@ -146,7 +141,6 @@ function saveProjectMeta() {
     loadProjects();
     renderProjectBar();
     renderA4();
-    renderA5();
     flash('Project saved.');
 }
 
@@ -174,7 +168,6 @@ function duplicateProject() {
 
 function persistCurrent() {
     if (!current) return;
-    current.data.a5Scenario = a5Scenario;
     dbRun('UPDATE a4a5_projects SET name = ?, location = ?, data_json = ?, updated_at = ? WHERE id = ?',
         [current.name, current.location, JSON.stringify(current.data), new Date().toISOString(), current.id]);
 }
@@ -332,216 +325,9 @@ function renderA4() {
 }
 
 // ---------------------------------------------------------------------------
-// A5 engine — weekly site activity (placeholder, site-data-driven)
-// ---------------------------------------------------------------------------
-function bell(week, start, end, peak) {
-    if (week < start || week > end || end <= start) return 0;
-    const t = (week - start) / (end - start);
-    return peak * Math.sin(Math.PI * t);
-}
-
-function buildActivity(scenarioKey) {
-    const sc = A4A5_DATA.a5Scenarios[scenarioKey];
-    const cats = A4A5_DATA.a5Categories.map(c => c.key);
-    const activity = {};
-    cats.forEach(cat => {
-        const w = sc.windows[cat];
-        activity[cat] = [];
-        for (let wk = 1; wk <= sc.weeks; wk++) activity[cat].push(bell(wk, w.start, w.end, w.peak));
-    });
-    return { weeks: sc.weeks, activity };
-}
-
-function gfaFactor() {
-    return (current && current.data.gfa ? current.data.gfa : REF_GFA) / REF_GFA;
-}
-
-// metric value at a given week index (0-based)
-function metricAt(activity, metricKey, weekIdx) {
-    const weights = A4A5_DATA.a5MetricWeights[metricKey];
-    const scale = A4A5_DATA.a5MetricScale[metricKey];
-    let sum = 0;
-    A4A5_DATA.a5Categories.forEach(c => { sum += (activity[c.key][weekIdx] || 0) * weights[c.key]; });
-    return (sum / 100) * scale * gfaFactor();
-}
-
-// total A5 construction carbon for a scenario (fuel + electricity + waste penalty)
-function computeA5Totals(scenarioKey) {
-    const { weeks, activity } = buildActivity(scenarioKey);
-    let fuelL = 0, elecKwh = 0, peakActivity = 0;
-    for (let i = 0; i < weeks; i++) {
-        fuelL += metricAt(activity, 'fuel', i);
-        elecKwh += metricAt(activity, 'electricity', i);
-        let weekTotal = 0;
-        A4A5_DATA.a5Categories.forEach(c => weekTotal += activity[c.key][i]);
-        peakActivity = Math.max(peakActivity, weekTotal);
-    }
-    const fuelCO2 = fuelL * EF.diesel;
-    const elecCO2 = elecKwh * EF.electricityGrid;
-    // simple waste-penalty placeholder: scales with duration & size
-    const wastePenalty = weeks * 90 * gfaFactor();
-    return {
-        weeks, fuelL, elecKwh, fuelCO2, elecCO2, wastePenalty,
-        total: fuelCO2 + elecCO2 + wastePenalty, peakActivity
-    };
-}
-
-function setA5Scenario(key) {
-    a5Scenario = key;
-    a5SliderWeek = 1;
-    if (current) { current.data.a5Scenario = key; persistCurrent(); }
-    renderA5();
-}
-
-function renderA5() {
-    const sc = A4A5_DATA.a5Scenarios[a5Scenario];
-    const { weeks, activity } = buildActivity(a5Scenario);
-
-    // Scenario toggle active state
-    document.querySelectorAll('#a5ScenarioToggle .building-btn').forEach(b =>
-        b.classList.toggle('active', b.dataset.scenario === a5Scenario));
-
-    // Default the slider to the busiest week so the cards show live values on load
-    if (a5SliderWeek <= 1) {
-        let peakWk = 1, peakTotal = -1;
-        for (let i = 0; i < weeks; i++) {
-            let t = 0;
-            A4A5_DATA.a5Categories.forEach(c => t += activity[c.key][i]);
-            if (t > peakTotal) { peakTotal = t; peakWk = i + 1; }
-        }
-        a5SliderWeek = peakWk;
-    }
-
-    // Slider bounds
-    const slider = document.getElementById('weekSlider');
-    slider.max = weeks;
-    if (a5SliderWeek > weeks) a5SliderWeek = weeks;
-    slider.value = a5SliderWeek;
-
-    // Stacked activity chart
-    const ctx = document.getElementById('a5Chart');
-    const labels = Array.from({ length: weeks }, (_, i) => 'W' + (i + 1));
-    const datasets = A4A5_DATA.a5Categories.map(c => ({
-        label: c.icon + ' ' + c.name,
-        data: activity[c.key].map(v => Math.round(v)),
-        backgroundColor: c.color,
-        borderWidth: 0,
-        stack: 'a'
-    }));
-    if (a5Chart) a5Chart.destroy();
-    a5Chart = new Chart(ctx, {
-        type: 'bar',
-        data: { labels, datasets },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
-                tooltip: { mode: 'index', intersect: false }
-            },
-            scales: {
-                x: { stacked: true, grid: { display: false },
-                     ticks: { maxTicksLimit: 20, font: { size: 9 } },
-                     title: { display: true, text: 'Construction week', font: { weight: 'bold' } } },
-                y: { stacked: true, grid: { color: '#eee' },
-                     title: { display: true, text: 'Site activity intensity', font: { weight: 'bold' } } }
-            }
-        },
-        plugins: [weekMarkerPlugin]
-    });
-
-    // Scenario summary line
-    document.getElementById('a5ScenarioSummary').innerHTML =
-        `<strong>${sc.label}</strong> — ${sc.sub}. Programme length: <strong>${weeks} weeks</strong>.`;
-
-    renderA5Comparison();
-    onWeekChange(a5SliderWeek);
-}
-
-// Draws a vertical marker at the selected week
-const weekMarkerPlugin = {
-    id: 'weekMarker',
-    afterDraw(chart) {
-        const idx = a5SliderWeek - 1;
-        const meta = chart.getDatasetMeta(0);
-        if (!meta.data[idx]) return;
-        const x = meta.data[idx].x;
-        const { ctx, chartArea } = chart;
-        ctx.save();
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([4, 3]);
-        ctx.beginPath();
-        ctx.moveTo(x, chartArea.top);
-        ctx.lineTo(x, chartArea.bottom);
-        ctx.stroke();
-        ctx.restore();
-    }
-};
-
-function onWeekChange(week) {
-    a5SliderWeek = Number(week);
-    const { activity } = buildActivity(a5Scenario);
-    const idx = a5SliderWeek - 1;
-    document.getElementById('weekLabel').textContent = 'Week ' + a5SliderWeek;
-
-    // metric cards
-    Object.keys(A4A5_DATA.a5MetricMeta).forEach(key => {
-        const val = metricAt(activity, key, idx);
-        const el = document.getElementById('metric_' + key);
-        if (el) el.textContent = Math.round(val).toLocaleString();
-    });
-
-    // dominant trade this week
-    let top = null, topVal = -1;
-    A4A5_DATA.a5Categories.forEach(c => {
-        const v = activity[c.key][idx] || 0;
-        if (v > topVal) { topVal = v; top = c; }
-    });
-    const phaseEl = document.getElementById('weekPhase');
-    if (top && topVal > 1) phaseEl.innerHTML = `Dominant activity: <strong style="color:${top.color}">${top.icon} ${top.name}</strong>`;
-    else phaseEl.textContent = 'Site inactive this week';
-
-    if (a5Chart) a5Chart.update('none');
-}
-
-// Baseline vs Simplicity A5 comparison cards
-function renderA5Comparison() {
-    const base = computeA5Totals('baseline');
-    const simp = computeA5Totals('simplicity');
-    const wrap = document.getElementById('a5Comparison');
-    const row = (label, b, s, unit, betterLow = true) => {
-        const better = betterLow ? (s < b) : (s > b);
-        return `<tr>
-            <td>${label}</td>
-            <td style="text-align:right;">${Math.round(b).toLocaleString()} ${unit}</td>
-            <td style="text-align:right;font-weight:700;color:${better ? '#28a745' : '#dc3545'}">${Math.round(s).toLocaleString()} ${unit}</td>
-        </tr>`;
-    };
-    wrap.innerHTML = `
-        <table class="db-table">
-            <thead><tr><th>A5 measure</th><th style="text-align:right;">Baseline</th><th style="text-align:right;">Simplicity</th></tr></thead>
-            <tbody>
-                ${row('Programme duration', base.weeks, simp.weeks, 'wks')}
-                ${row('Peak weekly activity', base.peakActivity, simp.peakActivity, '', false)}
-                ${row('Site diesel', base.fuelL, simp.fuelL, 'L')}
-                ${row('Site electricity', base.elecKwh, simp.elecKwh, 'kWh')}
-                ${row('A5 construction carbon', base.total, simp.total, 'kg')}
-            </tbody>
-        </table>
-        <p class="a5-verdict">${verdict(base, simp)}</p>`;
-}
-
-function verdict(base, simp) {
-    const saved = base.total - simp.total;
-    const pct = base.total > 0 ? (saved / base.total * 100) : 0;
-    if (saved > 0) {
-        return `Despite a <strong>higher activity peak</strong>, Simplicity's overlapped programme is
-            <strong>${simp.weeks} weeks vs ${base.weeks}</strong> — a shorter site duration that cuts A5
-            construction carbon by <strong style="color:#28a745">${Math.round(saved).toLocaleString()} kgCO₂e (${pct.toFixed(0)}%)</strong>.`;
-    }
-    return `Simplicity concentrates resource into a shorter, more intense programme. On these placeholder
-        figures the peak is higher; capturing real site data will show where the balance truly lands.`;
-}
+// A5 weekly-activity model relocated to the Site Activity page (js/site-activity.js).
+// This calculator now links out to per-element activity calculators (see the A5
+// section in a4a5-calculator.html).
 
 // ---------------------------------------------------------------------------
 // Site-data tool cards (imagined sources for A5 primary data)

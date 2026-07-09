@@ -310,3 +310,21 @@
     .paradigm-grid { grid-template-columns:1fr; }
     .paradigm-arrow { transform:rotate(90deg); }
 }
+
+/* A5 element-calculator launcher cards */
+.activity-launch-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem; margin: 1.5rem 0 2rem;
+}
+.activity-launch {
+    display: flex; flex-direction: column; gap: 0.35rem; text-decoration: none;
+    background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 1.25rem;
+    color: #333; transition: all 0.2s;
+}
+a.activity-launch:hover { border-color: #ff6600; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+.al-icon { font-size: 1.9rem; }
+.al-name { font-weight: 700; font-size: 1.02rem; color: #333; }
+.al-desc { font-size: 0.83rem; color: #888; line-height: 1.4; flex: 1; }
+.al-cta { font-size: 0.85rem; font-weight: 700; color: #ff6600; margin-top: 0.4rem; }
+.activity-launch.soon { opacity: 0.6; background: #f7f7f7; cursor: default; }
+.activity-launch.soon .al-desc { color: #b08968; font-weight: 600; }
