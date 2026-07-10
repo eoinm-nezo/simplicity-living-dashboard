@@ -506,9 +506,201 @@ const EL_ROOF = {
 };
 
 // =======================================================================================
+//  ELEMENT: Windows & Glazing  (imported joinery — sea leg dominates, local logistics is the lever)
+// =======================================================================================
+const EL_WINDOWS = {
+    key: 'windows',
+    name: 'Windows & Glazing',
+    tagline: 'Aluminium joinery & glazed units, typically imported. A long sea leg both scenarios share; the levers are breakage, full local trucks and an efficient hoist-and-fix on site.',
+    unitLabel: 'm² window',
+    accent: '#ff6600',
+
+    inputs: [
+        { id: 'windowArea', label: 'Window/glazing area', unit: 'm²',    value: 850, min: 0, step: 10, group: 'Quantities' },
+        { id: 'unitMass',   label: 'Unit weight',         unit: 'kg/m²', value: 34,  min: 0, step: 1,  group: 'Quantities' },
+        { id: 'seaKm',      label: 'Import sea distance',  unit: 'km',    value: 5142, min: 0, step: 10, group: 'Logistics (your actual)', lever: true },
+        { id: 'roadKm',     label: 'Local road from port', unit: 'km',    value: 45,  min: 0, step: 1,  group: 'Logistics (your actual)', lever: true }
+    ],
+
+    assumptions: [
+        { id: 'efRoad', label: 'Road freight EF', unit: 'kg/t·km', value: _round(_EF.roadAllTrucks, 3), step: 0.001, grp: 'Emission factors' },
+        { id: 'efSea',  label: 'Sea freight EF',  unit: 'kg/t·km', value: _round(_EF.seaContainer || 0.0161, 4), step: 0.0001, grp: 'Emission factors' },
+        { id: 'efDiesel', label: 'Diesel EF',     unit: 'kg/L',    value: _EF.diesel, step: 0.01, grp: 'Emission factors' },
+        { id: 'efGrid', label: 'Electricity EF (NZ grid)', unit: 'kg/kWh', value: _round(_EF.electricityGrid, 4), step: 0.001, grp: 'Emission factors' },
+        { id: 'distBaseRoad', label: 'Baseline local road', unit: 'km', value: 55, step: 1, grp: 'Baseline (industry default)' },
+        { id: 'wasteBase', label: 'Baseline breakage/waste', unit: '%', value: 8, step: 1, grp: 'Baseline (industry default)' },
+        { id: 'utilBase',  label: 'Baseline truck load factor', unit: '0-1', value: 0.70, step: 0.05, grp: 'Baseline (industry default)' },
+        { id: 'hoistHrsBase', label: 'Baseline hoist to floors', unit: 'hr/m²', value: 0.022, step: 0.002, grp: 'Baseline (industry default)' },
+        { id: 'wasteSimp', label: 'Simplicity breakage/waste', unit: '%', value: 2, step: 1, grp: 'Simplicity (verified)' },
+        { id: 'utilSimp',  label: 'Simplicity truck load factor', unit: '0-1', value: 0.92, step: 0.02, grp: 'Simplicity (verified)' },
+        { id: 'hoistHrsSimp', label: 'Simplicity hoist to floors', unit: 'hr/m²', value: 0.014, step: 0.002, grp: 'Simplicity (verified)' },
+        { id: 'installKwh', label: 'Fix & seal power', unit: 'kWh/m²', value: 1.5, step: 0.1, grp: 'Site energy' },
+        { id: 'craneDiesel', label: 'Hoist fuel burn', unit: 'L/hr', value: 12, step: 1, grp: 'Site energy' }
+    ],
+
+    compute(v, a) {
+        const massT = _num(v.windowArea) * _num(v.unitMass) / 1000;
+        const seaLeg = _num(v.seaKm) * _num(a.efSea);   // ships run full — same both scenarios
+        const glazingA4 = {
+            baseline:   massT * (1 + _num(a.wasteBase) / 100) * (seaLeg + _num(a.distBaseRoad) * _num(a.efRoad) / _num(a.utilBase, 0.7)),
+            simplicity: massT * (1 + _num(a.wasteSimp) / 100) * (seaLeg + _num(v.roadKm) * _num(a.efRoad) / _num(a.utilSimp, 0.9))
+        };
+        const hoist = {
+            baseline:   _num(v.windowArea) * _num(a.hoistHrsBase) * _num(a.craneDiesel) * _num(a.efDiesel),
+            simplicity: _num(v.windowArea) * _num(a.hoistHrsSimp) * _num(a.craneDiesel) * _num(a.efDiesel)
+        };
+        const install = { baseline: _num(v.windowArea) * _num(a.installKwh) * _num(a.efGrid),
+                          simplicity: _num(v.windowArea) * _num(a.installKwh) * _num(a.efGrid) };
+
+        const streams = [
+            { key: 'glazingA4', stage: 'A4', label: 'Joinery transport (sea + road)', color: '#78909c', ...glazingA4 },
+            { key: 'hoist',     stage: 'A5', label: 'Hoist to floors',   color: '#ff6600', ...hoist },
+            { key: 'install',   stage: 'A5', label: 'Fix & seal',        color: '#4CAF50', ...install }
+        ];
+        return {
+            streams,
+            quantities: [
+                { label: 'Glazing mass', value: _round(massT, 1), unit: 't' },
+                { label: 'Window area',  value: _round(_num(v.windowArea), 0), unit: 'm²' },
+                { label: 'Units (≈2 m²)', value: Math.ceil(_num(v.windowArea) / 2) || 0, unit: 'units' },
+                { label: 'Sea share of A4', value: _round(seaLeg / (seaLeg + _num(v.roadKm) * _num(a.efRoad) / _num(a.utilSimp, 0.9)) * 100, 0), unit: '%' }
+            ],
+            perUnitDenominator: _num(v.windowArea)
+        };
+    },
+
+    viz(v, r, scenario) {
+        const fill = scenario === 'baseline' ? 55 : 80;
+        const units = Math.ceil(_num(v.windowArea) / 2) || 0;
+        const cols = 3, rows = 4, total = cols * rows, set = Math.round(total * fill / 100);
+        let cells = '';
+        for (let i = 0; i < total; i++) {
+            const c = i % cols, row = Math.floor(i / cols);
+            const x = 158 + c * 36, y = 30 + row * 22;
+            const glazed = i < set;
+            cells += `<rect x="${x}" y="${y}" width="30" height="18" rx="1" fill="${glazed ? '#cce8f4' : '#f0eee9'}" stroke="#556" stroke-width="1.3"/>`;
+            if (glazed) cells += `<line x1="${x + 4}" y1="${y + 4}" x2="${x + 11}" y2="${y + 4}" stroke="#8fd0ef" stroke-width="1.3"/>`;
+        }
+        return `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <rect x="0" y="125" width="300" height="25" fill="#e8e3da"/>
+            <line x1="0" y1="125" x2="300" y2="125" stroke="#c9bfae" stroke-width="2"/>
+            <rect x="150" y="22" width="120" height="103" fill="#eceae6" stroke="#cfc8bb" stroke-width="1.5"/>
+            ${cells}
+            <text x="210" y="16" font-size="8" fill="#777" text-anchor="middle">${set}/${total} bays glazed</text>
+            <!-- hoist lifting a glazed unit -->
+            <g>
+              <rect x="26" y="40" width="6" height="85" fill="#ff8833"/>
+              <path d="M29 44 L120 40" stroke="#cc5200" stroke-width="3" stroke-linecap="round"/>
+              <line x1="120" y1="40" x2="120" y2="58" stroke="#555" stroke-width="1"/>
+              <rect x="110" y="58" width="20" height="14" rx="1" fill="#cce8f4" stroke="#556" stroke-width="1.3"/>
+            </g>
+            <text x="150" y="142" font-size="8.5" fill="#555" text-anchor="middle" font-weight="600">${units} units to install</text>
+        </svg>`;
+    }
+};
+
+// =======================================================================================
+//  ELEMENT: External Cladding  (brick veneer — heavy but local; scaffold & mortar on site)
+// =======================================================================================
+const EL_CLADDING = {
+    key: 'cladding',
+    name: 'External Cladding',
+    tagline: 'Brick veneer & mortar — heavy but locally supplied. The levers are full trucks, low waste and an efficient scaffold-and-lay cycle. Durable choice, low replacement over life.',
+    unitLabel: 'm² cladding',
+    accent: '#ff6600',
+
+    inputs: [
+        { id: 'claddingArea', label: 'Cladding area',   unit: 'm²',    value: 2100, min: 0, step: 10, group: 'Quantities' },
+        { id: 'massPerM2',    label: 'Veneer weight',   unit: 'kg/m²', value: 178,  min: 0, step: 5,  group: 'Quantities' },
+        { id: 'brickKm',      label: 'Brick supplier distance', unit: 'km', value: 18, min: 0, step: 1, group: 'Logistics (your actual)', lever: true }
+    ],
+
+    assumptions: [
+        { id: 'efRoad', label: 'Road freight EF', unit: 'kg/t·km', value: _round(_EF.roadAllTrucks, 3), step: 0.001, grp: 'Emission factors' },
+        { id: 'efDiesel', label: 'Diesel EF',     unit: 'kg/L',    value: _EF.diesel, step: 0.01, grp: 'Emission factors' },
+        { id: 'efGrid', label: 'Electricity EF (NZ grid)', unit: 'kg/kWh', value: _round(_EF.electricityGrid, 4), step: 0.001, grp: 'Emission factors' },
+        { id: 'distBaseBrick', label: 'Baseline brick distance', unit: 'km', value: 40, step: 1, grp: 'Baseline (industry default)' },
+        { id: 'wasteBase', label: 'Baseline waste', unit: '%', value: 10, step: 1, grp: 'Baseline (industry default)' },
+        { id: 'utilBase',  label: 'Baseline truck load factor', unit: '0-1', value: 0.70, step: 0.05, grp: 'Baseline (industry default)' },
+        { id: 'scaffoldHrsBase', label: 'Baseline scaffold & hoist', unit: 'hr/m²', value: 0.030, step: 0.002, grp: 'Baseline (industry default)' },
+        { id: 'wasteSimp', label: 'Simplicity waste', unit: '%', value: 3, step: 1, grp: 'Simplicity (verified)' },
+        { id: 'utilSimp',  label: 'Simplicity truck load factor', unit: '0-1', value: 0.92, step: 0.02, grp: 'Simplicity (verified)' },
+        { id: 'scaffoldHrsSimp', label: 'Simplicity scaffold & hoist', unit: 'hr/m²', value: 0.020, step: 0.002, grp: 'Simplicity (verified)' },
+        { id: 'mixKwh', label: 'Mortar mix & tools power', unit: 'kWh/m²', value: 0.8, step: 0.1, grp: 'Site energy' },
+        { id: 'craneDiesel', label: 'Hoist/plant fuel burn', unit: 'L/hr', value: 10, step: 1, grp: 'Site energy' }
+    ],
+
+    compute(v, a) {
+        const massT = _num(v.claddingArea) * _num(v.massPerM2) / 1000;
+        const cladA4 = {
+            baseline:   massT * (1 + _num(a.wasteBase) / 100) * _num(a.distBaseBrick) * _num(a.efRoad) / _num(a.utilBase, 0.7),
+            simplicity: massT * (1 + _num(a.wasteSimp) / 100) * _num(v.brickKm) * _num(a.efRoad) / _num(a.utilSimp, 0.9)
+        };
+        const scaffold = {
+            baseline:   _num(v.claddingArea) * _num(a.scaffoldHrsBase) * _num(a.craneDiesel) * _num(a.efDiesel),
+            simplicity: _num(v.claddingArea) * _num(a.scaffoldHrsSimp) * _num(a.craneDiesel) * _num(a.efDiesel)
+        };
+        const mortar = { baseline: _num(v.claddingArea) * _num(a.mixKwh) * _num(a.efGrid),
+                         simplicity: _num(v.claddingArea) * _num(a.mixKwh) * _num(a.efGrid) };
+
+        const streams = [
+            { key: 'cladA4',   stage: 'A4', label: 'Brick & mortar transport', color: '#b45f4d', ...cladA4 },
+            { key: 'scaffold', stage: 'A5', label: 'Scaffold & hoist',         color: '#ff6600', ...scaffold },
+            { key: 'mortar',   stage: 'A5', label: 'Mortar mix & laying',      color: '#f57f17', ...mortar }
+        ];
+        return {
+            streams,
+            quantities: [
+                { label: 'Brick/veneer mass', value: _round(massT, 1), unit: 't' },
+                { label: 'Cladding area', value: _round(_num(v.claddingArea), 0), unit: 'm²' },
+                { label: 'Truck loads (≈28 t)', value: Math.ceil(massT / 28) || 0, unit: 'loads' },
+                { label: 'Bricks (≈50/m²)', value: _round(_num(v.claddingArea) * 50, 0), unit: '' }
+            ],
+            perUnitDenominator: _num(v.claddingArea)
+        };
+    },
+
+    viz(v, r, scenario) {
+        const fill = scenario === 'baseline' ? 52 : 76;
+        const loads = Math.ceil(_num(v.claddingArea) * _num(v.massPerM2) / 1000 / 28) || 0;
+        const rows = 9, laid = Math.round(rows * fill / 100);
+        let bricks = '';
+        for (let rI = 0; rI < rows; rI++) {
+            const y = 116 - rI * 10;      // build up from bottom
+            const on = rI < laid;
+            const offset = (rI % 2) ? 10 : 0;
+            for (let x = 152 - offset; x < 272; x += 20) {
+                bricks += `<rect x="${x}" y="${y}" width="18" height="8" rx="0.5" fill="${on ? (rI % 2 ? '#b86030' : '#c07040') : '#efe7dd'}" stroke="${on ? '#d8b48c' : '#e2d8c9'}" stroke-width="1"/>`;
+            }
+        }
+        return `<svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" width="100%">
+            <rect x="0" y="125" width="300" height="25" fill="#e8e3da"/>
+            <line x1="0" y1="125" x2="300" y2="125" stroke="#c9bfae" stroke-width="2"/>
+            <clipPath id="clWall"><rect x="150" y="30" width="120" height="95"/></clipPath>
+            <g clip-path="url(#clWall)">${bricks}</g>
+            <rect x="150" y="30" width="120" height="95" fill="none" stroke="#cfc8bb" stroke-width="1.5"/>
+            <text x="210" y="24" font-size="8" fill="#777" text-anchor="middle">${laid}/${rows} courses laid</text>
+            <!-- scaffold frame -->
+            <g stroke="#9aa0a6" stroke-width="1.5">
+              <line x1="146" y1="30" x2="146" y2="125"/><line x1="274" y1="30" x2="274" y2="125"/>
+              <line x1="146" y1="58" x2="274" y2="58"/><line x1="146" y1="92" x2="274" y2="92"/>
+            </g>
+            <!-- mortar mixer / wheelbarrow -->
+            <g>
+              <circle cx="70" cy="104" r="16" fill="#ff8833" stroke="#cc5200" stroke-width="1.5"/>
+              <rect x="62" y="88" width="16" height="6" rx="2" fill="#cc5200"/>
+              <rect x="52" y="116" width="40" height="6" rx="2" fill="#795548"/>
+              <circle cx="60" cy="124" r="4" fill="#333"/><circle cx="84" cy="124" r="4" fill="#333"/>
+            </g>
+            <text x="90" y="142" font-size="8.5" fill="#555" text-anchor="middle" font-weight="600">${loads} truck loads</text>
+        </svg>`;
+    }
+};
+
+// =======================================================================================
 //  Element registry + project prefill
 // =======================================================================================
-const ACTIVITY_ELEMENTS = { walls: EL_WALLS, foundation: EL_FOUNDATION, floors: EL_FLOORS, roof: EL_ROOF };
+const ACTIVITY_ELEMENTS = { walls: EL_WALLS, foundation: EL_FOUNDATION, floors: EL_FLOORS, roof: EL_ROOF, windows: EL_WINDOWS, cladding: EL_CLADDING };
 
 // Per-project, per-element prefill (only overrides; missing inputs fall back to defaults).
 // Waiatarua is populated (placeholder figures pending substantiation); others = coming soon.
@@ -517,7 +709,9 @@ const ACTIVITY_PREFILL = {
         walls:      { wallArea: 2650, thickness: 200, rebarRate: 115, concreteKm: 13, rebarKm: 20, formworkReuse: 12 },
         foundation: { footprint: 980, concreteVol: 205, rebarRate: 100, digVol: 360, hardfillVol: 150, concreteKm: 13, spoilKm: 11, hardfillKm: 18 },
         floors:     { floorArea: 1150, levels: 6, thickness: 220, rebarRate: 100, concreteKm: 13, rebarKm: 20 },
-        roof:       { roofArea: 1150, concreteVol: 42, rebarRate: 85, timberVol: 52, steelMass: 17, concreteKm: 13, timberKm: 225, steelKm: 32 }
+        roof:       { roofArea: 1150, concreteVol: 42, rebarRate: 85, timberVol: 52, steelMass: 17, concreteKm: 13, timberKm: 225, steelKm: 32 },
+        windows:    { windowArea: 880, unitMass: 34, seaKm: 5142, roadKm: 42 },
+        cladding:   { claddingArea: 2200, massPerM2: 178, brickKm: 16 }
     }
     // reiputa / lakeroad / morningside: not yet substantiated → "coming soon"
 };

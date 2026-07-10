@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows & Glazing — Activity Calculator | Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/activity.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html" class="active">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Windows &amp; Glazing</h1>
+        <p>Activity calculator &middot; imported aluminium joinery &amp; glazed units &mdash; A4 sea &amp; road transport, A5 hoist &amp; install</p>
+    </section>
+
+    <div class="activity-container">
+        <p style="margin:0 0 1.25rem;"><a href="productivity.html" style="color:#cc5200;text-decoration:none;font-weight:600;">&larr; Site Activity</a></p>
+        <div id="activityApp"></div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Transport factors: MfE 2023 (ME1781) &middot; Distances: BRANZ Transport Scenarios &middot; A5 site figures are placeholders pending substantiation</p>
+        <div class="footer-admin">
+            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
+                <span class="footer-admin-mark">%</span> Admin
+            </a>
+        </div>
+    </footer>
+
+    <script>window.ACTIVITY_ELEMENT = 'windows';</script>
+    <script src="js/a4a5-data.js"></script>
+    <script src="js/activity-data.js"></script>
+    <script src="js/activity-calculator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>
