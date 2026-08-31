@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiatarua Reports - Simplicity Living</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        .reports-hero {
+            background: linear-gradient(135deg, var(--simplicity-orange) 0%, var(--simplicity-orange-dark) 100%);
+            color: var(--white);
+            padding: 3rem 2rem 2.75rem;
+            text-align: center;
+        }
+        .reports-hero .eyebrow {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            opacity: 0.85;
+            margin-bottom: 0.6rem;
+        }
+        .reports-hero h1 { font-size: 2.6rem; margin-bottom: 0.5rem; }
+        .reports-hero p { font-size: 1.1rem; max-width: 760px; margin: 0 auto; opacity: 0.95; }
+        .reports-hero .hero-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            opacity: 0.9;
+        }
+        .reports-hero .hero-back:hover { text-decoration: underline; }
+
+        /* ── Mind map ───────────────────────────────────────────────────── */
+        .mindmap-wrap { margin: 0 auto; max-width: 1050px; }
+        .mindmap { width: 100%; height: auto; display: block; }
+        .mm-node { cursor: pointer; }
+        .mm-bubble {
+            fill: var(--white);
+            stroke: #e2e2e2;
+            stroke-width: 2;
+            transition: fill 0.25s ease, stroke 0.25s ease;
+        }
+        .mm-node:hover .mm-bubble,
+        .mm-node:focus-visible .mm-bubble { fill: #fff3e9; stroke: var(--simplicity-orange); }
+        .mm-node.is-primary .mm-bubble { fill: var(--simplicity-orange); stroke: var(--simplicity-orange); }
+        .mm-node.is-primary:hover .mm-bubble { fill: var(--simplicity-orange-dark); stroke: var(--simplicity-orange-dark); }
+        .mm-title { font-size: 19px; font-weight: 700; fill: var(--dark-gray); text-anchor: middle; }
+        .mm-sub   { font-size: 13.5px; fill: var(--medium-gray); text-anchor: middle; }
+        .mm-node.is-primary .mm-title,
+        .mm-node.is-primary .mm-sub { fill: var(--white); }
+        .mm-node:hover .mm-title { fill: var(--simplicity-orange-dark); }
+        .mm-node.is-primary:hover .mm-title,
+        .mm-node.is-primary:hover .mm-sub { fill: var(--white); }
+        .mm-icon { fill: none; stroke: var(--simplicity-orange); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .mm-node.is-primary .mm-icon { stroke: var(--white); }
+        .mm-link { stroke: #dcdcdc; stroke-width: 2; stroke-dasharray: 5 5; }
+        .mm-blk  { fill: #eceff1; stroke: #cfd8dc; stroke-width: 2; }
+        .mm-blk-accent { fill: var(--simplicity-orange); stroke: var(--simplicity-orange-dark); stroke-width: 2; }
+        .mm-ground { stroke: #cfd8dc; stroke-width: 3; }
+        .mm-caption { font-size: 13px; fill: #9aa0a6; text-anchor: middle; }
+        .mm-hint { font-size: 13.5px; fill: #9aa0a6; text-anchor: middle; font-style: italic; }
+
+        .mm-fallback { display: none; }
+
+        /* ── Report list ────────────────────────────────────────────────── */
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .report-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 1.6rem 1.7rem;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+        .report-card:hover {
+            border-color: var(--simplicity-orange);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .report-card .rc-kicker {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--simplicity-orange);
+            margin-bottom: 0.5rem;
+        }
+        .report-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .report-card p { color: var(--medium-gray); font-size: 0.95rem; line-height: 1.55; flex: 1; }
+        .report-card .rc-foot {
+            margin-top: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--simplicity-orange);
+        }
+        .report-card .rc-pages { color: #bbb; font-weight: 400; }
+
+        .report-card.is-soon { opacity: 0.72; pointer-events: none; border-style: dashed; }
+        .report-card.is-soon .rc-kicker,
+        .report-card.is-soon .rc-foot { color: #b0b0b0; }
+
+        @media (max-width: 700px) {
+            .reports-hero h1 { font-size: 2rem; }
+            .mindmap-wrap { display: none; }
+            .mm-fallback { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
+                <li><a href="energy.html">Energy</a></li>
+                <li><a href="productivity.html">Site Activity</a></li>
+                <li><a href="waste.html">Waste</a></li>
+                <li><a href="maintenance.html">Maintenance</a></li>
+                <li><a href="scoring.html">Scoring</a></li>
+                <li><a href="a4a5-calculator.html" class="nav-cta">A4&ndash;A5 Calculator</a></li>
+            </ul>
+            <div id="authNavBadge" class="auth-nav-badge"></div>
+        </div>
+    </nav>
+
+    <section class="reports-hero">
+        <div class="eyebrow">Waiatarua &middot; Remuera</div>
+        <h1>Project Reports</h1>
+        <p>330 homes across four buildings at 130 Ascot Avenue, measured from the quarry through to year fifty. Pick a thread below.</p>
+        <a class="hero-back" href="index.html">&larr; Back to all projects</a>
+    </section>
+
+    <div class="container">
+        <section class="section">
+            <div class="mindmap-wrap">
+                <svg class="mindmap" viewBox="0 0 1000 560" role="group" aria-label="Waiatarua reports, arranged around the building">
+
+                    <!-- connectors -->
+                    <line class="mm-link" x1="272" y1="160" x2="432" y2="250"/>
+                    <line class="mm-link" x1="272" y1="392" x2="432" y2="300"/>
+                    <line class="mm-link" x1="728" y1="160" x2="568" y2="250"/>
+                    <line class="mm-link" x1="728" y1="392" x2="568" y2="300"/>
+
+                    <!-- the building: blocks A to D -->
+                    <g aria-hidden="true">
+                        <!-- Blocks A-D at 7, 9, 10 and 12 levels, drawn to relative height -->
+                        <rect class="mm-blk"        x="428" y="245" width="32" height="105" rx="3"/>
+                        <rect class="mm-blk"        x="466" y="215" width="32" height="135" rx="3"/>
+                        <rect class="mm-blk"        x="504" y="200" width="32" height="150" rx="3"/>
+                        <rect class="mm-blk-accent" x="542" y="170" width="32" height="180" rx="3"/>
+                        <line class="mm-ground" x1="408" y1="351" x2="594" y2="351"/>
+                    </g>
+                    <text class="mm-caption" x="500" y="374">Blocks A &ndash; D</text>
+                    <text class="mm-caption" x="500" y="392">330 homes &middot; 33,300 m&#178;</text>
+
+                    <!-- Full report -->
+                    <a class="mm-node is-primary" href="assets/reports/waiatarua/waiatarua-carbon-story.pdf" target="_blank" rel="noopener">
+                        <title>Open the full Waiatarua carbon report (PDF, 21 slides)</title>
+                        <circle class="mm-bubble" cx="172" cy="160" r="86"/>
+                        <g class="mm-icon" transform="translate(158,110)">
+                            <path d="M4 2h14l6 6v18a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/>
+                            <path d="M18 2v6h6M7 16h12M7 21h12"/>
+                        </g>
+                        <text class="mm-title" x="172" y="168">Full report</text>
+                        <text class="mm-sub"   x="172" y="190">The whole argument</text>
+                    </a>
+
+                    <!-- Embodied carbon -->
+                    <a class="mm-node" href="assets/reports/waiatarua/waiatarua-embodied-carbon.pdf" target="_blank" rel="noopener">
+                        <title>Open the Waiatarua embodied carbon report (PDF)</title>
+                        <circle class="mm-bubble" cx="172" cy="392" r="86"/>
+                        <g class="mm-icon" transform="translate(158,344)">
+                            <path d="M14 2 26 8 14 14 2 8 14 2Z"/>
+                            <path d="M2 14l12 6 12-6M2 20l12 6 12-6"/>
+                        </g>
+                        <text class="mm-title" x="172" y="400">Embodied carbon</text>
+                        <text class="mm-sub"   x="172" y="422">485 kgCO&#8322;e/m&#178;</text>
+                    </a>
+
+                    <!-- Energy -->
+                    <a class="mm-node" href="assets/reports/waiatarua/waiatarua-energy.pdf" target="_blank" rel="noopener">
+                        <title>Open the Waiatarua energy performance report (PDF)</title>
+                        <circle class="mm-bubble" cx="828" cy="160" r="86"/>
+                        <g class="mm-icon" transform="translate(816,112)">
+                            <path d="M15 2 4 17h7l-3 11 13-15h-7l1-11Z"/>
+                        </g>
+                        <text class="mm-title" x="828" y="168">Energy</text>
+                        <text class="mm-sub"   x="828" y="190">$11.0m saved, 50 yr</text>
+                    </a>
+
+                    <!-- Waste -->
+                    <a class="mm-node" href="assets/reports/waiatarua/waiatarua-waste.pdf" target="_blank" rel="noopener">
+                        <title>Open the Waiatarua construction waste report (PDF)</title>
+                        <circle class="mm-bubble" cx="828" cy="392" r="86"/>
+                        <g class="mm-icon" transform="translate(814,344)">
+                            <path d="M2 8h26M11 8V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/>
+                            <path d="M5 8l2 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l2-18"/>
+                        </g>
+                        <text class="mm-title" x="828" y="400">Waste</text>
+                        <text class="mm-sub"   x="828" y="422">51 mm on footprint</text>
+                    </a>
+
+                    <text class="mm-hint" x="500" y="520">Select a report to open it &mdash; more are added as each analysis is completed.</text>
+                </svg>
+            </div>
+
+            <!-- Narrow screens get the list instead of the diagram -->
+            <p class="mm-fallback timeline-intro">Four reports are available for Waiatarua. More are added as each analysis is completed.</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">All Waiatarua reports</h2>
+            <div class="report-grid">
+                <a class="report-card" href="assets/reports/waiatarua/waiatarua-carbon-story.pdf" target="_blank" rel="noopener">
+                    <div class="rc-kicker">Complete</div>
+                    <h3>The Carbon Story</h3>
+                    <p>The full argument end to end: what we build with, what it costs in carbon up front, how that compares with four alternative methodologies, and what happens to the verdict once fifty years of energy and durability are counted.</p>
+                    <div class="rc-foot"><span>Open PDF &rarr;</span><span class="rc-pages">21 pages</span></div>
+                </a>
+                <a class="report-card" href="assets/reports/waiatarua/waiatarua-embodied-carbon.pdf" target="_blank" rel="noopener">
+                    <div class="rc-kicker">Embodied carbon</div>
+                    <h3>Upfront &amp; Whole-of-Life Carbon</h3>
+                    <p>485 kgCO&#8322;e/m&#178; upfront, modelled object by object from the BIM. Benchmarked against the NZGBC reference building, typical in-situ concrete, precast, steel frame and mass timber &mdash; then extended across the full fifty-year life.</p>
+                    <div class="rc-foot"><span>Open PDF &rarr;</span><span class="rc-pages">8 pages</span></div>
+                </a>
+                <a class="report-card" href="assets/reports/waiatarua/waiatarua-energy.pdf" target="_blank" rel="noopener">
+                    <div class="rc-kicker">Energy</div>
+                    <h3>Energy Performance</h3>
+                    <p>What each apartment actually costs to run, where that energy goes, and what independent BRANZ measurement says about the New Zealand homes we are comparing ourselves against.</p>
+                    <div class="rc-foot"><span>Open PDF &rarr;</span><span class="rc-pages">9 pages</span></div>
+                </a>
+                <a class="report-card" href="assets/reports/waiatarua/waiatarua-waste.pdf" target="_blank" rel="noopener">
+                    <div class="rc-kicker">Waste</div>
+                    <h3>Construction Waste</h3>
+                    <p>Waste measured as a depth on the building's own footprint. Waiatarua sits at 51 mm against a 100 mm target &mdash; the weakest of the four projects, and why.</p>
+                    <div class="rc-foot"><span>Open PDF &rarr;</span><span class="rc-pages">5 pages</span></div>
+                </a>
+                <div class="report-card is-soon">
+                    <div class="rc-kicker">In preparation</div>
+                    <h3>Site Activity &amp; Productivity</h3>
+                    <p>Floor-cycle times, plant hours and delivery movements, and how the production model converts programme speed into construction-stage carbon.</p>
+                    <div class="rc-foot"><span>Coming soon</span></div>
+                </div>
+                <div class="report-card is-soon">
+                    <div class="rc-kicker">In preparation</div>
+                    <h3>Maintenance &amp; Life-Cycle Cost</h3>
+                    <p>Total cost of ownership over twenty to fifty years, comparing in-situ concrete against precast and CLT on durability rather than build price.</p>
+                    <div class="rc-foot"><span>Coming soon</span></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
+        <p>Waiatarua reporting set &middot; analysis by Nezo</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>

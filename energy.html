@@ -35,48 +35,94 @@
     <!-- Page Header -->
     <section class="hero">
         <h1>Energy Performance Analysis</h1>
-        <p>Detailed building energy modeling using OpenStudio and EnergyPlus</p>
+        <p>Whole-building energy simulation with EnergyPlus</p>
     </section>
 
     <!-- Main Content -->
     <div class="container">
 
-        <!-- 1. About OpenStudio & EnergyPlus -->
+        <!-- 1. About EnergyPlus -->
         <section class="section">
-            <h2 class="section-title">About OpenStudio &amp; EnergyPlus</h2>
-            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    <strong>OpenStudio</strong> is an open-source, cross-platform software development kit (SDK) for building energy modeling (BEM). Developed by the U.S. Department of Energy's National Renewable Energy Laboratory (NREL), OpenStudio provides a comprehensive platform for creating and analysing whole-building energy models.
-                </p>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    <strong>EnergyPlus</strong> is DOE's state-of-the-art whole-building energy simulation engine that powers OpenStudio. It calculates heating, cooling, lighting, ventilation, and other energy flows in buildings, providing detailed insights into building performance.
-                </p>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    Our Simplicity projects use these industry-leading tools to optimise building design for energy efficiency while maintaining comfort and functionality.
-                </p>
+            <h2 class="section-title">About EnergyPlus</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; max-width: 900px;">
+                <strong>EnergyPlus</strong> is the US Department of Energy's whole-building energy simulation engine. It models heating, cooling, lighting, ventilation and equipment loads hour by hour across a full year, using the real building geometry, construction build-ups and Auckland weather data. Every energy figure on this page comes out of an EnergyPlus run of the actual project model.
+            </p>
+            <div class="file-buttons">
+                <a href="assets/downloads/simplicity-energyplus-model.pdf" target="_blank" class="file-btn" download>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                    Assumed Energy Benchmark <span>PDF</span>
+                </a>
+                <a href="assets/downloads/simplicity-openstudio-model.pdf" target="_blank" class="file-btn" download>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                    Nezo Energy Modelling Guide <span>PDF</span>
+                </a>
             </div>
-            <div class="download-section">
-                <h3 style="margin-bottom: 1.5rem; color: #333;">Download Model Files</h3>
-                <div class="download-links">
-                    <a href="assets/downloads/simplicity-energyplus-model.pdf" target="_blank" class="download-link" download>
-                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">&#9889;</span>
-                        <p style="margin: 0 0 0.25rem; font-weight: bold;">Assumed Energy Benchmark</p>
-                        <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
-                    </a>
-                    <a href="assets/downloads/simplicity-openstudio-model.pdf" target="_blank" class="download-link" download>
-                        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">&#127970;</span>
-                        <p style="margin: 0 0 0.25rem; font-weight: bold;">Nezo Energy Modelling Guide</p>
-                        <p style="margin: 0; font-size: 0.8rem; color: #888;">Northcote N12 &mdash; PDF</p>
-                    </a>
+        </section>
+
+        <!-- 1b. Establishing the baseline -->
+        <section class="section">
+            <h2 class="section-title">First, What Are We Comparing Against?</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; max-width: 940px;">
+                Before any comparison means anything, you need to know what a normal New Zealand home actually does. That is not a flattering picture, and it is measured rather than assumed &mdash; BRANZ's <strong>Household Energy End-use Project 2 (HEEP2)</strong> monitored temperatures in hundreds of real homes.
+            </p>
+
+            <div class="baseline-facts">
+                <div class="baseline-fact">
+                    <div class="bf-num">80.6<span>%</span></div>
+                    <p>of winter morning readings in occupied bedrooms sat <strong>below the WHO healthy minimum of 18&deg;C</strong>. The median bedroom overnight was just 16.4&deg;C.</p>
+                    <span class="bf-src">HEEP2 SR495, winter 2023 sample</span>
                 </div>
+                <div class="baseline-fact">
+                    <div class="bf-num">58<span>%</span></div>
+                    <p>of monitored <strong>Auckland</strong> bedrooms were classed as overheating in summer &mdash; the worst rate of any region, against a national average of 36%.</p>
+                    <span class="bf-src">HEEP2 SR502, CIBSE 1b, summer 2023/24</span>
+                </div>
+            </div>
+
+            <p style="font-size: 1.1rem; line-height: 1.8; max-width: 940px; margin-top: 1.5rem;">
+                So the typical home is too cold in winter <em>and</em> too hot in summer. Fixing that costs energy &mdash; which is why the number that matters is <strong>kWh per square metre per year</strong>, and why lower is better. It is the yardstick used in every chart below.
+            </p>
+
+            <h3 class="baseline-h3">The four ways to build it</h3>
+            <div class="baseline-ladder">
+                <div class="bl-row">
+                    <div class="bl-label"><strong>Code minimum</strong><span>The legal floor</span></div>
+                    <div class="bl-bar"><div class="bl-fill" style="width:100%;background:#9aa0a6"></div></div>
+                    <div class="bl-val">190</div>
+                    <p class="bl-note">A building built to do no more than the Building Code requires. This is the baseline every other option is measured against.</p>
+                </div>
+                <div class="bl-row">
+                    <div class="bl-label"><strong>Enhanced standard</strong><span>Better fabric</span></div>
+                    <div class="bl-bar"><div class="bl-fill" style="width:87%;background:#7cb342"></div></div>
+                    <div class="bl-val">165</div>
+                    <p class="bl-note">The usual way to bring the number down: thicker insulation and better-performing windows. More insulation, same lightweight structure.</p>
+                </div>
+                <div class="bl-row">
+                    <div class="bl-label"><strong>CLT / mass timber</strong><span>Engineered timber</span></div>
+                    <div class="bl-bar"><div class="bl-fill" style="width:76%;background:#e9b44c"></div></div>
+                    <div class="bl-val">145</div>
+                    <p class="bl-note">Cross-laminated timber walls with an insulated cavity. Timber insulates where concrete does not, so the assumption is that CLT must have the better wall &mdash; worth testing rather than accepting.</p>
+                </div>
+                <div class="bl-row is-us">
+                    <div class="bl-label"><strong>Simplicity in-situ concrete</strong><span>Lake Road, Northcote</span></div>
+                    <div class="bl-bar"><div class="bl-fill" style="width:55%;background:#ff6600"></div></div>
+                    <div class="bl-val">105</div>
+                    <p class="bl-note">200&nbsp;mm in-situ concrete with 60&nbsp;mm PIR. On these build-ups it carries an R-value of 3.4&nbsp;m&#178;K/W against CLT's 2.9 &mdash; <strong>and</strong> far more thermal mass.</p>
+                </div>
+                <div class="bl-scale"><span>0</span><span>kWh / m&#178; / year &mdash; lower is better</span><span>190</span></div>
+            </div>
+
+            <div class="baseline-question">
+                <span class="bq-mark">?</span>
+                <p>Does the Simplicity in-situ concrete system genuinely use less energy than a timber alternative &mdash; and if it does, is that down to the insulation, or to the thermal mass of the concrete itself?</p>
             </div>
         </section>
 
         <!-- 2. Energy Performance Comparison (moved up) -->
         <section class="section">
             <h2 class="section-title">Energy Performance Comparison</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
-                We benchmark a typical Simplicity build against traditional methodologies in terms of energy consumption and cost. <strong>Lake Road, Northcote</strong> is used as the example Simplicity Building, compared against a code-minimum baseline, an enhanced standard (better insulation and windows), and a CLT building.
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 940px;">
+                Here is the answer. The same building, on the same site, modelled four ways &mdash; and split by end use so you can see <em>where</em> the difference comes from. <strong>Lake Road, Northcote</strong> stands in as the Simplicity building. Every bar is annual energy in <strong>kWh per m&#178;</strong>, with the total printed above it.
             </p>
             <div class="charts-container">
                 <div class="chart-wrapper">
@@ -102,8 +148,29 @@
         <!-- 3. Simplicity Projects Compared (moved up) -->
         <section class="section">
             <h2 class="section-title">Simplicity Projects Compared</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8;">
-                The same comparison repeated across our four projects &mdash; Reiputa, Waiatarua, Lake Road and Morningside Drive &mdash; showing how each successive design improves on the last. Results come from the OpenStudio energy simulations of the actual projects (entered via the Admin page).
+
+            <div class="objective-banner">
+                <div class="ob-head">
+                    <span class="ob-tag">The objective</span>
+                    <h3>Every project must beat the one before it.</h3>
+                </div>
+                <p>
+                    Being better than the Building Code once is not a strategy. The target is a number that falls with every project we deliver &mdash; so each design starts from the last one's result, not from the code minimum. Four projects in, energy use per square metre is down <strong>21%</strong> from Reiputa to Morningside Drive.
+                </p>
+                <div class="ob-track">
+                    <div class="ob-step"><span class="ob-val">120</span><span class="ob-name">Reiputa</span></div>
+                    <span class="ob-arrow">&rarr;</span>
+                    <div class="ob-step"><span class="ob-val">115</span><span class="ob-name">Waiatarua</span></div>
+                    <span class="ob-arrow">&rarr;</span>
+                    <div class="ob-step"><span class="ob-val">105</span><span class="ob-name">Lake Road</span></div>
+                    <span class="ob-arrow">&rarr;</span>
+                    <div class="ob-step is-best"><span class="ob-val">95</span><span class="ob-name">Morningside Dr</span></div>
+                    <span class="ob-unit">kWh / m&#178; / yr</span>
+                </div>
+            </div>
+
+            <p style="font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8; max-width: 940px;">
+                The same comparison repeated across the four projects, from EnergyPlus simulations of the actual building models. Each successive design carries forward what the last one proved.
             </p>
             <div class="charts-container">
                 <div class="chart-wrapper">
@@ -124,15 +191,19 @@
         <!-- 4. 3D Building Model -->
         <section class="section">
             <h2 class="section-title">3D Building Model</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                Interactive 3D visualisation of the building model geometry, thermal zones, and surface properties.
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; max-width: 940px;">
+                The geometry that goes into EnergyPlus, coloured by space &mdash; every apartment, corridor and service room the simulation solves for. Drag to orbit, scroll to zoom.
             </p>
             <div class="building-selector" id="modelSelector" style="margin-bottom: 1rem;">
-                <button type="button" class="building-btn active" data-model="assets/openstudio/openstudio-model.html" onclick="selectModel(this)">Waiatarua<small>Remuera</small></button>
-                <button type="button" class="building-btn" data-model="assets/openstudio/openstudio-model-northcote.html" onclick="selectModel(this)">Lake Road<small>Northcote</small></button>
+                <button type="button" class="building-btn active" data-mv-project="waiatarua">Waiatarua<small>Remuera</small></button>
+                <button type="button" class="building-btn" data-mv-project="lakeroad">Lake Road<small>Northcote</small></button>
             </div>
-            <div class="iframe-container">
-                <iframe id="modelFrame" src="assets/openstudio/openstudio-model.html" title="OpenStudio 3D Model Viewer"></iframe>
+            <div class="model-viewer">
+                <div id="mv-canvas" class="mv-canvas"></div>
+                <div id="mv-buildings" class="mv-buildings" role="group" aria-label="Select building"></div>
+                <div id="mv-readout" class="mv-readout"></div>
+                <div class="mv-mode">Coloured by space</div>
+                <div id="mv-loading" class="mv-loading"><span>Loading model&hellip;</span></div>
             </div>
         </section>
 
@@ -246,54 +317,42 @@
                     </div>
                 </div>
 
-                <!-- Appliance charts column -->
+                <!-- Appliance chart, energy or carbon -->
                 <div>
-                    <div class="chart-wrapper" style="margin-bottom: 1.5rem;">
-                        <h3>Electricity Use by Appliance (kWh / year)</h3>
-                        <div class="chart-canvas-container" style="height: 290px;">
-                            <canvas id="applianceEnergyChart"></canvas>
-                        </div>
-                    </div>
                     <div class="chart-wrapper">
-                        <h3>Operational Carbon by Appliance (kg CO&#8322;e / year)</h3>
-                        <div class="chart-canvas-container" style="height: 290px;">
-                            <canvas id="applianceCarbonChart"></canvas>
+                        <div class="chart-head">
+                            <h3 id="applianceChartTitle">Electricity Use by Appliance</h3>
+                            <div class="unit-tabs" role="tablist" aria-label="Appliance chart units">
+                                <button type="button" class="unit-tab active" role="tab" aria-selected="true"
+                                        onclick="showApplianceMode('kwh', this)">kWh / year</button>
+                                <button type="button" class="unit-tab" role="tab" aria-selected="false"
+                                        onclick="showApplianceMode('co2', this)">kg CO&#8322;e / year</button>
+                            </div>
+                        </div>
+                        <div class="chart-canvas-container" style="height: 470px;">
+                            <canvas id="applianceChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- OpenStudio end-use category cards -->
-            <h3 style="margin-top: 2.5rem; margin-bottom: 0.5rem; color: #333; font-size: 1.1rem;">OpenStudio Energy Model Categories</h3>
-            <p style="font-size: 0.95rem; color: #666; margin-bottom: 1rem; line-height: 1.6;">
-                Individual appliances roll up into four end-use categories used across all OpenStudio simulations &mdash; consistent across projects and comparable against NZ benchmarks.
-            </p>
-            <div class="end-use-grid">
-                <div class="end-use-card" style="border-top-color: #1976d2;">
-                    <div class="end-use-kwh" style="color: #1976d2;">1,200</div>
-                    <div class="end-use-sub">kWh &bull; 118 kg CO&#8322;e / apt / yr</div>
-                    <div class="end-use-name">Heating</div>
-                    <div class="end-use-desc">Heat pump heating mode. Low in Auckland&rsquo;s mild climate.</div>
+            <!-- End-use categories, by unit type -->
+            <div class="enduse-head">
+                <div>
+                    <h3>Energy Model Categories</h3>
+                    <p>
+                        Individual appliances roll up into the four end-use categories EnergyPlus reports against &mdash; consistent across every project, and comparable to NZ benchmarks. Figures are per apartment per year.
+                    </p>
                 </div>
-                <div class="end-use-card" style="border-top-color: #388e3c;">
-                    <div class="end-use-kwh" style="color: #388e3c;">200</div>
-                    <div class="end-use-sub">kWh &bull; 20 kg CO&#8322;e / apt / yr</div>
-                    <div class="end-use-name">Cooling</div>
-                    <div class="end-use-desc">Heat pump cooling mode. Concrete thermal mass reduces peak demand.</div>
-                </div>
-                <div class="end-use-card" style="border-top-color: #f9a825;">
-                    <div class="end-use-kwh" style="color: #f9a825;">380</div>
-                    <div class="end-use-sub">kWh &bull; 37 kg CO&#8322;e / apt / yr</div>
-                    <div class="end-use-name">Lighting</div>
-                    <div class="end-use-desc">All interior and common area lighting. LED assumed throughout.</div>
-                </div>
-                <div class="end-use-card" style="border-top-color: #e65100;">
-                    <div class="end-use-kwh" style="color: #e65100;">5,460</div>
-                    <div class="end-use-sub">kWh &bull; 535 kg CO&#8322;e / apt / yr</div>
-                    <div class="end-use-name">Equipment</div>
-                    <div class="end-use-desc">HWC + cooking + appliances + electronics. Dominant end-use category.</div>
+                <div class="unit-tabs" role="tablist" aria-label="Apartment type">
+                    <button type="button" class="unit-tab" role="tab" aria-selected="false" onclick="showUnitType(0, this)">Typical 1 bed</button>
+                    <button type="button" class="unit-tab active" role="tab" aria-selected="true" onclick="showUnitType(1, this)">Typical 2 bed</button>
+                    <button type="button" class="unit-tab" role="tab" aria-selected="false" onclick="showUnitType(2, this)">Typical 3 bed</button>
                 </div>
             </div>
+
+            <div class="unit-summary" id="unitSummary"></div>
+            <div class="end-use-grid" id="endUseGrid"></div>
 
             <!-- Thermal Performance section -->
             <div class="thermal-section">
@@ -487,17 +546,18 @@
         <!-- 6. Detailed Energy Simulation Report -->
         <section class="section">
             <h2 class="section-title">Detailed Energy Simulation Report</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
-                Complete Nezo OpenStudio energy analysis reports for each project, including annual energy consumption breakdown, monthly profiles, and HVAC system performance metrics. Select a project to view its report.
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; max-width: 940px;">
+                The complete Nezo EnergyPlus analysis for each project &mdash; annual consumption breakdown, monthly profiles and HVAC performance. Choose a project, then a building within it.
             </p>
             <div class="building-selector" id="reportSelector">
-                <button type="button" class="building-btn active" data-report="assets/reports/nezo-report-reiputa.html" onclick="selectReport(this)">Reiputa<small>Mt Wellington</small></button>
-                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-waiatarua.html" onclick="selectReport(this)">Waiatarua<small>Remuera</small></button>
-                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-lakeroad.html" onclick="selectReport(this)">Lake Road<small>Northcote</small></button>
-                <button type="button" class="building-btn" data-report="assets/reports/nezo-report-morningside.html" onclick="selectReport(this)">Morningside Drive<small>Morningside</small></button>
+                <button type="button" class="building-btn active" data-report-project="reiputa" onclick="selectReportProject(this)">Reiputa<small>Mt Wellington</small></button>
+                <button type="button" class="building-btn" data-report-project="waiatarua" onclick="selectReportProject(this)">Waiatarua<small>Remuera</small></button>
+                <button type="button" class="building-btn" data-report-project="lakeroad" onclick="selectReportProject(this)">Lake Road<small>Northcote</small></button>
+                <button type="button" class="building-btn" data-report-project="morningside" onclick="selectReportProject(this)">Morningside Drive<small>Morningside</small></button>
             </div>
-            <div class="iframe-container" style="height: 1000px;">
-                <iframe id="reportFrame" src="assets/reports/nezo-report-reiputa.html" title="Nezo OpenStudio Energy Analysis Report"></iframe>
+            <div class="report-tabs" id="reportTabs" role="tablist" aria-label="Building within project"></div>
+            <div class="iframe-container report-frame">
+                <iframe id="reportFrame" src="assets/reports/nezo-report-reiputa.html" title="Nezo EnergyPlus Analysis Report"></iframe>
             </div>
         </section>
 
@@ -527,7 +587,7 @@
     <!-- Footer -->
     <footer class="footer">
         <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
-        <p>Energy modeling performed with <a href="https://openstudio.net" target="_blank">OpenStudio</a> and <a href="https://energyplus.net" target="_blank">EnergyPlus</a></p>
+        <p>Energy modelling performed with <a href="https://energyplus.net" target="_blank">EnergyPlus</a></p>
         <div class="footer-admin">
             <a href="admin.html" class="footer-admin-link" title="Admin — data management">
                 <span class="footer-admin-mark">%</span> Admin
@@ -535,14 +595,9 @@
         </div>
     </footer>
 
-    <script>
-        function selectModel(btn) {
-            document.querySelectorAll('#modelSelector .building-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('modelFrame').src = btn.dataset.model;
-        }
-    </script>
-    <script src="js/energy.js?v=2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="js/model-viewer.js?v=3"></script>
+    <script src="js/energy.js?v=3"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js?v=2"></script>
     <script src="js/analytics.js?v=2"></script>

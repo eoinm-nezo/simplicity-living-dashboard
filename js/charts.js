@@ -29,91 +29,156 @@ document.addEventListener('DOMContentLoaded', function() {
     initEnergyChart();
 });
 
+// ─── Shared chart theme ───────────────────────────────────────────────────────
+// One place to change how every chart on the dashboard reads.
+const chartTheme = {
+    orange:     '#ff6600',
+    orangeSoft: 'rgba(255,102,0,0.15)',
+    benchmark:  '#9aa0a6',
+    ink:        '#333333',
+    muted:      '#8a8a8a',
+    grid:       '#ededed',
+    font: "'Segoe UI', system-ui, -apple-system, sans-serif"
+};
+
+Chart.defaults.font.family = chartTheme.font;
+Chart.defaults.color = chartTheme.muted;
+
+// Draws the value above each bar. Chart.js has no built-in data labels and
+// pulling in the plugin for two charts isn't worth the weight.
+const barValueLabels = {
+    id: 'barValueLabels',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((ds, di) => {
+            if (ds.type === 'line' || ds.hideValues) return;
+            const meta = chart.getDatasetMeta(di);
+            if (meta.hidden) return;
+            meta.data.forEach((bar, i) => {
+                const v = ds.data[i];
+                if (v === null || v === undefined) return;
+                ctx.save();
+                ctx.font = '700 12px ' + chartTheme.font;
+                ctx.fillStyle = chartTheme.ink;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(Math.round(v).toLocaleString(), bar.x, bar.y - 6);
+                ctx.restore();
+            });
+        });
+    }
+};
+
+// Common axis / legend treatment
+function baseChartOptions(yTitle) {
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 22 } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            title: { display: false },
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    boxWidth: 8,
+                    boxHeight: 8,
+                    padding: 18,
+                    font: { size: 12 },
+                    color: chartTheme.muted
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(30,30,30,0.92)',
+                padding: 12,
+                cornerRadius: 6,
+                titleFont: { size: 12, weight: '700' },
+                bodyFont: { size: 12 },
+                displayColors: true,
+                usePointStyle: true
+            }
+        },
+        scales: {
+            x: {
+                grid: { display: false, drawBorder: false },
+                ticks: { color: chartTheme.ink, font: { size: 12, weight: '600' } }
+            },
+            y: {
+                beginAtZero: true,
+                border: { display: false },
+                grid: { color: chartTheme.grid, drawTicks: false },
+                ticks: { color: chartTheme.muted, font: { size: 11 }, padding: 8 },
+                title: {
+                    display: true,
+                    text: yTitle,
+                    color: chartTheme.muted,
+                    font: { size: 11, weight: '700' }
+                }
+            }
+        }
+    };
+}
+
+// A constant benchmark is a reference line, not four identical bars.
+function benchmarkLine(label, value, count) {
+    return {
+        label: label,
+        type: 'line',
+        data: Array(count).fill(value),
+        borderColor: chartTheme.benchmark,
+        backgroundColor: chartTheme.benchmark,
+        borderWidth: 2,
+        borderDash: [6, 5],
+        pointRadius: 0,
+        pointHitRadius: 12,
+        fill: false,
+        hideValues: true,
+        order: 0
+    };
+}
+
 // Embodied Carbon Chart
 function initCarbonChart() {
     const ctx = document.getElementById('carbonChart');
     if (!ctx) return;
 
-    const data = {
-        labels: projectData.projects,
-        datasets: [
-            {
-                label: 'Typical Embodied Carbon',
-                data: projectData.embodiedCarbon.typical,
-                backgroundColor: '#cccccc',
-                borderColor: '#999999',
-                borderWidth: 2
-            },
-            {
-                label: 'Simplicity Actual',
-                data: projectData.embodiedCarbon.simplicity,
-                backgroundColor: '#ff6600',
-                borderColor: '#cc5200',
-                borderWidth: 2
+    const n = projectData.projects.length;
+    const options = baseChartOptions('kgCO₂e / m² GFA');
+    options.plugins.tooltip.callbacks = {
+        label: function (context) {
+            const label = context.dataset.label || '';
+            let out = label + ': ' + context.parsed.y + ' kgCO₂e/m²';
+            if (context.dataset.label === 'Simplicity actual') {
+                const typical = projectData.embodiedCarbon.typical[context.dataIndex];
+                out += '  (−' + ((typical - context.parsed.y) / typical * 100).toFixed(0) + '% vs benchmark)';
             }
-        ]
-    };
-
-    // Add improvement trend line
-    const improvementLine = {
-        label: 'Improvement Trend',
-        data: projectData.embodiedCarbon.simplicity,
-        type: 'line',
-        borderColor: '#28a745',
-        backgroundColor: 'transparent',
-        borderWidth: 3,
-        pointRadius: 0,
-        borderDash: [5, 5]
+            return out;
+        }
     };
 
     new Chart(ctx, {
         type: 'bar',
+        plugins: [barValueLabels],
         data: {
-            labels: data.labels,
-            datasets: [...data.datasets, improvementLine]
+            labels: projectData.projects,
+            datasets: [
+                {
+                    label: 'Simplicity actual',
+                    data: projectData.embodiedCarbon.simplicity,
+                    backgroundColor: chartTheme.orange,
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    maxBarThickness: 64,
+                    order: 1
+                },
+                benchmarkLine('Industry benchmark', projectData.embodiedCarbon.typical[0], n)
+            ]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: false
-                },
-                legend: {
-                    display: true,
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += context.parsed.y + ' kgCO2e/m²';
-                            
-                            // Calculate percentage improvement
-                            if (context.datasetIndex === 1) {
-                                const typical = projectData.embodiedCarbon.typical[context.dataIndex];
-                                const actual = context.parsed.y;
-                                const improvement = ((typical - actual) / typical * 100).toFixed(1);
-                                label += ` (${improvement}% reduction)`;
-                            }
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Embodied Carbon (kgCO2e/m²)'
-                    }
-                }
-            }
-        }
+        options: options
     });
 }
 
@@ -122,79 +187,44 @@ function initEnergyChart() {
     const ctx = document.getElementById('energyChart');
     if (!ctx) return;
 
+    const options = baseChartOptions(energyAxisTitle());
+    options.plugins.tooltip.callbacks = {
+        label: function (context) {
+            const unit = energyChartMode === 'usage' ? ' kWh/m²/yr' : ' kgCO₂e/m²/yr';
+            return (context.dataset.label || '') + ': ' + context.parsed.y + unit;
+        }
+    };
+
     energyChartInstance = new Chart(ctx, {
         type: 'bar',
+        plugins: [barValueLabels],
         data: getEnergyChartData(),
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: false
-                },
-                legend: {
-                    display: true,
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            label += context.parsed.y;
-                            label += energyChartMode === 'usage' ? ' kWh/m²/year' : ' kgCO2e/m²/year';
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: energyChartMode === 'usage' ? 'Energy Usage (kWh/m²/year)' : 'Energy Carbon (kgCO2e/m²/year)'
-                    }
-                }
-            }
-        }
+        options: options
     });
+}
+
+function energyAxisTitle() {
+    return energyChartMode === 'usage' ? 'kWh / m² / year' : 'kgCO₂e / m² / year';
 }
 
 function getEnergyChartData() {
     const dataToUse = energyChartMode === 'usage' ? projectData.energy.usage : projectData.energy.carbon;
     const benchVal  = energyChartMode === 'usage' ? projectData.energy.benchmark.usage : projectData.energy.benchmark.carbon;
-    const benchArr  = projectData.projects.map(() => benchVal);
 
     return {
         labels: projectData.projects,
         datasets: [
             {
-                label: 'Code Minimum Benchmark',
-                data: benchArr,
-                backgroundColor: '#cccccc',
-                borderColor: '#999999',
-                borderWidth: 2
-            },
-            {
-                label: energyChartMode === 'usage' ? 'Simplicity Actual' : 'Simplicity Carbon',
+                label: energyChartMode === 'usage' ? 'Simplicity actual' : 'Simplicity carbon',
                 data: dataToUse,
-                backgroundColor: '#ff6600',
-                borderColor: '#cc5200',
-                borderWidth: 2
+                backgroundColor: chartTheme.orange,
+                borderWidth: 0,
+                borderRadius: 6,
+                borderSkipped: false,
+                maxBarThickness: 64,
+                order: 1
             },
-            {
-                label: 'Improvement Trend',
-                data: dataToUse,
-                type: 'line',
-                borderColor: '#28a745',
-                backgroundColor: 'transparent',
-                borderWidth: 3,
-                pointRadius: 0,
-                borderDash: [5, 5]
-            }
+            benchmarkLine('Code-minimum benchmark', benchVal, dataToUse.length)
         ]
     };
 }
@@ -203,13 +233,12 @@ function getEnergyChartData() {
 function toggleEnergyChart() {
     const toggle = document.getElementById('energyToggle');
     toggle.classList.toggle('active');
-    
+
     energyChartMode = energyChartMode === 'usage' ? 'carbon' : 'usage';
-    
+
     if (energyChartInstance) {
         energyChartInstance.data = getEnergyChartData();
-        energyChartInstance.options.scales.y.title.text = 
-            energyChartMode === 'usage' ? 'Energy Usage (kWh/m²/year)' : 'Energy Carbon (kgCO2e/m²/year)';
+        energyChartInstance.options.scales.y.title.text = energyAxisTitle();
         energyChartInstance.update();
     }
 }
@@ -273,12 +302,30 @@ function lcaTotal(obj) {
 
 // Toggle between Charts view and Lifecycle Overview
 function showView(view, btn) {
-    document.querySelectorAll('.view-tab').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.view-tab').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+    });
+    if (btn) {
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+    }
     document.getElementById('chartsView').style.display = view === 'charts' ? '' : 'none';
     document.getElementById('lcaView').style.display   = view === 'lca'    ? '' : 'none';
     if (view === 'lca') buildLcaView();
+    // Keep the URL in step so a view can be linked to directly.
+    if (history.replaceState) {
+        history.replaceState(null, '', view === 'lca' ? '#lifecycle' : location.pathname + location.search);
+    }
 }
+
+// Honour #lifecycle on load so the Lifecycle Overview can be shared as a link
+document.addEventListener('DOMContentLoaded', function () {
+    if (location.hash === '#lifecycle') {
+        var tabs = document.querySelectorAll('.view-tab');
+        if (tabs.length > 1) showView('lca', tabs[1]);
+    }
+});
 
 let lcaBuilt = false;
 function buildLcaView() {
@@ -329,7 +376,7 @@ function buildLcaChart(benchTotal, cols) {
     if (!ctx) return;
 
     const labels = ['Benchmark', ...cols.map(p => p.name)];
-    const modColors = ['#ef9a9a', '#ffcc80', '#a5d6a7', '#90caf9'];
+    const modColors = ['#ff6600', '#ff9a4d', '#ffc79e', '#c9ced3'];
     const modLabels = ['A1–A3', 'A4–A5', 'B–C', 'Operational'];
     const modKeys   = ['a1a3', 'a4a5', 'bc', 'op'];
 
@@ -352,7 +399,7 @@ function buildLcaChart(benchTotal, cols) {
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { position: 'bottom', labels: { padding: 14, font: { size: 11 } } },
+                legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, boxHeight: 8, padding: 16, font: { size: 11 } } },
                 tooltip: {
                     callbacks: {
                         footer: items => {
@@ -370,7 +417,8 @@ function buildLcaChart(benchTotal, cols) {
                     stacked: true,
                     beginAtZero: true,
                     title: { display: true, text: 'kgCO₂e / m² GFA  (50-year lifecycle)', font: { size: 11, weight: 'bold' } },
-                    grid: { color: '#eee' }
+                    grid: { color: chartTheme.grid, drawTicks: false },
+                    border: { display: false }
                 }
             }
         }

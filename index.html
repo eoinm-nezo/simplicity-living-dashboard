@@ -16,29 +16,63 @@
             margin-bottom: 1.5rem;
         }
         .section-header-row .section-title { margin-bottom: 0; }
-        .view-tabs {
+
+        /* Make it unmistakable that this is a two-way switch */
+        .view-switch {
             display: flex;
-            gap: 3px;
-            background: #f0f0f0;
-            padding: 4px;
-            border-radius: 8px;
+            align-items: center;
+            gap: 0.75rem;
             flex-shrink: 0;
         }
+        .view-switch-hint {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #aaa;
+            white-space: nowrap;
+        }
+        .view-tabs {
+            display: flex;
+            gap: 4px;
+            background: #ededed;
+            padding: 4px;
+            border-radius: 50px;
+            flex-shrink: 0;
+            border: 1px solid #e0e0e0;
+        }
         .view-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
             background: none;
             border: none;
-            padding: 0.4rem 1.1rem;
-            border-radius: 6px;
+            padding: 0.5rem 1.15rem;
+            border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            color: #aaa;
+            color: #6b6b6b;
             transition: all 0.2s;
             font-family: inherit;
             white-space: nowrap;
         }
-        .view-tab.active { background: white; color: #333; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
-        .view-tab:hover:not(.active) { color: #555; }
+        .view-tab svg {
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .view-tab.active {
+            background: var(--simplicity-orange);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(255,102,0,0.35);
+        }
+        .view-tab:hover:not(.active) { color: #333; background: rgba(255,255,255,0.75); }
+        .view-tab:focus-visible { outline: 2px solid var(--simplicity-orange-dark); outline-offset: 2px; }
 
         /* ── LCA table ─────────────────────────────────────────────────── */
         .lca-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
@@ -93,49 +127,13 @@
             line-height: 1.5;
         }
 
-        /* ── Report download card (matches energy page download-link) ───── */
-        .report-download {
-            margin-top: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            background: #f5f5f5;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            padding: 1.5rem 1.75rem;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        .report-download:hover {
-            background: white;
-            border-color: #ff6600;
-            transform: translateY(-4px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-        }
-        .report-download .rd-icon {
-            font-size: 2.6rem;
-            line-height: 1;
-            flex-shrink: 0;
-        }
-        .report-download .rd-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.15rem; }
-        .report-download .rd-sub { font-size: 0.85rem; color: #888; line-height: 1.45; }
-        .report-download .rd-cta {
-            margin-left: auto;
-            flex-shrink: 0;
-            background: #ff6600;
-            color: white;
-            font-weight: 700;
-            font-size: 0.85rem;
-            padding: 0.55rem 1.3rem;
-            border-radius: 50px;
-            white-space: nowrap;
-        }
-        .report-download:hover .rd-cta { background: #cc5200; }
         @media (max-width: 700px) {
             .section-header-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-            .report-download { flex-direction: column; text-align: center; }
-            .report-download .rd-cta { margin-left: 0; }
+            /* Becomes a full-width segmented control rather than overflowing */
+            .view-switch { width: 100%; }
+            .view-switch-hint { display: none; }
+            .view-tabs { width: 100%; }
+            .view-tab { flex: 1; justify-content: center; padding: 0.55rem 0.5rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -164,6 +162,11 @@
     <section class="hero">
         <h1>Building Better. Building Smarter.</h1>
         <p>Explore real data from 4 Simplicity projects showcasing industry-leading performance in embodied carbon, energy efficiency, and construction productivity.</p>
+        <a class="hero-tour" href="assets/reports/simplicity-tour.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polygon points="8,5 19,12 8,19"/></svg>
+            Take the tour
+            <span class="hero-tour-sub">5 min &middot; what this is and how to read it</span>
+        </a>
     </section>
 
     <!-- Main Content -->
@@ -175,8 +178,13 @@
                 Four Simplicity Living build-to-rent communities across Tāmaki Makaurau Auckland, tracked from completion through to delivery. Each successive project builds on the last &mdash; driving down embodied carbon and lifting performance.
             </p>
             <div class="project-timeline">
-                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/reiputa" target="_blank" rel="noopener">
-                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/OTOH_Te_Reiputa_Ext_Pavilion_small.jpg" alt="Reiputa, Mt Wellington" loading="lazy">
+                <article class="timeline-card">
+                    <div class="timeline-img-wrap">
+                        <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/OTOH_Te_Reiputa_Ext_Pavilion_small.jpg" alt="Reiputa, Mt Wellington" loading="lazy">
+                        <a class="timeline-visit" href="https://www.simplicityliving.kiwi/listing/reiputa" target="_blank" rel="noopener" title="View the Reiputa community page" aria-label="View the Reiputa community page (opens in a new tab)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                        </a>
+                    </div>
                     <div class="timeline-node"></div>
                     <div class="timeline-body">
                         <h3>Reiputa</h3>
@@ -184,11 +192,19 @@
                         <div class="timeline-date">2026</div>
                         <span class="timeline-status status-complete">Completed</span>
                         <div class="timeline-meta">297 homes &middot; NZ's largest build-to-rent</div>
-                        <div class="timeline-link">View community &rarr;</div>
                     </div>
-                </a>
-                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/waiatarua" target="_blank" rel="noopener">
-                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/waiatarua/renders/Simplicity_Ascot_Ext_Motorway.jpg" alt="Waiatarua, Remuera" loading="lazy">
+                    <div class="timeline-reports">
+                        <span class="reports-label">Reports</span>
+                        <span class="reports-empty">In preparation</span>
+                    </div>
+                </article>
+                <article class="timeline-card has-reports">
+                    <div class="timeline-img-wrap">
+                        <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/waiatarua/renders/Simplicity_Ascot_Ext_Motorway.jpg" alt="Waiatarua, Remuera" loading="lazy">
+                        <a class="timeline-visit" href="https://www.simplicityliving.kiwi/listing/waiatarua" target="_blank" rel="noopener" title="View the Waiatarua community page" aria-label="View the Waiatarua community page (opens in a new tab)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                        </a>
+                    </div>
                     <div class="timeline-node"></div>
                     <div class="timeline-body">
                         <h3>Waiatarua</h3>
@@ -196,11 +212,25 @@
                         <div class="timeline-date">Late 2026</div>
                         <span class="timeline-status status-construction">Under construction</span>
                         <div class="timeline-meta">330 homes &middot; 130 Ascot Ave</div>
-                        <div class="timeline-link">View community &rarr;</div>
                     </div>
-                </a>
-                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/northcote" target="_blank" rel="noopener">
-                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/northcote/renders/Northcote.png" alt="Lake Road, Northcote" loading="lazy">
+                    <div class="timeline-reports">
+                        <span class="reports-label">Reports</span>
+                        <div class="report-chips">
+                            <a class="report-chip chip-primary" href="assets/reports/waiatarua/waiatarua-carbon-story.pdf" target="_blank" rel="noopener">Full report</a>
+                            <a class="report-chip" href="assets/reports/waiatarua/waiatarua-embodied-carbon.pdf" target="_blank" rel="noopener">Embodied carbon</a>
+                            <a class="report-chip" href="assets/reports/waiatarua/waiatarua-energy.pdf" target="_blank" rel="noopener">Energy</a>
+                            <a class="report-chip" href="assets/reports/waiatarua/waiatarua-waste.pdf" target="_blank" rel="noopener">Waste</a>
+                        </div>
+                        <a class="reports-all" href="reports-waiatarua.html">Explore all reports &rarr;</a>
+                    </div>
+                </article>
+                <article class="timeline-card">
+                    <div class="timeline-img-wrap">
+                        <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/northcote/renders/Northcote.png" alt="Lake Road, Northcote" loading="lazy">
+                        <a class="timeline-visit" href="https://www.simplicityliving.kiwi/listing/northcote" target="_blank" rel="noopener" title="View the Lake Road community page" aria-label="View the Lake Road community page (opens in a new tab)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                        </a>
+                    </div>
                     <div class="timeline-node"></div>
                     <div class="timeline-body">
                         <h3>Lake Road</h3>
@@ -208,11 +238,19 @@
                         <div class="timeline-date">Mid 2027</div>
                         <span class="timeline-status status-planned">Planned</span>
                         <div class="timeline-meta">93 homes &middot; 137 Lake Road</div>
-                        <div class="timeline-link">View community &rarr;</div>
                     </div>
-                </a>
-                <a class="timeline-card" href="https://www.simplicityliving.kiwi/listing/morningside" target="_blank" rel="noopener">
-                    <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/morningside/renders/Morningside.png" alt="Morningside Drive, Morningside" loading="lazy">
+                    <div class="timeline-reports">
+                        <span class="reports-label">Reports</span>
+                        <span class="reports-empty">In preparation</span>
+                    </div>
+                </article>
+                <article class="timeline-card">
+                    <div class="timeline-img-wrap">
+                        <img class="timeline-img" src="https://d7dlgmcq34qnb.cloudfront.net/photos/apartments/morningside/renders/Morningside.png" alt="Morningside Drive, Morningside" loading="lazy">
+                        <a class="timeline-visit" href="https://www.simplicityliving.kiwi/listing/morningside" target="_blank" rel="noopener" title="View the Morningside Drive community page" aria-label="View the Morningside Drive community page (opens in a new tab)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                        </a>
+                    </div>
                     <div class="timeline-node"></div>
                     <div class="timeline-body">
                         <h3>Morningside Drive</h3>
@@ -220,9 +258,12 @@
                         <div class="timeline-date">Late 2027</div>
                         <span class="timeline-status status-construction">Under construction</span>
                         <div class="timeline-meta">264 homes &middot; 10 Morningside Dr</div>
-                        <div class="timeline-link">View community &rarr;</div>
                     </div>
-                </a>
+                    <div class="timeline-reports">
+                        <span class="reports-label">Reports</span>
+                        <span class="reports-empty">In preparation</span>
+                    </div>
+                </article>
             </div>
         </section>
 
@@ -230,9 +271,18 @@
         <section class="section">
             <div class="section-header-row">
                 <h2 class="section-title">Project Performance Overview</h2>
-                <div class="view-tabs" role="tablist">
-                    <button class="view-tab active" onclick="showView('charts',this)" role="tab">Charts</button>
-                    <button class="view-tab" onclick="showView('lca',this)" role="tab">Lifecycle Overview</button>
+                <div class="view-switch">
+                    <span class="view-switch-hint">Switch view</span>
+                    <div class="view-tabs" role="tablist" aria-label="Performance overview view">
+                        <button class="view-tab active" onclick="showView('charts',this)" role="tab" aria-selected="true">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
+                            Charts
+                        </button>
+                        <button class="view-tab" onclick="showView('lca',this)" role="tab" aria-selected="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="20"/></svg>
+                            Lifecycle Overview
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -270,16 +320,6 @@
                 <div class="chart-canvas-container" style="height:220px;margin-top:1.75rem;">
                     <canvas id="lcaChart"></canvas>
                 </div>
-
-                <!-- Download the full descriptive platform report -->
-                <a href="assets/reports/simplicity-platform-report.html" target="_blank" rel="noopener" class="report-download">
-                    <span class="rd-icon">&#128202;</span>
-                    <span>
-                        <span class="rd-title">The Simplicity Performance Platform: Full Report</span>
-                        <span class="rd-sub">The complete story behind these numbers: how Nezo measures embodied carbon, energy, productivity, waste, maintenance &amp; scoring across all four projects. Opens in your browser, with a one-click PDF download at the top.</span>
-                    </span>
-                    <span class="rd-cta">Open report &rarr;</span>
-                </a>
             </div>
         </section>
     </div>
@@ -304,18 +344,37 @@
             <h2 class="section-title">Case Studies</h2>
             <div class="nav-tiles">
                 <a href="embodied-carbon.html" class="nav-tile">
-                    <div class="nav-tile-icon">🏗️</div>
+                    <div class="nav-tile-icon">
+                        <!-- Stacked slabs: material mass, layer on layer -->
+                        <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M24 5 42 13 24 21 6 13 24 5Z"/>
+                            <path d="M6 22 24 30 42 22"/>
+                            <path d="M6 31 24 39 42 31"/>
+                        </svg>
+                    </div>
                     <h3>Embodied Carbon</h3>
                     <p>Detailed analysis of material carbon footprint across Simplicity projects</p>
                 </a>
                 <a href="energy.html" class="nav-tile">
-                    <div class="nav-tile-icon">⚡</div>
+                    <div class="nav-tile-icon">
+                        <!-- Bolt -->
+                        <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M27 4 11 27h10l-4 17 20-24H26l1-16Z"/>
+                        </svg>
+                    </div>
                     <h3>Energy Performance</h3>
                     <p>OpenStudio models and energy simulation results</p>
                 </a>
                 <a href="productivity.html" class="nav-tile">
-                    <div class="nav-tile-icon">📊</div>
-                    <h3>Site Activity & Productivity</h3>
+                    <div class="nav-tile-icon">
+                        <!-- Rising floor cycles against a programme baseline -->
+                        <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M6 40h36"/>
+                            <path d="M6 33l10-9 8 6 14-16"/>
+                            <path d="M28 14h10v10"/>
+                        </svg>
+                    </div>
+                    <h3>Site Activity &amp; Productivity</h3>
                     <p>Construction efficiency metrics and workforce analysis</p>
                 </a>
             </div>

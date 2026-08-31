@@ -108,6 +108,55 @@ body {
   margin: 0 auto;
 }
 
+/* Take-the-tour call to action in the hero banner */
+.hero-tour {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 0.85rem 1.9rem;
+  background: var(--white);
+  color: var(--simplicity-orange-dark);
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-tour svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.hero-tour .hero-tour-sub {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--medium-gray);
+  border-left: 1px solid #e0e0e0;
+  padding-left: 0.75rem;
+  margin-left: 0.15rem;
+}
+
+.hero-tour:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+@media (max-width: 560px) {
+  .hero-tour .hero-tour-sub {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
 /* Container */
 .container {
   max-width: 1400px;
@@ -238,9 +287,33 @@ body {
 }
 
 .nav-tile-icon {
-  font-size: 3rem;
-  color: var(--simplicity-orange);
-  margin-bottom: 1rem;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: #fff3e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.nav-tile-icon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: var(--simplicity-orange);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-tile:hover .nav-tile-icon {
+  background: var(--simplicity-orange);
+}
+
+.nav-tile:hover .nav-tile-icon svg {
+  stroke: var(--white);
 }
 
 .nav-tile h3 {
@@ -447,6 +520,10 @@ body {
   border-color: var(--simplicity-orange);
 }
 
+.timeline-img-wrap {
+  position: relative;
+}
+
 .timeline-img {
   width: 100%;
   height: 160px;
@@ -454,6 +531,116 @@ body {
   background: var(--light-gray);
   display: block;
 }
+
+/* Corner link out to the public community page */
+.timeline-visit {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.timeline-visit svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: var(--simplicity-orange-dark);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.timeline-visit:hover,
+.timeline-visit:focus-visible {
+  background: var(--simplicity-orange);
+  transform: scale(1.08);
+}
+
+.timeline-visit:hover svg,
+.timeline-visit:focus-visible svg {
+  stroke: var(--white);
+}
+
+/* Report access along the foot of the card */
+.timeline-reports {
+  margin-top: auto;
+  border-top: 1px solid #eee;
+  padding: 0.9rem 1.25rem 1.15rem;
+  text-align: left;
+}
+
+.reports-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 0.55rem;
+}
+
+.reports-empty {
+  font-size: 0.85rem;
+  color: #bbb;
+  font-style: italic;
+}
+
+.report-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.report-chip {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.32rem 0.72rem;
+  border-radius: 50px;
+  text-decoration: none;
+  background: var(--light-gray);
+  color: var(--medium-gray);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.report-chip:hover,
+.report-chip:focus-visible {
+  background: #fff3e9;
+  border-color: var(--simplicity-orange);
+  color: var(--simplicity-orange-dark);
+}
+
+.report-chip.chip-primary {
+  background: var(--simplicity-orange);
+  color: var(--white);
+}
+
+.report-chip.chip-primary:hover,
+.report-chip.chip-primary:focus-visible {
+  background: var(--simplicity-orange-dark);
+  color: var(--white);
+  border-color: transparent;
+}
+
+.reports-all {
+  display: inline-block;
+  margin-top: 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--simplicity-orange);
+  text-decoration: none;
+}
+
+.reports-all:hover { text-decoration: underline; }
 
 /* Timeline node dot sitting on the connecting line */
 .timeline-node {
@@ -529,7 +716,7 @@ body {
 .timeline-meta {
   font-size: 0.9rem;
   color: var(--medium-gray);
-  margin-top: auto;
+  margin-top: 0.35rem;
 }
 
 .timeline-link {
