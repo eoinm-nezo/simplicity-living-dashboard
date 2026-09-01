@@ -694,3 +694,57 @@
     .unit-summary .us-kwh { font-size: 2rem; }
     .unit-summary .us-co2 { font-size: 1.4rem; }
 }
+
+/* Report toolbar: building tabs on the left, detailed-report chip on the right */
+.report-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.25rem 0 0;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+/* the tab strip now lives inside the toolbar, so it carries no border itself */
+.report-toolbar .report-tabs {
+    margin: 0;
+    border-bottom: none;
+    flex: 1 1 auto;
+}
+
+.report-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.45rem;
+    padding: 0.5rem 1.05rem;
+    border: 1px solid var(--simplicity-orange);
+    border-radius: 50px;
+    background: var(--white);
+    color: var(--simplicity-orange-dark);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.22s ease;
+}
+
+.report-chip svg {
+    width: 15px; height: 15px;
+    fill: none; stroke: currentColor;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.report-chip:hover,
+.report-chip:focus-visible {
+    background: var(--simplicity-orange);
+    color: var(--white);
+    box-shadow: 0 3px 12px rgba(255,102,0,0.35);
+}
+
+@media (max-width: 700px) {
+    .report-toolbar { align-items: stretch; }
+    .report-chip { margin-bottom: 0.6rem; justify-content: center; }
+}

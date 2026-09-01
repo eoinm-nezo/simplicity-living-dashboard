@@ -544,7 +544,7 @@
         </section>
 
         <!-- 6. Detailed Energy Simulation Report -->
-        <section class="section">
+        <section class="section" id="simulation-report">
             <h2 class="section-title">Detailed Energy Simulation Report</h2>
             <p style="font-size: 1.1rem; margin-bottom: 1.5rem; max-width: 940px;">
                 The complete Nezo EnergyPlus analysis for each project &mdash; annual consumption breakdown, monthly profiles and HVAC performance. Choose a project, then a building within it.
@@ -555,9 +555,16 @@
                 <button type="button" class="building-btn" data-report-project="lakeroad" onclick="selectReportProject(this)">Lake Road<small>Northcote</small></button>
                 <button type="button" class="building-btn" data-report-project="morningside" onclick="selectReportProject(this)">Morningside Drive<small>Morningside</small></button>
             </div>
-            <div class="report-tabs" id="reportTabs" role="tablist" aria-label="Building within project"></div>
+            <div class="report-toolbar">
+                <div class="report-tabs" id="reportTabs" role="tablist" aria-label="Building within project"></div>
+                <a class="report-chip" id="detailedReportChip"
+                   href="assets/reports/nezo-energy-detailed.html" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                    Detailed energy summary
+                </a>
+            </div>
             <div class="iframe-container report-frame">
-                <iframe id="reportFrame" src="assets/reports/nezo-report-reiputa.html" title="Nezo EnergyPlus Analysis Report"></iframe>
+                <iframe id="reportFrame" src="assets/reports/nezo-energy-summary.html" title="Nezo Energy Results Summary"></iframe>
             </div>
         </section>
 

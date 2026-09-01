@@ -196,16 +196,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ─── Detailed report: project, then building within the project ──────────────
 // Waiatarua is modelled as four separate buildings; the others are single.
+// summary = embedded in the frame, detailed = opened in a new tab from the chip.
+// Every entry points at the Test Building pair until per-project runs are
+// generated; swap the paths here as each one lands.
+const SUMMARY  = 'assets/reports/nezo-energy-summary.html';
+const DETAILED = 'assets/reports/nezo-energy-detailed.html';
+
 const REPORT_PROJECTS = {
-    reiputa:     { buildings: [{ id: 'Whole site', file: 'assets/reports/nezo-report-reiputa.html' }] },
+    reiputa:     { buildings: [{ id: 'Whole site', file: SUMMARY, detail: DETAILED }] },
     waiatarua:   { buildings: [
-                       { id: 'Block A', file: 'assets/reports/nezo-report-waiatarua.html' },
-                       { id: 'Block B', file: 'assets/reports/nezo-report-waiatarua.html' },
-                       { id: 'Block C', file: 'assets/reports/nezo-report-waiatarua.html' },
-                       { id: 'Block D', file: 'assets/reports/nezo-report-waiatarua.html' }
+                       { id: 'Block A', file: SUMMARY, detail: DETAILED },
+                       { id: 'Block B', file: SUMMARY, detail: DETAILED },
+                       { id: 'Block C', file: SUMMARY, detail: DETAILED },
+                       { id: 'Block D', file: SUMMARY, detail: DETAILED }
                    ] },
-    lakeroad:    { buildings: [{ id: 'Whole site', file: 'assets/reports/nezo-report-lakeroad.html' }] },
-    morningside: { buildings: [{ id: 'Whole site', file: 'assets/reports/nezo-report-morningside.html' }] }
+    lakeroad:    { buildings: [{ id: 'Whole site', file: SUMMARY, detail: DETAILED }] },
+    morningside: { buildings: [{ id: 'Whole site', file: SUMMARY, detail: DETAILED }] }
 };
 let reportProject = 'reiputa';
 
@@ -230,8 +236,11 @@ function renderReportTabs(activeIdx) {
 
 function selectReportBuilding(idx) {
     const p = REPORT_PROJECTS[reportProject];
-    if (!p || !p.buildings[idx]) return;
-    document.getElementById('reportFrame').src = p.buildings[idx].file;
+    const b = p && p.buildings[idx];
+    if (!b) return;
+    document.getElementById('reportFrame').src = b.file;
+    const chip = document.getElementById('detailedReportChip');
+    if (chip) chip.href = b.detail || DETAILED;
     renderReportTabs(idx);
 }
 
