@@ -160,7 +160,8 @@
     display: flex; gap: 0.85rem; align-items: flex-start;
     margin-bottom: 0.85rem;
 }
-.auth-nudge-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
+.auth-nudge-icon { flex-shrink: 0; line-height: 1; margin-top: 0.1rem; color: var(--simplicity-orange, #ff6600); }
+.auth-nudge-icon .app-icon { width: 22px; height: 22px; }
 .auth-nudge-body strong { font-size: 0.92rem; color: #cc4400; display: block; margin-bottom: 0.25rem; }
 .auth-nudge-body p { font-size: 0.83rem; color: #666; margin: 0; line-height: 1.5; }
 .auth-nudge-actions { display: flex; gap: 0.6rem; }

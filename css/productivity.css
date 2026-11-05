@@ -205,6 +205,8 @@
     margin: 1rem 0;
 }
 
+/* Deliberately the emoji, not the shared icon set: at this size the builder glyph
+   reads as a headcount in a way a line icon does not. */
 .worker-icon {
     font-size: 2.5rem;
     transition: transform 0.3s;
@@ -282,4 +284,520 @@
     .layout-diagram {
         grid-template-columns: 1fr;
     }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Construction Programme: 4D model, Gantt, activity profile
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.pm-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pm-views {
+    display: flex;
+    gap: 4px;
+    background: #ededed;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    padding: 4px;
+}
+
+.pm-view {
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b6b6b;
+    padding: 0.5rem 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.pm-view:hover:not(.active) { color: #333; background: rgba(255,255,255,0.75); }
+.pm-view.active {
+    background: var(--simplicity-orange);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(255,102,0,0.35);
+}
+
+/* transport controls */
+.pm-transport {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1 1 420px;
+    min-width: 320px;
+}
+
+.pm-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: none;
+    background: var(--simplicity-orange);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.5rem 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+.pm-play:hover { background: var(--simplicity-orange-dark); }
+.pm-play svg { width: 14px; height: 14px; }
+
+.pm-week {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #444;
+    min-width: 66px;
+    flex-shrink: 0;
+}
+
+#pmScrub { flex: 1; min-width: 120px; accent-color: var(--simplicity-orange); }
+
+.pm-speeds { display: flex; gap: 2px; flex-shrink: 0; }
+.pm-speeds button {
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #888;
+    padding: 0.3rem 0.55rem;
+    cursor: pointer;
+}
+.pm-speeds button:first-child { border-radius: 6px 0 0 6px; }
+.pm-speeds button:last-child  { border-radius: 0 6px 6px 0; }
+.pm-speeds button.active { background: #fff3e9; border-color: var(--simplicity-orange); color: var(--simplicity-orange-dark); }
+
+/* what's live this week */
+.pm-now { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; min-height: 28px; }
+.pm-chip {
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+    color: #fff;
+    background: var(--c, #999);
+}
+.pm-chip-idle { background: #c7c7c7; }
+
+/* split: model beside programme */
+.pm-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.pm-model-frame {
+    position: relative;
+    height: 480px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #eef1f3;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.pm-4d { position: absolute; top: 0; right: 0; bottom: 0; left: 0; cursor: grab; }
+.pm-4d:active { cursor: grabbing; }
+.pm-4d canvas { display: block; width: 100% !important; height: 100% !important; }
+
+.pm-4d-overlay {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(238,241,243,0.92);
+    color: #888;
+    font-size: 0.9rem;
+    z-index: 3;
+}
+.pm-4d-overlay.is-ready { display: none; }
+
+.pm-cams {
+    position: absolute; top: 12px; right: 12px;
+    display: flex; gap: 3px; z-index: 2;
+    background: rgba(255,255,255,0.92);
+    border-radius: 50px; padding: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+}
+.pm-cams button {
+    border: none; background: none;
+    font-family: inherit; font-size: 0.72rem; font-weight: 700;
+    color: #777; padding: 0.3rem 0.7rem; border-radius: 50px; cursor: pointer;
+}
+.pm-cams button.active { background: var(--simplicity-orange); color: #fff; }
+
+.pm-key {
+    position: absolute; left: 12px; bottom: 12px; z-index: 2;
+    display: flex; flex-direction: column; gap: 3px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 7px; padding: 0.5rem 0.7rem;
+    font-size: 0.7rem; color: #666;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.pm-key span { display: flex; align-items: center; gap: 0.4rem; }
+.pm-key i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+.pm-cap { font-size: 0.76rem; color: #aaa; margin: 0.55rem 0 0; font-style: italic; }
+
+/* ── Gantt: the same scope, run two ways ────────────────────────────────── */
+.gantt2 { --glabel-w: 190px; }
+/* The playhead spans the bar rows only, so it hangs off this wrapper rather than the
+   whole card — the intro text above rewraps and a fixed offset would drift. */
+.grows { position: relative; padding-top: 6px; }
+
+/* headline comparison */
+.gsummary {
+    display: flex; gap: 1.75rem; flex-wrap: wrap;
+    padding-bottom: 0.9rem; margin-bottom: 0.85rem; border-bottom: 1px solid #eee;
+}
+.gstat { display: flex; align-items: baseline; gap: 0.45rem; }
+.gstat b { font-size: 1.9rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.gstat span { font-size: 0.72rem; line-height: 1.25; color: #999; }
+.gstat-simp b { color: var(--simplicity-orange); }
+.gstat-base b { color: #9aa0a6; }
+.gstat-save b { color: #2e7d32; }
+.gstat-save span { color: #2e7d32; opacity: 0.75; }
+
+.gexplain { font-size: 0.8rem; line-height: 1.6; color: #777; margin: 0 0 1rem; max-width: 70ch; }
+.gexplain b { font-weight: 700; }
+.gexplain .k-base { color: #8b9096; }
+.gexplain .k-simp { color: var(--simplicity-orange); }
+
+.grow { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.glabel {
+    width: var(--glabel-w); flex-shrink: 0;
+    font-size: 0.78rem; font-weight: 600; color: #444; line-height: 1.25;
+}
+.gtrack { position: relative; flex: 1; height: 30px; }
+
+/* baseline: pale, full height, its duration tucked at the right-hand end */
+.gbase {
+    position: absolute; top: 0; height: 100%;
+    background: #e4e7ea; border-radius: 5px;
+    display: flex; align-items: center; justify-content: flex-end;
+}
+.gbase em {
+    font-style: normal; font-size: 0.68rem; font-weight: 700; color: #8b9096;
+    padding-right: 0.5rem; white-space: nowrap;
+}
+
+/* Waiatarua: solid, inset, so the baseline shows above and below it */
+.gbar {
+    position: absolute; top: 5px; height: 20px;
+    border-radius: 4px; display: flex; align-items: center; justify-content: flex-end;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+/* Right-aligned, so the left of the bar stays clear for the building notches. The solid
+   bar always ends well short of the pale one, so the two counts never meet. */
+.gbar em {
+    font-style: normal; font-size: 0.68rem; font-weight: 700; color: #fff;
+    padding-right: 0.5rem; white-space: nowrap; text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+    position: relative; z-index: 1;
+}
+/* where each building joins this workstream */
+.gnotch {
+    position: absolute; top: 2px; bottom: 2px; width: 2px;
+    background: rgba(255,255,255,0.9); border-radius: 1px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.12);
+}
+
+/* axis sits in the track column so its ticks line up with the bars */
+.gaxis-row { margin-top: 0.2rem; }
+.gaxis { height: 16px; }
+.gaxis span {
+    position: absolute; top: 0; transform: translateX(-50%);
+    font-size: 0.68rem; color: #aaa; font-variant-numeric: tabular-nums;
+}
+.gfoot {
+    font-size: 0.72rem; color: #aaa; margin: 0.5rem 0 0;
+    padding-left: calc(var(--glabel-w) + 0.6rem);
+}
+
+/* The playhead spans the bar rows only, and must line up with the track column rather
+   than the full width of the card: the rows are inset by the label gutter on the left.
+   --f is the 0-1 position, set from JS. */
+.gplayhead {
+    position: absolute; top: 0; bottom: 18px; width: 2px;
+    background: #111; pointer-events: none; z-index: 4;
+    transition: left 0.08s linear;
+    left: calc(var(--glabel-w) + 0.6rem + (100% - var(--glabel-w) - 0.6rem) * var(--f, 0));
+}
+.gph-flag {
+    position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff; font-size: 0.6rem; font-weight: 800;
+    padding: 1px 5px; border-radius: 3px; white-space: nowrap;
+}
+
+/* ── element cards: three carbon figures ────────────────────────────────── */
+.element-totals {
+    background: #fff; border: 1px solid #eee; border-radius: 10px;
+    padding: 0.4rem 1.2rem; margin-bottom: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+/* One row per module: A4 and A5 differ for entirely different reasons, so they get
+   their own line, their own coloured tag and their own explanation rather than a single
+   headline percentage. The left tag makes it obvious at a glance which card is which. */
+.element-totals .et-pair {
+    position: relative;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0.9rem;
+    padding: 0.9rem 0 0.9rem 3.6rem; border-bottom: 1px solid #f2f2f2;
+}
+.element-totals .et-pair:last-child { border-bottom: none; }
+.element-totals .et-tag {
+    position: absolute; left: 0; top: 0.9rem; bottom: 0.9rem; width: 2.8rem;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 1.05rem; letter-spacing: 0.04em;
+    border-radius: 8px;
+}
+.element-totals .et-pair-a4 .et-tag { background: #2563eb; }
+.element-totals .et-pair-a5 .et-tag { background: var(--simplicity-orange); }
+.element-totals .et-item { font-size: 0.95rem; color: #556; flex-shrink: 0; }
+.element-totals .et-item strong { font-size: 1.3rem; color: #3a4453; }
+.element-totals .et-item small { display: block; font-size: 0.66rem; color: #94a0b2; text-transform: uppercase; letter-spacing: 0.05em; }
+.element-totals .et-gs strong { color: #99a1ad; }
+.element-totals .et-base strong { color: #566171; }
+.element-totals .et-simp strong { color: var(--simplicity-orange-dark); }
+.element-totals .et-red { color: var(--simplicity-orange-dark); }
+.element-totals .et-arrow { color: #c3c9d4; font-size: 1.2rem; font-weight: 700; }
+.element-totals .et-note {
+    flex: 1 1 320px; font-size: 0.8rem; line-height: 1.55; color: #8a8a8a;
+    border-left: 2px solid #eef1f6; padding-left: 0.9rem;
+}
+
+.carbon-values { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.carbon-a13 {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 0.5rem; border-bottom: 1px solid #f0f0f0;
+}
+.carbon-a13 span { font-size: 0.82rem; color: #666; }
+.carbon-a13 small { display: block; font-size: 0.66rem; color: #b0b0b0; }
+.carbon-a13 strong { font-size: 1.1rem; color: #444; }
+
+/* Per-element A4/A5: two stage rows (A4, A5). Each compares three references side by side,
+   Green Star default → Baseline estimate → Simplicity measured, with a coloured stage tag. */
+.a45-grid { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.1rem; }
+.a45-row {
+    display: grid; grid-template-columns: 22px 1fr 1fr 1fr; gap: 0.35rem; align-items: stretch;
+}
+.a45-tag {
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 0.72rem; letter-spacing: 0.02em; border-radius: 6px;
+}
+.a45-row-a4 .a45-tag { background: #2563eb; }
+.a45-row-a5 .a45-tag { background: var(--simplicity-orange); }
+.a45-cell {
+    background: #f6f7f9; border: 1px solid #e9ecf1; border-radius: 7px;
+    padding: 0.45rem 0.5rem; text-align: left; min-width: 0;
+}
+.a45-cell small { display: block; font-size: 0.56rem; color: #949cab; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.2; min-height: 2.1em; }
+.a45-cell strong { font-size: 1.02rem; color: #3a4453; }
+/* Green Star: the compliance reference that under-reads, kept muted */
+.a45-gs { background: #f1f3f6; }
+.a45-gs strong { color: #99a1ad; }
+/* Baseline: the realistic conventional reference */
+.a45-base { border-top: 3px solid #b9c2cf; }
+.a45-base strong { color: #566171; }
+/* Simplicity: the measured result, the win */
+.a45-cell.a45-simp { background: #fff3e9; border-color: #ffd9bf; border-top: 3px solid var(--simplicity-orange); }
+.a45-simp strong { color: var(--simplicity-orange-dark); }
+.a45-empty { color: #bbb; font-size: 0.9rem; margin: 0.4rem 0; }
+
+.a45-delta {
+    display: block; margin-top: 0.3rem; font-style: normal;
+    font-size: 0.66rem; font-weight: 700; letter-spacing: 0.03em;
+}
+.a45-delta.good { color: #2e7d32; }
+.a45-delta.bad  { color: #c62828; }
+.a45-delta.neutral { color: #a0a0a0; }
+
+.element-card .carbon-link {
+    display: inline-block; margin-top: 0.15rem;
+    font-size: 0.78rem; font-weight: 700;
+    color: var(--simplicity-orange); text-decoration: none;
+}
+.element-card .carbon-link:hover { text-decoration: underline; }
+
+@media (max-width: 1100px) {
+    .pm-split { grid-template-columns: 1fr; }
+    .pm-model-frame { height: 400px; }
+}
+@media (max-width: 700px) {
+    .gantt2 { --glabel-w: 110px; --gweeks-w: 44px; }
+    .glabel { font-size: 0.7rem; }
+    .pm-head { flex-direction: column; align-items: stretch; }
+    .pm-views { width: 100%; }
+    .pm-view { flex: 1; text-align: center; }
+    .carbon-split { grid-template-columns: 1fr; }
+}
+
+/* speed-dividend table: give the number columns room */
+.comparison-card .db-table { width: 100%; border-collapse: collapse; }
+.comparison-card .db-table th,
+.comparison-card .db-table td { padding: 0.5rem 0.9rem; border-bottom: 1px solid #f0f0f0; font-size: 0.92rem; }
+.comparison-card .db-table thead th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+.comparison-card .db-table td:first-child { width: 46%; color: #555; }
+
+/* trade legend wraps onto two rows once the trade swatches are added */
+.pm-key { flex-wrap: wrap; max-width: 300px; row-gap: 2px; }
+.pm-key-rule { flex-basis: 100%; height: 0; margin: 2px 0; border-top: 1px solid rgba(0,0,0,0.10); }
+
+/* ── 3D labels (CSS2DRenderer), from the 4D Optimiser's own styles ───────────── */
+.labels3d { position: absolute; inset: 0; pointer-events: none; }
+.label3d {
+    background: rgb(255 255 255 / .92); border-radius: 6px; padding: 2px 8px;
+    font-weight: 600; font-size: 12px; box-shadow: 0 1px 3px rgb(0 0 0 / .15); white-space: nowrap;
+}
+.label3d.crane { font-size: 11px; }
+/* .pm-4d is already absolutely inset into .pm-model-frame, which makes it a
+   positioning context for .labels3d. Do not set position:relative here: it overrides
+   the inset and the canvas stops filling the card. */
+.pm-4d canvas { display: block; }
+
+/* week readout now carries the calendar month too */
+.pm-week small { font-weight: 500; color: #999; margin-left: 0.3rem; }
+
+/* ── Speed-dividend card: public-facing rewrite ──────────────────────────── */
+.sd-lead { font-size: 1.1rem; line-height: 1.7; color: #3a4453; margin: 0.25rem 0 1.5rem; }
+.sd-lead strong { color: #222; }
+
+/* Hero: the duration comparison, the single most important message, as two bars.
+   Charcoal band (matches the video frame) with the orange brand as the "our result" accent. */
+.sd-hero {
+    display: flex; align-items: center; gap: 1.7rem;
+    background: linear-gradient(135deg, #2a2f37 0%, #3b434d 100%);
+    border-radius: 14px; padding: 1.6rem 1.8rem; margin-bottom: 1.5rem; color: #fff;
+    box-shadow: 0 8px 24px rgba(42,47,55,0.20);
+}
+.sd-hero-stat { flex-shrink: 0; text-align: center; line-height: 0.95; }
+.sd-hero-num { display: block; font-size: 3.8rem; font-weight: 800; letter-spacing: -0.02em; color: var(--simplicity-orange); }
+.sd-hero-unit { display: block; font-size: 0.92rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.88; margin-top: 0.3rem; }
+.sd-hero-bars { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.sd-bar-row { display: flex; flex-direction: column; gap: 0.3rem; }
+.sd-bar-label { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.82; }
+.sd-bar-track { display: block; height: 34px; background: rgba(255,255,255,0.10); border-radius: 7px; }
+.sd-bar-fill { display: flex; align-items: center; justify-content: flex-end; height: 100%; border-radius: 7px; padding: 0 0.8rem; font-weight: 800; font-size: 0.95rem; white-space: nowrap; box-sizing: border-box; min-width: 4rem; }
+.sd-bar-fill.base { background: rgba(255,255,255,0.22); color: #fff; }
+.sd-bar-fill.simp { background: var(--simplicity-orange); color: #fff; }
+
+/* Three stat tiles: what stays the same, what gets busier, what we save */
+.sd-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.6rem; }
+.sd-tile { border: 1px solid #e7ebf0; border-radius: 12px; padding: 1.2rem 1.25rem; background: #fff; }
+.sd-tile-ic { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.7rem; }
+.sd-ic-same { background: #eef1f5; color: #6b7585; }
+.sd-ic-up { background: #eaf1f4; color: #567684; }
+.sd-ic-down { background: #fff0e4; color: var(--simplicity-orange); }
+.sd-tile-val { font-size: 1.7rem; font-weight: 800; color: #2a2f37; line-height: 1.1; }
+.sd-tile-val small { font-size: 0.74rem; font-weight: 700; color: #9aa3b2; margin-left: 0.25rem; }
+.sd-tile-lbl { font-size: 0.86rem; color: #5f6773; line-height: 1.5; margin-top: 0.45rem; }
+.sd-tile-hero { border-color: #ffd4b5; background: #fff7f1; }
+.sd-tile-hero .sd-tile-val { color: var(--simplicity-orange-dark); }
+
+.sd-explain { background: #f6f7f9; border-left: 4px solid var(--simplicity-orange); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1.6rem; }
+.sd-explain h4 { margin: 0 0 0.5rem; font-size: 1.02rem; color: #2a2f37; }
+.sd-explain p { margin: 0; font-size: 0.97rem; line-height: 1.65; color: #4a525e; }
+.sd-explain strong { color: var(--simplicity-orange-dark); }
+
+/* Overhead breakdown: label on the left, a bar that fills the width, the number on the right. */
+.sd-overhead { margin-bottom: 1.25rem; }
+.sd-overhead h4 { font-size: 1.02rem; color: #2a2f37; margin: 0 0 0.3rem; }
+.sd-ov-intro { font-size: 0.9rem; color: #6f7883; margin: 0 0 1rem; line-height: 1.5; }
+.sd-ov-list { display: flex; flex-direction: column; }
+.sd-ov-row {
+    display: grid; grid-template-columns: minmax(160px, 32%) 1fr 72px; align-items: center; gap: 1.1rem;
+    padding: 0.7rem 0; border-bottom: 1px solid #eef0f3;
+}
+.sd-ov-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sd-ov-item { font-weight: 700; color: #343c47; font-size: 0.92rem; line-height: 1.25; }
+.sd-ov-note { font-size: 0.76rem; color: #949cab; line-height: 1.35; }
+.sd-ov-bar { height: 12px; background: #eef0f3; border-radius: 6px; overflow: hidden; }
+.sd-ov-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #ffb878, var(--simplicity-orange)); border-radius: 6px; }
+.sd-ov-num { text-align: right; font-weight: 800; color: #343c47; font-size: 1.1rem; }
+.sd-ov-num small { display: block; font-size: 0.58rem; font-weight: 700; color: #aab2bd; text-transform: uppercase; letter-spacing: 0.03em; }
+
+.sd-formula { display: flex; align-items: stretch; justify-content: center; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+.sd-f-chip {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    background: #f6f7f9; border: 1px solid #e7ebf0; border-radius: 10px; padding: 0.8rem 1.2rem; min-width: 118px;
+}
+.sd-f-chip strong { font-size: 1.5rem; font-weight: 800; color: #2a2f37; line-height: 1; }
+.sd-f-chip small { font-size: 0.66rem; color: #949cab; text-transform: uppercase; letter-spacing: 0.03em; margin-top: 0.4rem; }
+.sd-f-op { display: flex; align-items: center; font-size: 1.4rem; font-weight: 700; color: #c2c9d2; }
+.sd-f-result { background: var(--simplicity-orange); border-color: var(--simplicity-orange); }
+.sd-f-result strong { color: #fff; }
+.sd-f-result small { color: rgba(255,255,255,0.9); }
+
+/* ── Clickable affordance for tiles + overhead rows ──────────────────────── */
+.sd-clickable { cursor: pointer; }
+.sd-clickable:focus-visible { outline: 2px solid var(--simplicity-orange); outline-offset: 2px; }
+.sd-tile.sd-clickable { transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s; }
+.sd-tile.sd-clickable:hover { border-color: #ffd4b5; box-shadow: 0 6px 18px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.sd-tile-more { display: block; margin-top: 0.75rem; font-size: 0.72rem; font-weight: 800; color: var(--simplicity-orange); text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.55; transition: opacity 0.15s; }
+.sd-tile.sd-clickable:hover .sd-tile-more { opacity: 1; }
+.sd-ov-row.sd-clickable { transition: background 0.15s; }
+.sd-ov-row.sd-clickable:hover { background: #fff7f1; }
+.sd-ov-row.sd-clickable:hover .sd-ov-item { color: var(--simplicity-orange-dark); }
+
+/* ── Explainer popup ─────────────────────────────────────────────────────── */
+.sd-modal-overlay { position: fixed; inset: 0; background: rgba(28,31,36,0.6); z-index: 2500; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+.sd-modal { position: relative; background: #fff; border-radius: 16px; max-width: 560px; width: 100%; max-height: 88vh; overflow: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+.sd-modal-close { position: absolute; top: 0.85rem; right: 0.85rem; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.18); color: #fff; font-size: 0.95rem; cursor: pointer; z-index: 2; }
+.sd-modal-close:hover { background: rgba(255,255,255,0.32); }
+.sd-modal-head { background: linear-gradient(135deg, #2a2f37 0%, #3b434d 100%); color: #fff; padding: 1.6rem 1.8rem 1.5rem; border-radius: 16px 16px 0 0; }
+.sd-modal-tag { display: inline-block; font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background: var(--simplicity-orange); color: #fff; border-radius: 50px; padding: 0.22rem 0.75rem; margin-bottom: 0.65rem; }
+.sd-modal-title { margin: 0; font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
+.sd-modal-body { padding: 1.5rem 1.8rem 1.8rem; }
+.sd-modal-body p { margin: 0 0 0.9rem; font-size: 0.97rem; line-height: 1.65; color: #4a525e; }
+.sd-modal-body h5 { margin: 1.3rem 0 0.5rem; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--simplicity-orange-dark); }
+.sd-modal-body strong { color: #2a2f37; }
+.sd-modal-body em { font-style: italic; color: #556; }
+.sd-m-stat { display: flex; flex-direction: column; gap: 0.25rem; background: #fff7f1; border: 1px solid #ffe0c8; border-radius: 10px; padding: 0.95rem 1.15rem; margin-top: 1rem; }
+.sd-m-stat span { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9aa3b2; font-weight: 700; }
+.sd-m-stat strong { font-size: 1.2rem; color: var(--simplicity-orange-dark); }
+.sd-m-stat em { font-size: 0.82rem; color: #77808c; font-style: normal; }
+
+/* ── Demonstration video slot ────────────────────────────────────────────── */
+.sd-video { margin-top: 1.75rem; border-top: 1px solid #eef0f3; padding-top: 1.5rem; }
+.sd-video-head h4 { font-size: 1.05rem; color: #2a2f37; margin: 0 0 0.35rem; }
+.sd-video-head p { font-size: 0.92rem; color: #778; line-height: 1.6; margin: 0 0 1rem; max-width: 60ch; }
+.sd-video-frame {
+    position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden;
+    background: linear-gradient(135deg, #2a2f37 0%, #434a54 100%);
+}
+.sd-video-frame video, .sd-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.sd-video-ph {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.6rem; text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.9);
+}
+.sd-video-ph svg { color: var(--simplicity-orange); opacity: 0.95; }
+.sd-video-ph-badge {
+    font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--simplicity-orange); color: #fff; border-radius: 50px; padding: 0.25rem 0.85rem;
+}
+.sd-video-ph-txt { font-size: 0.88rem; color: rgba(255,255,255,0.78); max-width: 42ch; line-height: 1.5; }
+
+@media (max-width: 760px) {
+    .sd-hero { flex-direction: column; align-items: stretch; gap: 1.1rem; padding: 1.3rem 1.3rem; }
+    .sd-hero-stat { display: flex; align-items: baseline; justify-content: center; gap: 0.5rem; }
+    .sd-hero-num { font-size: 2.7rem; }
+    .sd-hero-unit { margin-top: 0; }
+    .sd-tiles { grid-template-columns: 1fr; }
+    .sd-ov-row { grid-template-columns: 1fr auto; grid-template-areas: "item num" "bar bar"; gap: 0.35rem 0.9rem; }
+    .sd-ov-item { grid-area: item; }
+    .sd-ov-num { grid-area: num; }
+    .sd-ov-bar { grid-area: bar; }
+    .sd-ov-note { display: none; }
 }

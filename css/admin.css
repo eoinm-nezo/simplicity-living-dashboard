@@ -233,3 +233,209 @@
 
 .analytics-row:last-child { border-bottom: none; }
 .analytics-row strong { color: var(--simplicity-orange); }
+
+/* ===========================================================================
+   Benchmark (scoring) editor — per-criterion evidence capture
+   =========================================================================== */
+.bench-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.bench-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    padding: 0.5rem 0.95rem;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.bench-chip small { font-weight: 500; font-size: 0.72rem; color: #999; }
+.bench-chip:hover { border-color: var(--simplicity-orange-light); }
+.bench-chip.active {
+    border-color: var(--simplicity-orange);
+    background: #fff8f5;
+    color: var(--simplicity-orange-dark);
+}
+.bench-chip.bench-add {
+    justify-content: center;
+    align-items: center;
+    color: var(--simplicity-orange);
+    border-style: dashed;
+}
+
+.bench-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+}
+.bench-meta label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #888;
+}
+.bench-meta input,
+.bench-meta select {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #222;
+}
+.bench-meta input:focus,
+.bench-meta select:focus { outline: none; border-color: var(--simplicity-orange); }
+
+.bench-total {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #222;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.bench-modules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1.25rem;
+}
+
+.bench-mod {
+    border: 1px solid #ececec;
+    border-top: 4px solid var(--cat, #ccc);
+    border-radius: 10px;
+    padding: 1rem 1.1rem 1.1rem;
+    background: #fff;
+}
+
+.bench-mod-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+}
+.bench-mod-icon { width: 20px; height: 20px; color: var(--cat, #666); }
+.bench-mod-name {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #222;
+    flex: 1;
+}
+.bench-mod-score {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--cat, #555);
+    white-space: nowrap;
+}
+.bench-hold {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #c0392b;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+}
+
+.bench-crit {
+    padding: 0.7rem 0;
+    border-top: 1px solid #f0f0f0;
+}
+.bench-crit.is-na { opacity: 0.6; }
+
+.bench-crit-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+.bench-crit-name { font-weight: 700; font-size: 0.9rem; color: #333; }
+.bench-crit-name small { font-weight: 500; color: #aaa; font-size: 0.76rem; }
+.bench-crit-pts {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--cat, #555);
+    white-space: nowrap;
+}
+.bench-crit-how {
+    font-size: 0.78rem;
+    color: #888;
+    line-height: 1.45;
+    margin: 0.2rem 0 0.5rem;
+}
+
+.bench-crit-input { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.bench-crit-input input[type="number"] {
+    width: 110px;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+.bench-crit-input select {
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 0.85rem;
+}
+.bench-crit-input input:focus,
+.bench-crit-input select:focus { outline: none; border-color: var(--simplicity-orange); }
+.bench-unit { font-size: 0.82rem; color: #999; }
+
+.bench-pt { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.bench-items { display: flex; flex-direction: column; gap: 0.35rem; width: 100%; }
+.bench-items label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.4;
+    cursor: pointer;
+}
+.bench-items input[type="checkbox"] { margin-top: 0.15rem; }
+
+.bench-na {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    font-size: 0.76rem;
+    color: #999;
+    cursor: pointer;
+}
+
+.bench-actions { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+.bench-del { border-color: #dc3545; color: #dc3545; }

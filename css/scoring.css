@@ -586,7 +586,8 @@
 }
 .detail-head:hover { background:#fff8f2; }
 .detail-head-main { display:flex; align-items:center; gap:0.6rem; }
-.detail-icon { font-size:1.3rem; }
+.detail-icon { display: inline-flex; color: var(--simplicity-orange); }
+.detail-icon .app-icon { width: 22px; height: 22px; }
 .detail-name { font-weight:700; }
 .detail-head-right { display:flex; align-items:center; gap:0.6rem; }
 .detail-band { font-size:0.75rem; font-weight:700; padding:0.18rem 0.6rem; border-radius:50px; white-space:nowrap; }
@@ -603,6 +604,29 @@
 .detail-criteria li { padding:0.4rem 0 0.4rem 1.4rem; position:relative; border-bottom:1px solid #f5f5f5; line-height:1.5; font-size:0.92rem; }
 .detail-criteria li::before { content:'✓'; position:absolute; left:0; color:var(--success-green); font-weight:bold; }
 .detail-note { background:#f9f9f9; border-left:3px solid var(--simplicity-orange); border-radius:4px; padding:0.75rem 1rem; line-height:1.6; font-size:0.92rem; }
+
+/* Points breakdown: how the /20 is built up from the criteria */
+.detail-criteria.crit-breakdown li { display:grid; grid-template-columns:22px 1fr auto; align-items:start; gap:0.1rem 0.65rem; padding:0.55rem 0; border-bottom:1px solid #f5f5f5; }
+.detail-criteria.crit-breakdown li::before { content:none; }
+.crit-mark { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800; margin-top:0.1rem; }
+.crit-met .crit-mark { background:#e8f5e9; color:var(--success-green); }
+.crit-met .crit-mark::before { content:'✓'; }
+.crit-partial .crit-mark { background:#fff4e5; color:#e68a00; }
+.crit-partial .crit-mark::before { content:'◑'; }
+.crit-pending .crit-mark { background:#f1f1f1; color:#bbb; }
+.crit-pending .crit-mark::before { content:'○'; }
+.crit-text { line-height:1.5; }
+.crit-pending .crit-text { color:#9a9a9a; }
+.crit-pts { font-weight:800; font-size:0.95rem; color:var(--success-green); white-space:nowrap; align-self:center; }
+.crit-partial .crit-pts { color:#e68a00; }
+.crit-pending .crit-pts { color:#c4c4c4; }
+.crit-pts small { font-weight:600; color:#bbb; }
+.crit-legend { display:flex; gap:1.1rem; font-size:0.78rem; color:var(--medium-gray); margin:0.5rem 0 0.25rem; flex-wrap:wrap; }
+.crit-key { display:inline-flex; align-items:center; gap:0.35rem; }
+.crit-key::before { content:''; width:11px; height:11px; border-radius:50%; display:inline-block; }
+.crit-key.met::before { background:var(--success-green); }
+.crit-key.partial::before { background:#e68a00; }
+.crit-key.pending::before { background:#ccc; }
 
 /* Map launch buttons */
 .map-launch-btn, .map-mini-btn {
@@ -625,14 +649,166 @@
 }
 .standard-groups { display:flex; flex-direction:column; gap:1.5rem; }
 .standard-group-title { font-size:1.2rem; margin-bottom:0.85rem; color:var(--dark-gray); }
-.standard-credit-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
-.standard-credit { background:white; border-radius:8px; padding:1.1rem; box-shadow:0 1px 6px rgba(0,0,0,0.06); border-left:3px solid var(--success-green); }
-.standard-credit-head { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; flex-wrap:wrap; }
-.standard-code { font-size:0.7rem; font-weight:800; background:#eee; color:#666; padding:0.1rem 0.45rem; border-radius:4px; }
-.standard-credit-name { font-weight:700; flex:1; }
-.standard-full { font-size:0.75rem; font-weight:700; color:var(--success-green); white-space:nowrap; }
-.standard-purpose { font-size:0.88rem; color:var(--medium-gray); line-height:1.5; margin-bottom:0.5rem; }
-.standard-achieves { font-size:0.88rem; line-height:1.5; }
+.standard-credit-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(228px,1fr)); gap:1rem; }
+.standard-credit {
+    position:relative; text-align:left; cursor:pointer; font-family:inherit;
+    background:white; border:1px solid #ededed; border-top:3px solid var(--success-green);
+    border-radius:12px; padding:1.3rem 1.1rem 1.05rem; box-shadow:0 1px 6px rgba(0,0,0,0.06);
+    display:flex; flex-direction:column; gap:0.45rem; transition:transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.standard-credit:hover { transform:translateY(-3px); box-shadow:0 10px 22px rgba(0,0,0,0.1); border-top-color:var(--simplicity-orange); }
+.standard-credit-icon { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; border-radius:50%; background:#f1f8f2; color:var(--success-green); transition:all 0.2s; }
+.standard-credit-icon .app-icon { width:25px; height:25px; }
+.standard-credit:hover .standard-credit-icon { background:#fff4ec; color:var(--simplicity-orange); }
+.standard-credit-name { font-weight:700; font-size:1rem; color:var(--dark-gray); }
+.standard-purpose { font-size:0.85rem; color:var(--medium-gray); line-height:1.5; flex:1; margin:0; }
+.standard-more { font-size:0.8rem; font-weight:700; color:var(--simplicity-orange); margin-top:0.3rem; }
+.standard-tick {
+    position:absolute; top:0.85rem; right:0.9rem; width:27px; height:27px; border-radius:50%;
+    background:var(--success-green); color:white; font-size:0.95rem; font-weight:800;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(27,138,58,0.4);
+}
+.standard-code { display:none; } /* rating codes kept in the data for reference, not shown publicly */
+
+/* Simplicity Standard credit popup */
+.sm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+.sm-card { position:relative; background:white; border-radius:16px; max-width:540px; width:100%; max-height:90vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
+.sm-close { position:absolute; top:0.8rem; right:0.8rem; z-index:3; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.92); color:#333; font-size:1rem; cursor:pointer; box-shadow:0 1px 5px rgba(0,0,0,0.25); }
+.sm-close:hover { background:white; }
+.sm-hero { position:relative; height:205px; background:#f1f8f2; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.sm-hero img { width:100%; height:100%; object-fit:cover; display:block; }
+.sm-hero-fallicon { display:none; }
+.sm-hero-fallback { background:linear-gradient(135deg,#ff8a3c 0%,var(--simplicity-orange) 55%,var(--simplicity-orange-dark) 100%); flex-direction:column; gap:0.5rem; }
+.sm-hero-fallback .sm-hero-fallicon { display:flex; color:rgba(255,255,255,0.95); }
+.sm-hero-icon-svg { width:76px; height:76px; stroke-width:1.5; }
+.sm-hero-cap { position:absolute; left:0; right:0; bottom:0; padding:0.55rem 1.1rem; font-size:0.78rem; color:white; background:linear-gradient(transparent,rgba(0,0,0,0.6)); }
+.sm-hero-fallback .sm-hero-cap { position:static; background:none; text-align:center; opacity:0.95; padding:0; }
+.sm-content { padding:1.5rem 1.75rem 1.9rem; }
+.sm-head { display:flex; align-items:center; justify-content:space-between; gap:0.75rem; flex-wrap:wrap; margin-bottom:0.6rem; }
+.sm-head h3 { font-size:1.35rem; color:var(--dark-gray); margin:0; }
+.sm-badge { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; color:var(--success-green); background:#e8f5e9; border-radius:50px; padding:0.32rem 0.8rem; white-space:nowrap; }
+.sm-badge-tick { font-weight:900; font-size:0.85rem; }
+.sm-purpose { color:var(--medium-gray); font-style:italic; line-height:1.6; margin-bottom:1.1rem; }
+.sm-content h4 { font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--simplicity-orange-dark); margin-bottom:0.4rem; }
+.sm-detail { line-height:1.7; color:var(--dark-gray); margin-bottom:1.1rem; }
+.sm-group { font-size:0.85rem; color:var(--medium-gray); display:flex; align-items:center; gap:0.45rem; border-top:1px solid #f0f0f0; padding-top:0.9rem; margin:0; }
+
+/* ===========================================================================
+   About: the seven focus-area tiles
+   =========================================================================== */
+.focus-tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.9rem; }
+.focus-tile { background:white; border:1px solid #ededed; border-top:3px solid var(--cat,#ff6600); border-radius:12px; padding:1.1rem 1rem; text-align:center; box-shadow:0 1px 5px rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:center; gap:0.45rem; }
+.focus-tile-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#f4f4f4; background:color-mix(in srgb, var(--cat) 13%, white); color:var(--cat); }
+.focus-tile-icon .app-icon { width:26px; height:26px; }
+.focus-tile-name { font-weight:700; font-size:0.92rem; color:var(--dark-gray); line-height:1.25; }
+.focus-tile-blurb { font-size:0.78rem; color:var(--medium-gray); line-height:1.45; }
+
+/* ===========================================================================
+   Detailed Results: the seven category cards
+   =========================================================================== */
+.detail-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:1rem; }
+.detail-card { position:relative; text-align:left; cursor:pointer; font-family:inherit; background:white; border:1px solid #ededed; border-top:3px solid var(--cat,#ff6600); border-radius:12px; padding:1.2rem 1.1rem 1rem; box-shadow:0 1px 6px rgba(0,0,0,0.06); display:flex; flex-direction:column; gap:0.55rem; transition:transform .2s, box-shadow .2s; }
+.detail-card:hover { transform:translateY(-3px); box-shadow:0 10px 22px rgba(0,0,0,0.1); }
+.detail-card-top { display:flex; align-items:center; justify-content:space-between; }
+.detail-card-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#f4f4f4; background:color-mix(in srgb, var(--cat) 13%, white); color:var(--cat); }
+.detail-card-icon .app-icon { width:24px; height:24px; }
+.detail-card-score { font-size:1.6rem; font-weight:800; color:var(--dark-gray); line-height:1; }
+.detail-card-score small { font-size:0.85rem; font-weight:600; color:#aaa; }
+.detail-card-name { font-weight:700; font-size:0.98rem; color:var(--dark-gray); }
+.detail-card-bar { height:7px; border-radius:4px; background:#f0f0f0; overflow:hidden; }
+.detail-card-bar > span { display:block; height:100%; border-radius:4px; background:var(--cat); }
+.detail-card-foot { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; margin-top:0.1rem; }
+.detail-card-more { font-size:0.8rem; font-weight:700; color:var(--simplicity-orange); white-space:nowrap; }
+.detail-band { font-size:0.7rem; font-weight:700; padding:0.15rem 0.6rem; border-radius:50px; white-space:nowrap; }
+
+/* ===========================================================================
+   Category scoring-breakdown popup
+   =========================================================================== */
+.cm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+.cm-card { position:relative; background:white; border-radius:16px; max-width:900px; width:100%; max-height:92vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
+.cm-close { position:absolute; top:0.8rem; right:0.8rem; z-index:3; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,0.92); color:#333; font-size:1rem; cursor:pointer; box-shadow:0 1px 5px rgba(0,0,0,0.25); }
+.cm-close:hover { background:white; }
+.cm-hero { display:flex; align-items:center; gap:1rem; padding:1.5rem 1.6rem; color:white; background:var(--cat,#ff6600); background:linear-gradient(135deg, var(--cat) 0%, color-mix(in srgb, var(--cat) 68%, black) 100%); }
+.cm-hero-icon { width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.cm-hero-icon-svg { width:30px; height:30px; }
+.cm-hero-mid { flex:1; min-width:0; }
+.cm-hero-cat { display:block; font-size:1.25rem; font-weight:800; line-height:1.2; }
+.cm-hero-sub { display:block; font-size:0.82rem; opacity:0.9; }
+.cm-hero-score { text-align:right; flex-shrink:0; }
+.cm-hero-num { display:block; font-size:1.9rem; font-weight:800; line-height:1; }
+.cm-hero-num small { font-size:0.85rem; font-weight:600; opacity:0.85; }
+.cm-hero-band { display:inline-block; font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; background:rgba(255,255,255,0.22); border-radius:50px; padding:0.15rem 0.6rem; margin-top:0.35rem; }
+.cm-content { padding:1.6rem 2rem 2rem; }
+.cm-intro { color:var(--medium-gray); line-height:1.65; font-size:1.02rem; margin-bottom:0.5rem; max-width:62ch; }
+.cm-content h4 { font-size:0.82rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--simplicity-orange-dark); margin:1.5rem 0 0.85rem; }
+/* Wider card → criteria read in two columns, so there is far less scrolling. */
+.cm-crits { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:1rem; align-items:start; }
+.cm-crit { border:1px solid #eee; border-radius:9px; padding:1rem 1.1rem; }
+.cm-crit-head { display:flex; align-items:center; gap:0.55rem; }
+.cm-crit-mark { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800; flex-shrink:0; }
+.cm-met .cm-crit-mark { background:#e8f5e9; color:#1b8a3a; } .cm-met .cm-crit-mark::before { content:'✓'; }
+.cm-partial .cm-crit-mark { background:#fff4e5; color:#e68a00; } .cm-partial .cm-crit-mark::before { content:'◑'; }
+.cm-pending .cm-crit-mark { background:#f1f1f1; color:#bbb; } .cm-pending .cm-crit-mark::before { content:'○'; }
+.cm-crit-name { font-weight:700; flex:1; color:var(--dark-gray); }
+.cm-pending .cm-crit-name { color:#9a9a9a; }
+.cm-crit-pts { font-weight:800; font-size:0.95rem; color:#1b8a3a; white-space:nowrap; }
+.cm-partial .cm-crit-pts { color:#e68a00; } .cm-pending .cm-crit-pts { color:#c4c4c4; }
+.cm-crit-pts small { font-weight:600; color:#bbb; }
+.cm-crit-bar { height:6px; border-radius:4px; background:#f0f0f0; overflow:hidden; margin:0.55rem 0; }
+.cm-crit-bar > span { display:block; height:100%; border-radius:4px; }
+.cm-crit-desc { font-size:0.86rem; color:var(--medium-gray); line-height:1.5; margin:0 0 0.4rem; }
+.cm-crit-target { font-size:0.83rem; line-height:1.5; margin:0; background:#f8f8f8; border-radius:6px; padding:0.45rem 0.6rem; color:var(--dark-gray); }
+.cm-target-dot { color:var(--simplicity-orange); font-weight:800; }
+.cm-legend { display:flex; gap:1.1rem; font-size:0.78rem; color:var(--medium-gray); margin:0.8rem 0 0; flex-wrap:wrap; }
+.cm-compare { display:flex; flex-direction:column; gap:0.5rem; }
+.cm-cmp-row { display:grid; grid-template-columns:105px 1fr auto; align-items:center; gap:0.6rem; font-size:0.85rem; }
+.cm-cmp-row.sel .cm-cmp-name { font-weight:800; color:var(--dark-gray); }
+.cm-cmp-name { color:var(--medium-gray); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cm-cmp-track { height:12px; border-radius:6px; background:#f0f0f0; overflow:hidden; }
+.cm-cmp-track > span { display:block; height:100%; border-radius:6px; }
+.cm-cmp-val { font-weight:700; color:var(--dark-gray); white-space:nowrap; }
+.cm-cmp-val small { color:#bbb; font-weight:600; }
+.cm-content .detail-note { margin-top:1.1rem; }
+.cm-content .map-launch-btn { margin-top:1rem; }
+@media (max-width:760px) { .cm-crits { grid-template-columns:1fr; } .cm-content { padding:1.3rem 1.3rem 1.6rem; } }
+@media (max-width:600px) { .cm-hero { flex-wrap:wrap; } .cm-cmp-row { grid-template-columns:88px 1fr auto; } }
+
+/* ===========================================================================
+   v0.2 benchmark additions: pilot banner, status bands, evidence coverage,
+   criterion how/value/next/evidence
+   =========================================================================== */
+.pilot-banner { background:#fff8e6; border:1px solid #ffe08a; border-left:4px solid #f0ad4e; border-radius:8px; padding:0.85rem 1.15rem; font-size:0.9rem; color:#6b5300; line-height:1.55; margin-bottom:1.75rem; }
+
+/* neutral status bands on module cards */
+.detail-band.st-band { background:#eef6ef; color:#2e7d32; }
+.detail-band.st-progress { background:#eef2f7; color:#5a6b7b; }
+.detail-band.st-hold { background:#fdecea; color:#c62828; }
+.detail-card-cover { font-size:0.75rem; color:#8a93a0; font-weight:600; white-space:nowrap; }
+
+/* "zero" criterion (assessed, earned nothing) */
+.cm-zero .cm-crit-mark { background:#fdecea; color:#dc3545; } .cm-zero .cm-crit-mark::before { content:'\2715'; }
+.cm-zero .cm-crit-pts { color:#dc3545; }
+
+.cm-crit-how { font-size:0.88rem; color:#6f6f6f; line-height:1.55; margin:0.6rem 0 0.55rem; }
+.cm-crit-valwrap { margin:0.4rem 0; }
+.cm-crit-val { font-size:0.95rem; color:#2a2f37; }
+.cm-crit-val.pending { color:#aaa; font-style:italic; }
+.cm-items { list-style:none; margin:0.35rem 0 0; padding:0; font-size:0.9rem; }
+.cm-items li { padding:0.22rem 0; color:#9a9a9a; line-height:1.4; }
+.cm-items li.done { color:#2e7d32; font-weight:600; }
+.cm-crit-next { font-size:0.9rem; color:#cc5200; background:#fff4ec; border:1px solid #ffe0c8; border-radius:6px; padding:0.5rem 0.7rem; margin:0.6rem 0 0.45rem; }
+.cm-next-dot { font-weight:800; }
+.cm-crit-evi { font-size:0.82rem; color:#9a9a9a; line-height:1.5; margin:0.5rem 0 0; }
+
+/* evidence coverage block */
+.cm-cover { background:#f8f8f8; border-radius:8px; padding:0.75rem 0.9rem; margin:0.9rem 0 0.25rem; }
+.cm-cover-head { display:flex; justify-content:space-between; align-items:baseline; gap:0.5rem; font-size:0.82rem; color:#666; margin-bottom:0.4rem; }
+.cm-cover-head strong { color:#333; }
+.cm-cover-bar { height:8px; border-radius:4px; background:#e6e6e6; overflow:hidden; }
+.cm-cover-bar > span { display:block; height:100%; background:#4CAF50; border-radius:4px; }
+.cm-cover-note { display:block; font-size:0.76rem; color:#999; margin-top:0.45rem; }
+.cm-cover-note.hold { color:#c62828; font-weight:600; }
+.cm-pilot { font-size:0.8rem; color:#6b5300; background:#fff8e6; border:1px solid #ffe08a; border-radius:6px; padding:0.5rem 0.7rem; margin-bottom:0.9rem; line-height:1.5; }
 
 /* ---------------------------------------------------------------------------
    Transport map overlay
@@ -845,7 +1021,8 @@
     gap: 0.5rem;
     font-size: 0.86rem;
 }
-.self-cat-icon { text-align: center; }
+.self-cat-icon { display: flex; justify-content: center; color: var(--simplicity-orange); }
+.self-cat-icon .app-icon { width: 30px; height: 30px; stroke-width: 1.6; }
 .self-cat-name { color: #333; font-weight: 500; }
 .self-bar-track { background: #f0f0f0; border-radius: 4px; height: 7px; }
 .self-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }

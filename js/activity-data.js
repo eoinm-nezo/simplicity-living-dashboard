@@ -29,6 +29,17 @@ const ACTIVITY_PROJECTS = [
 function _round(n, d = 0) { const f = Math.pow(10, d); return Math.round((n || 0) * f) / f; }
 function _num(v, fb = 0) { const n = parseFloat(v); return isFinite(n) ? n : fb; }
 
+// Readable one-line workings for a stream, e.g. "1,272 t x 1.02 x 13 km x 0.117 / 0.92".
+// Used by the sub-page panel that prints our calculation beside the Green Star default.
+function _fxT(massT, wastePct, km, efRoad, util) {
+    return _round(massT, 1).toLocaleString() + ' t \u00d7 ' + (1 + _num(wastePct) / 100).toFixed(2) +
+           ' waste \u00d7 ' + _num(km).toLocaleString() + ' km \u00d7 ' + _num(efRoad) +
+           ' kg/t\u00b7km \u00f7 ' + _num(util) + ' load factor';
+}
+function _fxE(qty, unit, parts) {
+    return _round(qty, 1).toLocaleString() + ' ' + unit + ' \u00d7 (' + parts.join(' + ') + ')';
+}
+
 // =======================================================================================
 //  ELEMENT: Concrete Structural Walls
 // =======================================================================================
@@ -96,11 +107,16 @@ const EL_WALLS = {
                       simplicity: rebarT * _num(a.rebarFixKwh) * _num(a.efGrid) };
 
         const streams = [
-            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4 },
-            { key: 'rebarA4',    stage: 'A4', label: 'Rebar transport',    color: '#78909c', ...rebarA4 },
-            { key: 'place',      stage: 'A5', label: 'Pour: pump & vibrate', color: '#ff6600', ...place },
-            { key: 'crane',      stage: 'A5', label: 'Crane & formwork',   color: '#f57f17', ...crane },
-            { key: 'fix',        stage: 'A5', label: 'Rebar fixing',       color: '#4CAF50', ...fix }
+            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4,
+              fx: _fxT(concreteT, a.wasteSimp, v.concreteKm, a.efRoad, a.utilSimp) },
+            { key: 'rebarA4',    stage: 'A4', label: 'Rebar transport',    color: '#78909c', ...rebarA4,
+              fx: _fxT(rebarT, a.wasteSimp, v.rebarKm, a.efRoad, a.utilSimp) },
+            { key: 'place',      stage: 'A5', label: 'Pour: pump & vibrate', color: '#ff6600', ...place,
+              fx: _fxE(volS, 'm\u00b3', [a.placeDiesel + ' L/m\u00b3 \u00d7 ' + _round(a.efDiesel, 2), a.placeKwh + ' kWh/m\u00b3 \u00d7 ' + a.efGrid]) },
+            { key: 'crane',      stage: 'A5', label: 'Crane & formwork',   color: '#f57f17', ...crane,
+              fx: _fxE(v.wallArea, 'm\u00b2', [a.craneHrsSimp + ' hr/m\u00b2 \u00d7 ' + a.craneDiesel + ' L/hr \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'fix',        stage: 'A5', label: 'Rebar fixing',       color: '#4CAF50', ...fix,
+              fx: _fxE(rebarT, 't', [a.rebarFixKwh + ' kWh/t \u00d7 ' + a.efGrid]) }
         ];
         return {
             streams,
@@ -213,12 +229,18 @@ const EL_FOUNDATION = {
                           simplicity: _num(v.hardfillVol) * _num(a.compactDiesel) * _num(a.efDiesel) };
 
         const streams = [
-            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4 },
-            { key: 'spoilA4',    stage: 'A4', label: 'Spoil cartage',      color: '#b45f4d', ...spoilA4 },
-            { key: 'hardfillA4', stage: 'A4', label: 'Hardfill import',    color: '#78909c', ...hardfillA4 },
-            { key: 'dig',        stage: 'A5', label: 'Excavation',         color: '#c98b3a', ...dig },
-            { key: 'place',      stage: 'A5', label: 'Concrete pour',      color: '#ff6600', ...place },
-            { key: 'compact',    stage: 'A5', label: 'Compaction',         color: '#f57f17', ...compact }
+            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4,
+              fx: _fxT(concreteT, a.wasteSimp, v.concreteKm, a.efRoad, a.utilSimp) },
+            { key: 'spoilA4',    stage: 'A4', label: 'Spoil cartage',      color: '#b45f4d', ...spoilA4,
+              fx: _fxT(spoilT, a.wasteSimp, v.spoilKm, a.efRoad, a.utilSimp) },
+            { key: 'hardfillA4', stage: 'A4', label: 'Hardfill import',    color: '#78909c', ...hardfillA4,
+              fx: _fxT(hardfillT, a.wasteSimp, v.hardfillKm, a.efRoad, a.utilSimp) },
+            { key: 'dig',        stage: 'A5', label: 'Excavation',         color: '#c98b3a', ...dig,
+              fx: _fxE(v.digVol, 'm\u00b3', [a.digSimp + ' L/m\u00b3 \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'place',      stage: 'A5', label: 'Concrete pour',      color: '#ff6600', ...place,
+              fx: _fxE(volS, 'm\u00b3', [a.placeDiesel + ' L/m\u00b3 \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'compact',    stage: 'A5', label: 'Compaction',         color: '#f57f17', ...compact,
+              fx: _fxE(v.hardfillVol, 'm\u00b3', [a.compactDiesel + ' L/m\u00b3 \u00d7 ' + _round(a.efDiesel, 2)]) }
         ];
         return {
             streams,
@@ -325,11 +347,16 @@ const EL_FLOORS = {
                       simplicity: rebarT * _num(a.rebarFixKwh) * _num(a.efGrid) };
 
         const streams = [
-            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4 },
-            { key: 'rebarA4',    stage: 'A4', label: 'Rebar/mesh transport', color: '#78909c', ...rebarA4 },
-            { key: 'place',      stage: 'A5', label: 'Pour: pump to height & vibrate', color: '#ff6600', ...place },
-            { key: 'crane',      stage: 'A5', label: 'Crane, formwork & propping', color: '#f57f17', ...crane },
-            { key: 'fix',        stage: 'A5', label: 'Rebar & mesh fixing', color: '#4CAF50', ...fix }
+            { key: 'concreteA4', stage: 'A4', label: 'Concrete transport', color: '#8d6e63', ...concreteA4,
+              fx: _fxT(concreteT, a.wasteSimp, v.concreteKm, a.efRoad, a.utilSimp) },
+            { key: 'rebarA4',    stage: 'A4', label: 'Rebar/mesh transport', color: '#78909c', ...rebarA4,
+              fx: _fxT(rebarT, a.wasteSimp, v.rebarKm, a.efRoad, a.utilSimp) },
+            { key: 'place',      stage: 'A5', label: 'Pour: pump to height & vibrate', color: '#ff6600', ...place,
+              fx: _fxE(volS, 'm\u00b3', [a.placeDiesel + ' L/m\u00b3 \u00d7 ' + _round(liftMult, 2) + ' lift \u00d7 ' + _round(a.efDiesel, 2), a.placeKwh + ' kWh/m\u00b3 \u00d7 ' + a.efGrid]) },
+            { key: 'crane',      stage: 'A5', label: 'Crane, formwork & propping', color: '#f57f17', ...crane,
+              fx: _fxE(totalArea, 'm\u00b2', [a.craneHrsSimp + ' hr/m\u00b2 \u00d7 ' + a.craneDiesel + ' L/hr \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'fix',        stage: 'A5', label: 'Rebar & mesh fixing', color: '#4CAF50', ...fix,
+              fx: _fxE(rebarT, 't', [a.rebarFixKwh + ' kWh/t \u00d7 ' + a.efGrid]) }
         ];
         return {
             streams,
@@ -448,12 +475,18 @@ const EL_ROOF = {
                       simplicity: (steelT + timberT) * _num(a.fixKwh) * _num(a.efGrid) };
 
         const streams = [
-            { key: 'concreteA4', stage: 'A4', label: 'Concrete deck transport', color: '#8d6e63', ...concreteA4 },
-            { key: 'timberA4',   stage: 'A4', label: 'Timber truss transport',  color: '#a1887f', ...timberA4 },
-            { key: 'steelA4',    stage: 'A4', label: 'Steel transport',         color: '#78909c', ...steelA4 },
-            { key: 'crane',      stage: 'A5', label: 'Crane erection',          color: '#ff6600', ...crane },
-            { key: 'pour',       stage: 'A5', label: 'Deck pour',               color: '#f57f17', ...pour },
-            { key: 'fix',        stage: 'A5', label: 'Connections & welding',   color: '#4CAF50', ...fix }
+            { key: 'concreteA4', stage: 'A4', label: 'Concrete deck transport', color: '#8d6e63', ...concreteA4,
+              fx: _fxT(concreteT + rebarT, a.wasteSimp, v.concreteKm, a.efRoad, a.utilSimp) },
+            { key: 'timberA4',   stage: 'A4', label: 'Timber truss transport',  color: '#a1887f', ...timberA4,
+              fx: _fxT(timberT, a.wasteSimp, v.timberKm, a.efRoad, a.utilSimp) },
+            { key: 'steelA4',    stage: 'A4', label: 'Steel transport',         color: '#78909c', ...steelA4,
+              fx: _fxT(steelT, a.wasteSimp, v.steelKm, a.efRoad, a.utilSimp) },
+            { key: 'crane',      stage: 'A5', label: 'Crane erection',          color: '#ff6600', ...crane,
+              fx: _fxE(v.roofArea, 'm\u00b2', [a.craneHrsSimp + ' hr/m\u00b2 \u00d7 ' + a.craneDiesel + ' L/hr \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'pour',       stage: 'A5', label: 'Deck pour',               color: '#f57f17', ...pour,
+              fx: _fxE(volS, 'm\u00b3', [a.placeDiesel + ' L/m\u00b3 \u00d7 ' + _round(a.efDiesel, 2), a.placeKwh + ' kWh/m\u00b3 \u00d7 ' + a.efGrid]) },
+            { key: 'fix',        stage: 'A5', label: 'Connections & welding',   color: '#4CAF50', ...fix,
+              fx: _fxE(steelT + timberT, 't', [a.fixKwh + ' kWh/t \u00d7 ' + a.efGrid]) }
         ];
         return {
             streams,
@@ -553,9 +586,14 @@ const EL_WINDOWS = {
                           simplicity: _num(v.windowArea) * _num(a.installKwh) * _num(a.efGrid) };
 
         const streams = [
-            { key: 'glazingA4', stage: 'A4', label: 'Joinery transport (sea + road)', color: '#78909c', ...glazingA4 },
-            { key: 'hoist',     stage: 'A5', label: 'Hoist to floors',   color: '#ff6600', ...hoist },
-            { key: 'install',   stage: 'A5', label: 'Fix & seal',        color: '#4CAF50', ...install }
+            { key: 'glazingA4', stage: 'A4', label: 'Joinery transport (sea + road)', color: '#78909c', ...glazingA4,
+              fx: _round(massT, 1) + ' t \u00d7 ' + (1 + _num(a.wasteSimp) / 100).toFixed(2) + ' waste \u00d7 (' +
+                  _num(v.seaKm).toLocaleString() + ' km \u00d7 ' + a.efSea + ' sea + ' + _num(v.roadKm) +
+                  ' km \u00d7 ' + a.efRoad + ' \u00f7 ' + a.utilSimp + ' road)' },
+            { key: 'hoist',     stage: 'A5', label: 'Hoist to floors',   color: '#ff6600', ...hoist,
+              fx: _fxE(v.windowArea, 'm\u00b2', [a.hoistHrsSimp + ' hr/m\u00b2 \u00d7 ' + a.craneDiesel + ' L/hr \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'install',   stage: 'A5', label: 'Fix & seal',        color: '#4CAF50', ...install,
+              fx: _fxE(v.windowArea, 'm\u00b2', [a.installKwh + ' kWh/m\u00b2 \u00d7 ' + a.efGrid]) }
         ];
         return {
             streams,
@@ -644,9 +682,12 @@ const EL_CLADDING = {
                          simplicity: _num(v.claddingArea) * _num(a.mixKwh) * _num(a.efGrid) };
 
         const streams = [
-            { key: 'cladA4',   stage: 'A4', label: 'Brick & mortar transport', color: '#b45f4d', ...cladA4 },
-            { key: 'scaffold', stage: 'A5', label: 'Scaffold & hoist',         color: '#ff6600', ...scaffold },
-            { key: 'mortar',   stage: 'A5', label: 'Mortar mix & laying',      color: '#f57f17', ...mortar }
+            { key: 'cladA4',   stage: 'A4', label: 'Brick & mortar transport', color: '#b45f4d', ...cladA4,
+              fx: _fxT(massT, a.wasteSimp, v.brickKm, a.efRoad, a.utilSimp) },
+            { key: 'scaffold', stage: 'A5', label: 'Scaffold & hoist',         color: '#ff6600', ...scaffold,
+              fx: _fxE(v.claddingArea, 'm\u00b2', [a.scaffoldHrsSimp + ' hr/m\u00b2 \u00d7 ' + a.craneDiesel + ' L/hr \u00d7 ' + _round(a.efDiesel, 2)]) },
+            { key: 'mortar',   stage: 'A5', label: 'Mortar mix & laying',      color: '#f57f17', ...mortar,
+              fx: _fxE(v.claddingArea, 'm\u00b2', [a.mixKwh + ' kWh/m\u00b2 \u00d7 ' + a.efGrid]) }
         ];
         return {
             streams,
@@ -719,4 +760,137 @@ const ACTIVITY_PREFILL = {
 function activityProject(key) { return ACTIVITY_PROJECTS.find(p => p.key === key) || null; }
 function activityHasData(projectKey, elementKey) {
     return !!(ACTIVITY_PREFILL[projectKey] && ACTIVITY_PREFILL[projectKey][elementKey]);
+}
+
+// =======================================================================================
+//  Green Star inventories — the same quantities, described the way the NZGBC calculator
+//  wants them: a tonnage, a BRANZ material class, and a SOURCE CITY rather than a haul.
+//  greenstar-a45.js turns these into the industry-default A4–A5 so both calculations can
+//  sit on one page.
+// =======================================================================================
+const ACTIVITY_BUILDING = {
+    waiatarua: { gfa: 7050, label: 'Waiatarua, Remuera — Block A' }
+};
+
+const GS_INVENTORY = {
+    walls(v, a) {
+        const vol = _num(v.wallArea) * _num(v.thickness) / 1000;
+        return {
+            unit: _num(v.wallArea),
+            materials: [
+                { label: 'In-situ concrete', tonnes: vol * _num(a.concreteDensity), cls: 'concrete', source: 'Auckland' },
+                { label: 'Reinforcing steel', tonnes: vol * _num(v.rebarRate) / 1000, cls: 'steel', source: 'Auckland' }
+            ],
+            notes: ['Formwork is a Green Star "Formwork" line in its own right; reuse cycles do not change the A4 or A5 result.']
+        };
+    },
+    foundation(v, a) {
+        return {
+            unit: _num(v.footprint),
+            materials: [
+                { label: 'In-situ concrete', tonnes: _num(v.concreteVol) * _num(a.concreteDensity), cls: 'concrete', source: 'Auckland' },
+                { label: 'Reinforcing steel', tonnes: _num(v.concreteVol) * _num(v.rebarRate) / 1000, cls: 'steel', source: 'Auckland' },
+                { label: 'Imported hardfill', tonnes: _num(v.hardfillVol) * _num(a.hardfillDensity), cls: 'aggregates', source: 'Auckland' }
+            ],
+            notes: ['A4 covers products arriving on site. Carting ' +
+                    _round(_num(v.digVol) * _num(a.spoilDensity), 0) + ' t of spoil away is not an A4 line at all — ' +
+                    'it disappears inside the flat A5 allowance.']
+        };
+    },
+    floors(v, a) {
+        const vol = _num(v.floorArea) * _num(v.levels) * _num(v.thickness) / 1000;
+        return {
+            unit: _num(v.floorArea) * _num(v.levels),
+            materials: [
+                { label: 'In-situ concrete', tonnes: vol * _num(a.concreteDensity), cls: 'concrete', source: 'Auckland' },
+                { label: 'Reinforcing steel & mesh', tonnes: vol * _num(v.rebarRate) / 1000, cls: 'steel', source: 'Auckland' }
+            ],
+            notes: ['Pumping to height costs real diesel and climbs with every level. Green Star’s ' +
+                    'per-m² allowance is the same on level 1 and level 13.']
+        };
+    },
+    roof(v, a) {
+        return {
+            unit: _num(v.roofArea),
+            materials: [
+                { label: 'Concrete deck', tonnes: _num(v.concreteVol) * _num(a.concreteDensity), cls: 'concrete', source: 'Auckland' },
+                { label: 'Deck reinforcement', tonnes: _num(v.concreteVol) * _num(v.rebarRate) / 1000, cls: 'steel', source: 'Auckland' },
+                { label: 'Timber trusses', tonnes: _num(v.timberVol) * _num(a.timberDensity), cls: 'timber', source: 'Rotorua' },
+                { label: 'Structural steel', tonnes: _num(v.steelMass), cls: 'steel', source: 'Auckland' }
+            ],
+            notes: ['Timber is the one line where the lookup bites: sourced from Rotorua it is scored at ' +
+                    '228 km whatever the real supplier run turns out to be.']
+        };
+    },
+    windows(v, a) {
+        return {
+            unit: _num(v.windowArea),
+            materials: [
+                { label: 'Aluminium joinery & IGUs', tonnes: _num(v.windowArea) * _num(v.unitMass) / 1000,
+                  cls: 'glazing', source: 'Imported', seaKm: _num(v.seaKm) }
+            ],
+            notes: ['Auckland is a port city, so Green Star charges the land leg at the 1 km "distance from ' +
+                    'city" only — the ' + _num(v.roadKm) + ' km run from the wharf to Remuera is never counted.']
+        };
+    },
+    cladding(v, a) {
+        return {
+            unit: _num(v.claddingArea),
+            materials: [
+                { label: 'Brick veneer & mortar', tonnes: _num(v.claddingArea) * _num(v.massPerM2) / 1000,
+                  cls: 'masonry', source: 'Auckland' }
+            ],
+            notes: ['Brick is inert, so its 5% wastage is scored at a landfill factor of zero. ' +
+                    'The 110 t that goes in the skip costs nothing at A5 under the default method.']
+        };
+    }
+};
+
+/* Run the Green Star method over one element, apportioning the building's flat A5
+ * site-activity allowance by that element's share of the modelled mass.
+ *
+ * Green Star does not split A5a by element — it is one number for the whole build. The
+ * mass-share apportionment below is ours, and is stated as such wherever it is shown, so
+ * the two calculations can be compared element by element.
+ */
+function activityGreenStar(elementKey, projectKey) {
+    if (typeof GREENSTAR_A45 === 'undefined') return null;
+    const inv = GS_INVENTORY[elementKey];
+    if (!inv) return null;
+
+    const build = (key) => {
+        const el = ACTIVITY_ELEMENTS[key];
+        if (!el || !GS_INVENTORY[key]) return null;
+        const values = {}, assumptions = {};
+        el.inputs.forEach((f) => { values[f.id] = f.value; });
+        el.assumptions.forEach((x) => { assumptions[x.id] = x.value; });
+        if (ACTIVITY_PREFILL[projectKey] && ACTIVITY_PREFILL[projectKey][key]) {
+            Object.assign(values, ACTIVITY_PREFILL[projectKey][key]);
+        }
+        try { return GS_INVENTORY[key](values, assumptions); } catch (e) { return null; }
+    };
+
+    const mass = (i) => (i ? i.materials.reduce((s, m) => s + (+m.tonnes || 0), 0) : 0);
+    const mine = build(elementKey);
+    if (!mine) return null;
+
+    let totalMass = 0;
+    Object.keys(GS_INVENTORY).forEach((k) => { totalMass += mass(build(k)); });
+
+    const bldg = ACTIVITY_BUILDING[projectKey] || ACTIVITY_BUILDING.waiatarua;
+    const share = totalMass > 0 ? mass(mine) / totalMass : 0;
+
+    const result = GREENSTAR_A45.run({
+        materials: mine.materials,
+        gfaShare: bldg.gfa * share,
+        unit: mine.unit
+    });
+    if (!result) return null;
+    result.notes = mine.notes || [];
+    result.massShare = share;
+    result.buildingGfa = bldg.gfa;
+    result.buildingLabel = bldg.label;
+    result.elementMass = mass(mine);
+    result.modelledMass = totalMass;
+    return result;
 }

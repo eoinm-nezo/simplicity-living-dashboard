@@ -7,7 +7,7 @@
 // The admin page (admin.html) provides CRUD over all tables plus
 // .sqlite export/import. Data seeds itself on first run.
 
-const SIMPLICITY_DB_KEY = 'simplicity_db_v1';
+const SIMPLICITY_DB_KEY = 'simplicity_db_v2';   // bumped: v0.2 benchmark re-seeds with per-criterion data
 const LEGACY_DB_KEY = 'simplicity_scoring_db_v1';
 
 // The four real Simplicity Living projects, in delivery order
@@ -166,38 +166,63 @@ function seedIfEmpty() {
     }
 
     if (tableEmpty('assessments')) {
-        // Per-category notes grounded in the Ascot Waiatarua green-rating assessment.
-        // Keys are DB columns; 'site' = Sustainable Materials, 'innovation' = Sustainable Transport.
-        const notes = {
-            energy: 'Modelled in the ECCHO tool; high-COP R32 heat pumps (COP 4.0–5.2) for heating & hot water, no on-site fossil fuels. Rooftop PV offsets a growing share of shared loads.',
-            ieq: 'Thermally-broken windows (frame R ≥ 0.25) and a well-insulated concrete envelope keep winter heating demand low; shading and ceiling fans manage summer overheating; continuous wet-room extract controls moisture.',
-            carbon: 'Full A–D lifecycle assessment via BRANZ LCAQuick; over 20% embodied-carbon reduction demonstrated on the Green Star pathway using the optimised in-situ / precast structure.',
-            site: 'Materials schedule run through the recognised materials calculator with EPDs and certifications for the major materials — Ascot achieved full marks on this credit (10/10).',
-            water: 'WELS-rated low-flow fittings plus per-apartment metering bring consumption under the high-performance threshold (≤ 132 L/person/day); rainwater harvesting offsets further demand.',
-            waste: 'A documented waste-management plan applied consistently across projects; systemised, repetitive design keeps the real waste factor far below the 5–10% industry default.',
-            innovation: 'Cycleway within 300 m and public transport within 800 m; 168 secure cycle parks provided vs 141 required; on-site café plus medical centre (350 m), dairy (450 m) and school (500 m) within walking distance; EV charging expanding.'
+        // v0.2 benchmark: PILOT per-criterion inputs (placeholder, awaiting real evidence),
+        // improving across projects. Module column scores are computed from these inputs by the
+        // rule engine (js/scoring-methodology.js); the values below were generated with it so the
+        // stored column totals stay consistent. Criteria live in answers_json.criteria (flat map).
+        const pilotNote = 'Pilot placeholder inputs for demonstration, not yet verified against project evidence (methodology v0.2).';
+        const CRIT = {
+            'Reiputa': { home_energy:{value:18}, hot_water:{value:25}, shared_services:{value:15}, energy_visibility:{items:[true,false]},
+                keep_warm:{value:12}, excess_heat:{level:1}, fresh_air:{level:2}, dry_interiors:{level:2},
+                upfront:{value:12}, later_life:{value:8}, delivery_verification:{items:[true,false]},
+                responsible_sourcing:{value:62}, lower_emission_finishes:{value:55}, repairability:{value:58}, environmental_data:{value:55},
+                water_demand:{value:128}, leak_management:{items:[true,false,false,false]}, water_visibility:{items:[true,false,false,false]},
+                total_waste:{value:30}, reuse_recycling:{value:62}, waste_traceability:{items:[true,false]},
+                public_transport:{distance:450,interval:25}, everyday_destinations:{count:3}, cycling:{items:[true,false,false,false]}, shared_electric_mobility:{items:[false,false]} },
+            'Waiatarua': { home_energy:{value:23}, hot_water:{value:35}, shared_services:{value:22}, energy_visibility:{items:[true,false]},
+                keep_warm:{value:18}, excess_heat:{level:2}, fresh_air:{level:3}, dry_interiors:{level:2},
+                upfront:{value:17}, later_life:{value:12}, delivery_verification:{items:[true,false]},
+                responsible_sourcing:{value:72}, lower_emission_finishes:{value:65}, repairability:{value:68}, environmental_data:{value:62},
+                water_demand:{value:118}, leak_management:{items:[true,true,false,false]}, water_visibility:{items:[true,true,false,false]},
+                total_waste:{value:24}, reuse_recycling:{value:72}, waste_traceability:{items:[true,true]},
+                public_transport:{distance:380,interval:18}, everyday_destinations:{count:4}, cycling:{items:[true,true,false,false]}, shared_electric_mobility:{items:[false,true]} },
+            'Lake Road': { home_energy:{value:27}, hot_water:{value:42}, shared_services:{value:28}, energy_visibility:{items:[true,true]},
+                keep_warm:{value:23}, excess_heat:{level:2}, fresh_air:{level:3}, dry_interiors:{level:3},
+                upfront:{value:21}, later_life:{value:17}, delivery_verification:{items:[true,true]},
+                responsible_sourcing:{value:82}, lower_emission_finishes:{value:78}, repairability:{value:78}, environmental_data:{value:88},
+                water_demand:{value:108}, leak_management:{items:[true,true,true,false]}, water_visibility:{items:[true,true,true,false]},
+                total_waste:{value:18}, reuse_recycling:{value:82}, waste_traceability:{items:[true,true]},
+                public_transport:{distance:300,interval:15}, everyday_destinations:{count:5}, cycling:{items:[true,true,true,false]}, shared_electric_mobility:{items:[true,true]} },
+            'Morningside Drive': { home_energy:{value:32}, hot_water:{value:52}, shared_services:{value:33}, energy_visibility:{items:[true,true]},
+                keep_warm:{value:28}, excess_heat:{level:3}, fresh_air:{level:3}, dry_interiors:{level:3},
+                upfront:{value:26}, later_life:{value:22}, delivery_verification:{items:[true,true]},
+                responsible_sourcing:{value:91}, lower_emission_finishes:{value:88}, repairability:{value:88}, environmental_data:{value:92},
+                water_demand:{value:96}, leak_management:{items:[true,true,true,true]}, water_visibility:{items:[true,true,true,true]},
+                total_waste:{value:12}, reuse_recycling:{value:91}, waste_traceability:{items:[true,true]},
+                public_transport:{distance:240,interval:12}, everyday_destinations:{count:6}, cycling:{items:[true,true,true,false]}, shared_electric_mobility:{items:[true,true]} }
         };
-        const notesJson = JSON.stringify({ notes });
-
-        // Seed results for the 4 projects. Score order:
-        // [energy, carbon, waste, water, ieq, site(materials), innovation(transport)]
-        const seeds = [
-            { p: P[0], scores: [12, 11, 14, 10, 13, 15, 14], date: '2026-01-15T09:00:00.000Z' },
-            { p: P[1], scores: [14, 13, 15, 12, 14, 17, 16], date: '2026-03-10T09:00:00.000Z' },
-            { p: P[2], scores: [13, 15, 16, 13, 14, 18, 17], date: '2026-04-22T09:00:00.000Z' },
-            { p: P[3], scores: [16, 17, 17, 14, 15, 19, 18], date: '2026-06-05T09:00:00.000Z' }
-        ];
+        // columns: {energy, ieq(comfort), carbon, site(materials), water, waste, innovation(transport)}
+        const COLS = {
+            'Reiputa':           { energy:7,  ieq:8,  carbon:6,  site:4,  water:5,  waste:6,  innovation:8  },
+            'Waiatarua':         { energy:10, ieq:12, carbon:9,  site:8,  water:9,  waste:10, innovation:13 },
+            'Lake Road':         { energy:13, ieq:14, carbon:13, site:11, water:13, waste:13, innovation:17 },
+            'Morningside Drive': { energy:16, ieq:17, carbon:16, site:15, water:17, waste:17, innovation:19 }
+        };
+        const DATES = {
+            'Reiputa': '2026-01-15T09:00:00.000Z', 'Waiatarua': '2026-03-10T09:00:00.000Z',
+            'Lake Road': '2026-04-22T09:00:00.000Z', 'Morningside Drive': '2026-06-05T09:00:00.000Z'
+        };
         const st = db.prepare(`INSERT INTO assessments
             (project_name, location, assessor, notes, total_score, rating,
              energy, carbon, waste, water, ieq, site, innovation, answers_json, created_at)
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`);
-        seeds.forEach(s => {
-            const total = s.scores.reduce((a, b) => a + b, 0);
+        P.forEach(proj => {
+            const c = COLS[proj.name];
+            const total = c.energy + c.ieq + c.carbon + c.site + c.water + c.waste + c.innovation;
+            const answers = JSON.stringify({ methodology: '0.2', stage: 'completed', pilot: true, criteria: CRIT[proj.name], notes: {} });
             st.run([
-                s.p.name, s.p.location, 'Simplicity Team', 'Green-rating-aligned assessment (Ascot-based)',
-                total, null,
-                s.scores[0], s.scores[1], s.scores[2], s.scores[3], s.scores[4], s.scores[5], s.scores[6],
-                notesJson, s.date
+                proj.name, proj.location, 'Simplicity Team (pilot)', pilotNote, total, null,
+                c.energy, c.carbon, c.waste, c.water, c.ieq, c.site, c.innovation, answers, DATES[proj.name]
             ]);
         });
         st.free();

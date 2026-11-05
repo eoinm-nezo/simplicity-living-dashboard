@@ -31,18 +31,18 @@ const A4A5_DATA = {
     // density kg/m3; some materials are better entered by area or each (see unit)
     // -----------------------------------------------------------------------
     materials: [
-        { key: 'concrete',   name: 'Ready-mix concrete (reinforced)', unit: 'm3', density: 2400, defaultOrigin: 'Auckland',   icon: '🧱' },
-        { key: 'precast',    name: 'Precast concrete panels',         unit: 'm3', density: 2400, defaultOrigin: 'Hamilton',   icon: '🏗️' },
-        { key: 'rebar',      name: 'Reinforcing steel (rebar)',       unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: '🔩' },
-        { key: 'struct_steel', name: 'Structural steel',              unit: 't',  density: 1000, defaultOrigin: 'China',      icon: '⚙️' },
-        { key: 'timber',     name: 'Structural timber',               unit: 'm3', density: 550,  defaultOrigin: 'Rotorua',    icon: '🪵' },
-        { key: 'clt',        name: 'CLT / mass timber',               unit: 'm3', density: 480,  defaultOrigin: 'Nelson',     icon: '🌲' },
-        { key: 'plasterboard', name: 'Plasterboard / linings',        unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: '📋' },
-        { key: 'glazing',    name: 'Glazing & aluminium joinery',     unit: 't',  density: 1000, defaultOrigin: 'China',      icon: '🪟' },
-        { key: 'cladding',   name: 'External cladding',               unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: '🧊' },
-        { key: 'insulation', name: 'Insulation',                      unit: 'm3', density: 30,   defaultOrigin: 'Auckland',   icon: '🧶' },
-        { key: 'blockwork',  name: 'Masonry / blockwork',             unit: 'm3', density: 1900, defaultOrigin: 'Auckland',   icon: '🧱' },
-        { key: 'services',   name: 'Mechanical & electrical services',unit: 't',  density: 1000, defaultOrigin: 'China',      icon: '🔧' }
+        { key: 'concrete',   name: 'Ready-mix concrete (reinforced)', unit: 'm3', density: 2400, defaultOrigin: 'Auckland',   icon: 'concrete' },
+        { key: 'precast',    name: 'Precast concrete panels',         unit: 'm3', density: 2400, defaultOrigin: 'Hamilton',   icon: 'precast' },
+        { key: 'rebar',      name: 'Reinforcing steel (rebar)',       unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: 'rebar' },
+        { key: 'struct_steel', name: 'Structural steel',              unit: 't',  density: 1000, defaultOrigin: 'China',      icon: 'steel' },
+        { key: 'timber',     name: 'Structural timber',               unit: 'm3', density: 550,  defaultOrigin: 'Rotorua',    icon: 'timber' },
+        { key: 'clt',        name: 'CLT / mass timber',               unit: 'm3', density: 480,  defaultOrigin: 'Nelson',     icon: 'clt' },
+        { key: 'plasterboard', name: 'Plasterboard / linings',        unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: 'plasterboard' },
+        { key: 'glazing',    name: 'Glazing & aluminium joinery',     unit: 't',  density: 1000, defaultOrigin: 'China',      icon: 'glazing' },
+        { key: 'cladding',   name: 'External cladding',               unit: 't',  density: 1000, defaultOrigin: 'Auckland',   icon: 'cladding' },
+        { key: 'insulation', name: 'Insulation',                      unit: 'm3', density: 30,   defaultOrigin: 'Auckland',   icon: 'insulation' },
+        { key: 'blockwork',  name: 'Masonry / blockwork',             unit: 'm3', density: 1900, defaultOrigin: 'Auckland',   icon: 'masonry' },
+        { key: 'services',   name: 'Mechanical & electrical services',unit: 't',  density: 1000, defaultOrigin: 'China',      icon: 'services' }
     ],
 
     // -----------------------------------------------------------------------
@@ -98,13 +98,13 @@ const A4A5_DATA = {
     // Simplicity = overlapped trades (shorter, higher peak).
     // =======================================================================
     a5Categories: [
-        { key: 'ground',   name: 'Groundworks',                  color: '#8d6e63', icon: '🚜',
+        { key: 'ground',   name: 'Groundworks',                  color: '#8d6e63', icon: 'ground',
           desc: 'Site clearance, bulk earthworks, piling, foundations' },
-        { key: 'core',     name: 'Core structure',               color: '#ff6600', icon: '🏗️',
+        { key: 'core',     name: 'Core structure',               color: '#ff6600', icon: 'core',
           desc: 'Slab, in-situ structural walls, upper floors, roof frame' },
-        { key: 'envelope', name: 'Envelope',                     color: '#2196F3', icon: '🪟',
+        { key: 'envelope', name: 'Envelope',                     color: '#2196F3', icon: 'envelope',
           desc: 'External windows & doors, wall & roof cladding, weathertightness' },
-        { key: 'fitout',   name: 'Internal fit-out & services',  color: '#4CAF50', icon: '🔧',
+        { key: 'fitout',   name: 'Internal fit-out & services',  color: '#4CAF50', icon: 'fitout',
           desc: 'Linings, ceilings, 1st/2nd-fix plumbing, electrical, mechanical, joinery, flooring' }
     ],
 
@@ -130,11 +130,11 @@ const A4A5_DATA = {
     },
 
     a5MetricMeta: {
-        people:      { name: 'People on site',  unit: 'workers',   icon: '👷', color: '#ff6600' },
-        material:    { name: 'Material',        unit: 't/week',    icon: '📦', color: '#795548' },
-        equipment:  { name: 'Equipment',       unit: 'mach-hrs',  icon: '🏗️', color: '#607D8B' },
-        fuel:        { name: 'Fuel',            unit: 'L diesel',  icon: '⛽', color: '#f57f17' },
-        electricity: { name: 'Electricity',     unit: 'kWh',       icon: '⚡', color: '#2196F3' }
+        people:      { name: 'People on site',  unit: 'workers',   icon: 'people', color: '#ff6600' },
+        material:    { name: 'Material',        unit: 't/week',    icon: 'material', color: '#795548' },
+        equipment:  { name: 'Equipment',       unit: 'mach-hrs',  icon: 'equipment', color: '#607D8B' },
+        fuel:        { name: 'Fuel',            unit: 'L diesel',  icon: 'fuel', color: '#f57f17' },
+        electricity: { name: 'Electricity',     unit: 'kWh',       icon: 'electricity', color: '#2196F3' }
     },
 
     // Scenario definitions: window [startWeek, endWeek] (1-based) and peak per category
@@ -165,15 +165,15 @@ const A4A5_DATA = {
 
     // Imagined site-data capture tools (placeholder — real tools/data to come)
     a5SiteTools: [
-        { icon: '📱', name: 'Personnel tracking app',
+        { icon: 'mobile', name: 'Personnel tracking app',
           desc: 'Site sign-in / wearable beacons log actual headcount per trade, per day — replacing GFA-based labour estimates.' },
-        { icon: '🚚', name: 'Vehicle & plant tracking app',
+        { icon: 'truck', name: 'Vehicle & plant tracking app',
           desc: 'GPS + telematics on deliveries, cranes and diggers capture real machine-hours and idle time.' },
-        { icon: '⛽', name: 'Fuel & maintenance app',
+        { icon: 'fuel', name: 'Fuel & maintenance app',
           desc: 'Every diesel docket and tank fill logged against plant — verified litres, not assumptions.' },
-        { icon: '🗑️', name: 'Skip & waste ledger',
+        { icon: 'waste', name: 'Skip & waste ledger',
           desc: 'Weighbridge dockets per skip (material, landfill vs diversion) prove the real waste factor.' },
-        { icon: '🔌', name: 'Smart meter feed',
+        { icon: 'meter', name: 'Smart meter feed',
           desc: 'Site board kWh pulled live (or monthly power bill) for actual temporary-works electricity.' }
     ]
 };

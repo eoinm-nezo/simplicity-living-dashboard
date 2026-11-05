@@ -183,7 +183,7 @@ function updateChrome() {
         footer.style.display = '';
     } else if (step <= 7) {
         const meta = CATEGORY_META[step - 1];
-        label.innerHTML = `${meta.icon} <strong>${meta.name}</strong>&ensp;<small class="self-step-num">Step ${step} of 7</small>`;
+        label.innerHTML = `${appIcon(meta.icon, { cls: 'app-icon app-icon-inline' })} <strong>${meta.name}</strong>&ensp;<small class="self-step-num">Step ${step} of 7</small>`;
         fill.style.width = (step / 7 * 100) + '%';
         backBtn.style.visibility = 'visible';
         backBtn.textContent = '← Back';
@@ -216,7 +216,7 @@ function renderDetails(el) {
     const nudge = loggedIn ? '' : `
         <div class="auth-nudge">
             <div class="auth-nudge-body">
-                <span class="auth-nudge-icon">💾</span>
+                <span class="auth-nudge-icon">${appIcon('save')}</span>
                 <div>
                     <strong>Create a free account to save your results</strong>
                     <p>Sign in to save assessments to your account, access them from any device, and track improvements over time. You can complete the scoring without an account — you just won't be able to save.</p>
@@ -336,7 +336,7 @@ function renderResults() {
                     const s    = scores[k] || 0;
                     const band = BANDS.find(b => b.score === s) || BANDS[0];
                     return `<div class="self-cat-row">
-                        <span class="self-cat-icon">${meta.icon}</span>
+                        <span class="self-cat-icon">${appIcon(meta.icon)}</span>
                         <span class="self-cat-name">${meta.name}</span>
                         <div class="self-bar-track">
                             <div class="self-bar-fill" style="width:${s/20*100}%;background:${band.color}"></div>
@@ -348,12 +348,12 @@ function renderResults() {
             </div>
             <div class="self-result-actions">
                 ${(window.sbIsLoggedIn && window.sbIsLoggedIn())
-                    ? `<button id="selfSaveBtn" class="self-btn secondary" onclick="selfSaveLocal()">💾 Save to my account</button>`
+                    ? `<button id="selfSaveBtn" class="self-btn secondary" onclick="selfSaveLocal()">${appIcon('save', { cls: 'app-icon app-icon-inline' })} Save to my account</button>`
                     : `<div class="auth-nudge-save">
                         <p>Sign in to save this assessment to your account</p>
                         <button class="auth-nudge-btn-primary" onclick="openAuthModal()">Sign In / Create Account</button>
                        </div>`}
-                <button class="self-btn primary" onclick="selfPrintPDF()">🖨️ Export PDF</button>
+                <button class="self-btn primary" onclick="selfPrintPDF()">${appIcon('print', { cls: 'app-icon app-icon-inline' })} Export PDF</button>
             </div>
         </div>`;
 

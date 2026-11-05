@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplicity Living - Building Performance Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=4">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/auth.css?v=2">
     <style>
         /* ── Performance Overview toggle ───────────────────────────────── */
         .section-header-row {
@@ -126,6 +126,29 @@
             margin-top: 0.75rem;
             line-height: 1.5;
         }
+
+        /* ── Benchmark scorecard (module breakdown) ────────────────────── */
+        .sc-lead { font-size: 1.05rem; color: #555; line-height: 1.7; margin-bottom: 1.1rem; max-width: 880px; }
+        .sc-lead a { color: var(--simplicity-orange); font-weight: 600; }
+        .sc-total { display: flex; align-items: baseline; gap: 0.45rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .sc-total-num { font-size: 2.5rem; font-weight: 800; color: var(--simplicity-orange); line-height: 1; }
+        .sc-total-max { font-size: 1rem; color: #aaa; font-weight: 700; }
+        .sc-total-lbl { font-size: 0.75rem; color: #8a8a8a; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 0.4rem; }
+        .sc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; }
+        .sc-card {
+            background: #fff; border: 1px solid #eee; border-top: 4px solid var(--cat, #ccc);
+            border-radius: 10px; padding: 1.1rem 1.15rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .sc-card-head { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.7rem; min-height: 2.4em; }
+        .sc-icon { width: 20px; height: 20px; color: var(--cat, #666); flex-shrink: 0; }
+        .sc-name { font-weight: 800; font-size: 0.95rem; color: #2a2f37; line-height: 1.2; }
+        .sc-score { display: flex; align-items: baseline; gap: 0.25rem; }
+        .sc-score strong { font-size: 1.95rem; font-weight: 800; color: var(--cat, #333); line-height: 1; }
+        .sc-score span { font-size: 0.85rem; color: #b0b0b0; font-weight: 700; }
+        .sc-bar { height: 7px; border-radius: 4px; background: #f0f0f0; overflow: hidden; margin: 0.6rem 0 0.5rem; }
+        .sc-bar span { display: block; height: 100%; border-radius: 4px; background: var(--cat, #ff6600); transition: width 0.4s ease; }
+        .sc-band { font-size: 0.72rem; font-weight: 700; color: #8a8a8a; text-transform: uppercase; letter-spacing: 0.04em; }
+        .sc-note { font-size: 0.8rem; color: #9a9a9a; margin-top: 1.25rem; font-style: italic; }
 
         @media (max-width: 700px) {
             .section-header-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
@@ -268,59 +291,28 @@
         </section>
 
         <!-- Performance Metrics Charts -->
+        <!-- Project Benchmark Scorecard — the seven modules, aggregated across projects.
+             Replaces the old performance graphs; the full lifecycle breakdown now lives on
+             the Embodied Carbon page. -->
         <section class="section">
             <div class="section-header-row">
-                <h2 class="section-title">Project Performance Overview</h2>
+                <h2 class="section-title">Project Benchmark Scorecard</h2>
                 <div class="view-switch">
-                    <span class="view-switch-hint">Switch view</span>
-                    <div class="view-tabs" role="tablist" aria-label="Performance overview view">
-                        <button class="view-tab active" onclick="showView('charts',this)" role="tab" aria-selected="true">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
-                            Charts
-                        </button>
-                        <button class="view-tab" onclick="showView('lca',this)" role="tab" aria-selected="false">
-                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="20"/></svg>
-                            Lifecycle Overview
-                        </button>
+                    <span class="view-switch-hint">Show</span>
+                    <div class="view-tabs" role="tablist" aria-label="Scorecard aggregate">
+                        <button class="view-tab active" id="scAvgBtn" onclick="setScorecardMode('avg',this)" role="tab" aria-selected="true">Average</button>
+                        <button class="view-tab" id="scBestBtn" onclick="setScorecardMode('best',this)" role="tab" aria-selected="false">Best result</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Charts view (default) -->
-            <div id="chartsView">
-                <div class="charts-container">
-                    <!-- Embodied Carbon Chart -->
-                    <div class="chart-wrapper">
-                        <h3>Embodied Carbon Performance</h3>
-                        <div class="chart-canvas-container">
-                            <canvas id="carbonChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Energy Usage Chart -->
-                    <div class="chart-wrapper">
-                        <h3>Energy Usage Performance</h3>
-                        <div class="toggle-container">
-                            <span>Energy (kWh)</span>
-                            <div class="toggle-switch" id="energyToggle" onclick="toggleEnergyChart()">
-                                <div class="toggle-slider"></div>
-                            </div>
-                            <span>Carbon (kgCO&#8322;e)</span>
-                        </div>
-                        <div class="chart-canvas-container">
-                            <canvas id="energyChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lifecycle Overview (hidden until toggled) -->
-            <div id="lcaView" style="display:none">
-                <div id="lcaTableContainer"></div>
-                <div class="chart-canvas-container" style="height:220px;margin-top:1.75rem;">
-                    <canvas id="lcaChart"></canvas>
-                </div>
-            </div>
+            <p class="sc-lead" id="scLead">
+                The seven benchmark modules, <strong>averaged across all loaded projects</strong>.
+                Each module is scored out of 20, calculated upward from measured evidence.
+                Open the <a href="scoring.html">Benchmark</a> for the full method and per-project detail.
+            </p>
+            <div class="sc-total" id="scTotal"></div>
+            <div class="sc-cards" id="scCards"><p class="sc-note">Loading scorecard…</p></div>
+            <p class="sc-note">Pilot benchmark v0.2 &mdash; placeholder project data, pending real evidence. A context measure, not a rating or certification.</p>
         </section>
     </div>
 
@@ -411,7 +403,11 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/charts.js"></script>
+    <script src="js/icons.js?v=8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+    <script src="js/simplicity-db.js?v=2"></script>
+    <script src="js/scoring-methodology.js?v=1"></script>
+    <script src="js/home-scorecard.js?v=1"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/analytics.js"></script>

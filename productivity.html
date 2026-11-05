@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Activity & Productivity - Simplicity Living</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/productivity.css">
-    <link rel="stylesheet" href="css/calculator.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/productivity.css?v=19">
+    <link rel="stylesheet" href="css/calculator.css?v=3">
+    <link rel="stylesheet" href="css/auth.css?v=2">
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+    } }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -38,36 +44,107 @@
 
     <!-- Main Content -->
     <div class="container">
-        <!-- Build Programme -->
-        <section class="section">
-            <h2 class="section-title">Typical Build Programme</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem;">
-                Simplified Gantt chart showing key construction phases for a typical Simplicity residential project.
+        <!-- ================= Construction Programme (4D + Gantt + activity) ========= -->
+        <section class="section" id="programme">
+            <h2 class="section-title">Construction Programme</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; line-height:1.7; max-width: 980px;">
+                Waiatarua is four buildings &mdash; A at 8 levels through to D at 13 &mdash; built in a rolling
+                sequence so crews and cranes move down the site rather than waiting on each other.
+                Press play to watch the model build itself against the programme, or switch to the
+                activity profile to see what that means for people, plant and power on site.
             </p>
-            <div class="gantt-chart">
-                <div class="gantt-row">
-                    <div class="gantt-label">Foundation</div>
-                    <div class="gantt-bar" style="width: 15%; background: #ff6600;">4 weeks</div>
+
+            <div class="pm-head">
+                <div class="pm-views" role="tablist" aria-label="Programme view">
+                    <button type="button" class="pm-view active" data-pm-view="model" role="tab" aria-selected="true">4D model &amp; programme</button>
+                    <button type="button" class="pm-view" data-pm-view="activity" role="tab" aria-selected="false">Weekly activity profile</button>
                 </div>
-                <div class="gantt-row">
-                    <div class="gantt-label">Structure (Walls)</div>
-                    <div class="gantt-bar" style="width: 25%; background: #ff8833; margin-left: 15%;">6 weeks</div>
+                <div class="pm-transport">
+                    <button type="button" class="pm-play" id="pmPlay"></button>
+                    <span class="pm-week" id="pmWeek">Week 1</span>
+                    <input type="range" id="pmScrub" min="1" max="120" value="1" aria-label="Construction week">
+                    <span class="pm-speeds">
+                        <button type="button" data-pm-speed="1">1&times;</button>
+                        <button type="button" data-pm-speed="2" class="active">2&times;</button>
+                        <button type="button" data-pm-speed="4">4&times;</button>
+                    </span>
                 </div>
-                <div class="gantt-row">
-                    <div class="gantt-label">Upper Floors</div>
-                    <div class="gantt-bar" style="width: 30%; background: #ffaa66; margin-left: 40%;">8 weeks</div>
+            </div>
+
+            <div class="pm-now" id="pmNow"></div>
+
+            <!-- Pane 1: 4D model beside the Gantt -->
+            <div id="pmModelPane" class="pm-split">
+                <div class="pm-model">
+                    <div class="pm-model-frame">
+                        <div id="pm4dCanvas" class="pm-4d"></div>
+                        <div class="pm-4d-overlay" id="pm4dOverlayWrap">
+                            <span id="pm4dStatus">Loading site model&hellip;</span>
+                        </div>
+                        <div class="pm-cams">
+                            <button type="button" data-pm-cam="site" class="active">Site</button>
+                            <button type="button" data-pm-cam="street">Street</button>
+                            <button type="button" data-pm-cam="top">Plan</button>
+                        </div>
+                        <div class="pm-key">
+                            <span><i style="background:#ff6600"></i> building this week</span>
+                            <span><i style="background:#ffb27a"></i> just completed</span>
+                            <span class="pm-key-rule"></span>
+                            <span><i style="background:#b4bac1"></i> structure</span>
+                            <span><i style="background:#4f9a97"></i> façade</span>
+                            <span><i style="background:#86bada"></i> glazing</span>
+                            <span><i style="background:#7f868d"></i> roof</span>
+                            <span><i style="background:#8cbb63"></i> landscaping</span>
+                        </div>
+                    </div>
+                    <p class="pm-cap">Geometry from the Waiatarua SketchUp models &middot; drag to orbit, scroll to zoom</p>
                 </div>
-                <div class="gantt-row">
-                    <div class="gantt-label">Roof & Cladding</div>
-                    <div class="gantt-bar" style="width: 15%; background: #ff6600; margin-left: 70%;">4 weeks</div>
+                <div class="pm-gantt-wrap">
+                    <div id="pmGantt"></div>
                 </div>
-                <div class="gantt-row">
-                    <div class="gantt-label">Windows & Facade</div>
-                    <div class="gantt-bar" style="width: 20%; background: #cc5200; margin-left: 50%;">5 weeks</div>
+            </div>
+
+            <!-- Pane 2: weekly activity, baseline overlaid behind Waiatarua -->
+            <div id="pmActivityPane" class="pm-activity" style="display:none">
+                <div class="chart-wrapper">
+                    <div class="pm-chart-head">
+                        <h3>Weekly site activity by trade</h3>
+                        <label class="pm-opacity">Baseline visibility
+                            <input type="range" id="pmBaseOpacity" min="0" max="100" value="45">
+                        </label>
+                    </div>
+                    <div class="chart-canvas-container" style="height: 420px;">
+                        <canvas id="pmActivityChart"></canvas>
+                    </div>
+                    <p class="pm-chart-note">
+                        Grey is the industry baseline running the same scope sequentially; the coloured bars are
+                        Waiatarua. The baseline stretches further right &mdash; that extra length is the carbon the
+                        programme is paying for.
+                    </p>
                 </div>
-                <div class="gantt-row">
-                    <div class="gantt-label">Fit-out</div>
-                    <div class="gantt-bar" style="width: 25%; background: #994000; margin-left: 75%;">6 weeks</div>
+            </div>
+
+            <div class="metric-row">
+                <div class="metric-card" style="border-top-color:#ff6600;"><div class="metric-icon" data-metric-icon="people" style="color:#ff6600"></div><div class="metric-value" id="metric_people">0</div><div class="metric-label">People on site</div></div>
+                <div class="metric-card" style="border-top-color:#795548;"><div class="metric-icon" data-metric-icon="material" style="color:#795548"></div><div class="metric-value" id="metric_material">0</div><div class="metric-label">Material (t/week)</div></div>
+                <div class="metric-card" style="border-top-color:#607D8B;"><div class="metric-icon" data-metric-icon="equipment" style="color:#607D8B"></div><div class="metric-value" id="metric_equipment">0</div><div class="metric-label">Equipment (mach-hrs)</div></div>
+                <div class="metric-card" style="border-top-color:#f57f17;"><div class="metric-icon" data-metric-icon="fuel" style="color:#f57f17"></div><div class="metric-value" id="metric_fuel">0</div><div class="metric-label">Fuel (L diesel)</div></div>
+                <div class="metric-card" style="border-top-color:#2196F3;"><div class="metric-icon" data-metric-icon="electricity" style="color:#2196F3"></div><div class="metric-value" id="metric_electricity">0</div><div class="metric-label">Electricity (kWh)</div></div>
+            </div>
+
+            <div class="comparison-card">
+                <h3>The speed dividend: baseline vs Waiatarua</h3>
+                <div id="a5Comparison"></div>
+
+                <!-- Demonstration video: baseline precast wall vs Simplicity in-situ StackCell. -->
+                <div class="sd-video">
+                    <div class="sd-video-head">
+                        <h4>See the time difference: precast wall vs in-situ StackCell</h4>
+                        <p>One wall section, built both ways. Curing and wait time are left in, then fast-forwarded with a running site clock, so the weeks we save are easy to see.</p>
+                    </div>
+                    <div class="sd-video-frame" id="sdVideoFrame">
+                        <video src="assets/video/stackcell-vs-precast.mp4" controls muted loop playsinline preload="metadata"></video>
+                    </div>
                 </div>
             </div>
         </section>
@@ -76,7 +153,7 @@
         <section class="section">
             <h2 class="section-title">Core Construction Elements Carbon Analysis</h2>
             <p style="font-size: 1.1rem; margin-bottom: 1.25rem;">
-                Embodied carbon breakdown for primary building systems (A1-A3: Product &amp; Manufacturing, A4-A5: Transport &amp; Construction). Click an <strong>A4-A5</strong> value to open that element's activity calculator, prefilled with the selected project's data.
+                Each element carries three numbers: the product carbon locked in at the factory gate (<strong>A1&ndash;A3</strong>), the <strong>Green Star default</strong> for getting it to site and building it in, and what Simplicity actually <strong>measures</strong> for the same work. The default is the honest industry starting point; the measured figure is the challenge to it. Open any element to see both calculated line by line.
             </p>
 
             <!-- Project selector: Waiatarua is being substantiated first -->
@@ -88,9 +165,10 @@
                 <button type="button" class="ap-chip soon" data-project="morningside" disabled>Morningside Dr<small>coming soon</small></button>
             </div>
 
+            <div class="element-totals" id="elementTotals"></div>
             <div class="construction-elements">
                 <!-- Foundation -->
-                <div class="element-card">
+                <div class="element-card" data-element="foundation">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="52">
                             <!-- column stub above ground -->
@@ -113,19 +191,17 @@
                     </div>
                     <h3>Foundation</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>85 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>85</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-foundation.html?project=waiatarua" data-base="activity-foundation.html" class="carbon-link">12 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-foundation.html?project=waiatarua" data-base="activity-foundation.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Structural Walls -->
-                <div class="element-card">
+                <div class="element-card" data-element="walls">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
                             <!-- concrete wall cross-section (plan view) with engineering hatch + rebar -->
@@ -149,19 +225,17 @@
                     </div>
                     <h3>Concrete Structural Walls</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>140 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>140</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-walls.html?project=waiatarua" data-base="activity-walls.html" class="carbon-link">18 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-walls.html?project=waiatarua" data-base="activity-walls.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Upper Floors -->
-                <div class="element-card">
+                <div class="element-card" data-element="floors">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
                             <!-- column stubs above slab -->
@@ -179,19 +253,17 @@
                     </div>
                     <h3>Suspended Concrete Floors (6 levels)</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>120 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>120</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-floors.html?project=waiatarua" data-base="activity-floors.html" class="carbon-link">15 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-floors.html?project=waiatarua" data-base="activity-floors.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Roof -->
-                <div class="element-card">
+                <div class="element-card" data-element="roof">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 46" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="52">
                             <!-- pitched roof body -->
@@ -210,19 +282,17 @@
                     </div>
                     <h3>Roof (Concrete + Timber Truss + Steel)</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>95 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>95</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-roof.html?project=waiatarua" data-base="activity-roof.html" class="carbon-link">14 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-roof.html?project=waiatarua" data-base="activity-roof.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Windows -->
-                <div class="element-card">
+                <div class="element-card" data-element="windows">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
                             <!-- window head -->
@@ -245,19 +315,17 @@
                     </div>
                     <h3>Windows & Glazing</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>55 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>55</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-windows.html?project=waiatarua" data-base="activity-windows.html" class="carbon-link">8 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-windows.html?project=waiatarua" data-base="activity-windows.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
 
                 <!-- Cladding -->
-                <div class="element-card">
+                <div class="element-card" data-element="cladding">
                     <div class="element-icon">
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
                             <!-- mortar background -->
@@ -293,55 +361,14 @@
                     </div>
                     <h3>External Cladding</h3>
                     <div class="carbon-values">
-                        <div class="carbon-item">
-                            <span>A1-A3:</span>
-                            <strong>45 kgCO2e/m²</strong>
+                        <div class="carbon-item carbon-a13">
+                            <span>A1&ndash;A3 <small>product</small></span>
+                            <strong>45</strong>
                         </div>
-                        <div class="carbon-item">
-                            <span>A4-A5:</span>
-                            <a href="activity-cladding.html?project=waiatarua" data-base="activity-cladding.html" class="carbon-link">7 kgCO2e/m² →</a>
-                        </div>
+                        <div class="a45-grid" data-a45-grid></div>
+                        <a href="activity-cladding.html?project=waiatarua" data-base="activity-cladding.html" class="carbon-link">See the workings &rarr;</a>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Construction Activity Programme (relocated from the public A4-A5 calculator) -->
-        <section class="section">
-            <h2 class="section-title">Construction Activity Programme</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; line-height:1.7;">
-                How the trades stack up week by week. The industry <strong>baseline</strong> runs trades sequentially over a long programme; <strong>Waiatarua</strong> overlaps them for a shorter, sharper build &mdash; the speed dividend that drives A5 construction carbon down. Scrub through the weeks to see people, material, plant, fuel and power on site.
-            </p>
-
-            <div class="building-selector" id="a5ScenarioToggle">
-                <button type="button" class="building-btn" data-scenario="baseline" onclick="setActivityScenario('baseline')">Baseline<small>linear, sequential</small></button>
-                <button type="button" class="building-btn active" data-scenario="simplicity" onclick="setActivityScenario('simplicity')">Waiatarua<small>overlapped, faster</small></button>
-            </div>
-            <p id="a5ScenarioSummary" class="a5-summary"></p>
-
-            <div class="chart-wrapper">
-                <h3>Weekly site activity by trade</h3>
-                <div class="chart-canvas-container" style="height: 380px;">
-                    <canvas id="a5Chart"></canvas>
-                </div>
-                <div class="slider-row">
-                    <span id="weekLabel" class="slider-week">Week 1</span>
-                    <input type="range" id="weekSlider" min="1" max="80" value="1" oninput="onActivityWeek(this.value)">
-                    <span id="weekPhase" class="slider-phase"></span>
-                </div>
-            </div>
-
-            <div class="metric-row">
-                <div class="metric-card" style="border-top-color:#ff6600;"><div class="metric-icon">👷</div><div class="metric-value" id="metric_people">0</div><div class="metric-label">People on site</div></div>
-                <div class="metric-card" style="border-top-color:#795548;"><div class="metric-icon">📦</div><div class="metric-value" id="metric_material">0</div><div class="metric-label">Material (t/week)</div></div>
-                <div class="metric-card" style="border-top-color:#607D8B;"><div class="metric-icon">🏗️</div><div class="metric-value" id="metric_equipment">0</div><div class="metric-label">Equipment (mach-hrs)</div></div>
-                <div class="metric-card" style="border-top-color:#f57f17;"><div class="metric-icon">⛽</div><div class="metric-value" id="metric_fuel">0</div><div class="metric-label">Fuel (L diesel)</div></div>
-                <div class="metric-card" style="border-top-color:#2196F3;"><div class="metric-icon">⚡</div><div class="metric-value" id="metric_electricity">0</div><div class="metric-label">Electricity (kWh)</div></div>
-            </div>
-
-            <div class="comparison-card">
-                <h3>The speed dividend: Baseline vs Waiatarua</h3>
-                <div id="a5Comparison"></div>
             </div>
         </section>
 
@@ -355,10 +382,11 @@
             <div class="apartment-grid">
                 <!-- Apartment Type 1 -->
                 <div class="apartment-card">
-                    <h3>Type A - Studio (45m²)</h3>
+                    <h3>1 Bed Apartment (55m²)</h3>
                     <div class="apartment-layout">
                         <div class="layout-diagram">
-                            <div class="room">Living/Bedroom</div>
+                            <div class="room">Living</div>
+                            <div class="room">Bedroom</div>
                             <div class="room small">Bath</div>
                             <div class="room small">Kitchen</div>
                         </div>
@@ -375,10 +403,6 @@
                         <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">3.0 workers</p>
                     </div>
                     <div class="carbon-summary">
-                        <div class="carbon-row">
-                            <span>A1-A3:</span>
-                            <strong>320 kgCO2e/m²</strong>
-                        </div>
                         <div class="carbon-row highlight">
                             <span>A4-A5:</span>
                             <strong>48 kgCO2e/m²</strong>
@@ -388,11 +412,12 @@
 
                 <!-- Apartment Type 2 -->
                 <div class="apartment-card">
-                    <h3>Type B - 1 Bedroom (65m²)</h3>
+                    <h3>2 Bed Apartment (75m²)</h3>
                     <div class="apartment-layout">
                         <div class="layout-diagram">
                             <div class="room">Living</div>
-                            <div class="room">Bedroom</div>
+                            <div class="room">Bedroom 1</div>
+                            <div class="room">Bedroom 2</div>
                             <div class="room small">Bath</div>
                             <div class="room small">Kitchen</div>
                         </div>
@@ -409,10 +434,6 @@
                         <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">3.5 workers</p>
                     </div>
                     <div class="carbon-summary">
-                        <div class="carbon-row">
-                            <span>A1-A3:</span>
-                            <strong>305 kgCO2e/m²</strong>
-                        </div>
                         <div class="carbon-row highlight">
                             <span>A4-A5:</span>
                             <strong>46 kgCO2e/m²</strong>
@@ -422,12 +443,13 @@
 
                 <!-- Apartment Type 3 -->
                 <div class="apartment-card">
-                    <h3>Type C - 2 Bedroom (85m²)</h3>
+                    <h3>3 Bed Apartment (95m²)</h3>
                     <div class="apartment-layout">
                         <div class="layout-diagram">
                             <div class="room">Living</div>
                             <div class="room">Bedroom 1</div>
                             <div class="room">Bedroom 2</div>
+                            <div class="room">Bedroom 3</div>
                             <div class="room small">Bath</div>
                             <div class="room small">Kitchen</div>
                         </div>
@@ -444,10 +466,6 @@
                         <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">4.0 workers</p>
                     </div>
                     <div class="carbon-summary">
-                        <div class="carbon-row">
-                            <span>A1-A3:</span>
-                            <strong>295 kgCO2e/m²</strong>
-                        </div>
                         <div class="carbon-row highlight">
                             <span>A4-A5:</span>
                             <strong>44 kgCO2e/m²</strong>
@@ -462,22 +480,34 @@
             <h2 class="section-title">Productivity Insights</h2>
             <div class="nav-tiles">
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">👷</div>
+                    <div class="nav-tile-icon" data-icon="target"></div>
                     <h3>Efficient Labor Use</h3>
                     <p>3-4 workers per apartment reduces coordination complexity and improves quality</p>
                 </div>
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">📉</div>
+                    <div class="nav-tile-icon" data-icon="trendDown"></div>
                     <h3>Lower A4-A5 Carbon</h3>
                     <p>Larger apartments show improved carbon efficiency due to optimized construction sequences</p>
                 </div>
                 <div class="nav-tile" style="pointer-events: none;">
-                    <div class="nav-tile-icon">⏱️</div>
+                    <div class="nav-tile-icon" data-icon="stopwatch"></div>
                     <h3>Predictable Timeline</h3>
                     <p>In-situ concrete methodology enables consistent 10-day construction cycles</p>
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Speed-dividend explainer popup (tiles + overhead items) -->
+    <div id="sdModalOverlay" class="sd-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="sdModalTitle" onclick="if(event.target===this)sdCloseTopic()">
+        <div class="sd-modal">
+            <button class="sd-modal-close" onclick="sdCloseTopic()" title="Close" aria-label="Close">&#10005;</button>
+            <div class="sd-modal-head">
+                <span class="sd-modal-tag" id="sdModalTag"></span>
+                <h3 class="sd-modal-title" id="sdModalTitle"></h3>
+            </div>
+            <div class="sd-modal-body" id="sdModalBody"></div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -491,8 +521,14 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/a4a5-data.js"></script>
-    <script src="js/site-activity.js"></script>
+    <script src="js/icons.js?v=6"></script>
+    <script src="js/a4a5-data.js?v=3"></script>
+    <script src="js/greenstar-a45.js?v=1"></script>
+    <script src="js/activity-data.js?v=2"></script>
+    <script src="js/programme.js?v=3"></script>
+    <script type="module" src="js/site-4d.js?v=10"></script>
+    <script src="js/programme-ui.js?v=10"></script>
+    <script src="js/site-activity.js?v=13"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/analytics.js"></script>

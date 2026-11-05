@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A4–A5 Carbon Calculator - Simplicity Living</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/calculator.css">
+    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/calculator.css?v=3">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <script src="js/simplicity-db.js"></script>
-    <script src="js/a4a5-data.js"></script>
-    <link rel="stylesheet" href="css/auth.css">
+    <script src="js/icons.js?v=6"></script>
+    <script src="js/a4a5-data.js?v=3"></script>
+    <link rel="stylesheet" href="css/auth.css?v=2">
 </head>
 <body>
     <!-- Navigation -->
@@ -47,13 +48,13 @@
             <h2 class="section-title">A different way to count A4 &amp; A5</h2>
             <div class="paradigm-grid">
                 <div class="paradigm-card old">
-                    <div class="paradigm-icon">📦</div>
+                    <div class="paradigm-icon" data-icon="material"></div>
                     <h3>The industry default</h3>
                     <p>Material-driven. Punch in a quantity, the tool slaps on a generic transport distance and a fat 5&ndash;10% waste penalty. Efficient builders get the same score as sloppy ones.</p>
                 </div>
                 <div class="paradigm-arrow">→</div>
                 <div class="paradigm-card new">
-                    <div class="paradigm-icon">🎯</div>
+                    <div class="paradigm-icon" data-icon="target"></div>
                     <h3>The Simplicity way</h3>
                     <p>Logistics-driven. Mass sets the floor, but your <strong>real distances</strong>, <strong>full trucks</strong>, <strong>tiny waste factor</strong> and <strong>shorter programme</strong> are the levers &mdash; and every saving is shown against the baseline.</p>
                 </div>
@@ -126,19 +127,19 @@
                 <!-- A4 KPI cards -->
                 <div class="kpi-row">
                     <div class="kpi-card baseline">
-                        <div class="kpi-icon">📦</div>
+                        <div class="kpi-icon" data-icon="material"></div>
                         <div class="kpi-value"><span id="a4Baseline">0</span></div>
                         <div class="kpi-label">Baseline A4 (kgCO₂e)</div>
                         <div class="kpi-sub"><span id="a4BasePerM2">0</span> kg/m²</div>
                     </div>
                     <div class="kpi-card optimised">
-                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-icon" data-icon="target"></div>
                         <div class="kpi-value"><span id="a4Optimised">0</span></div>
                         <div class="kpi-label">Simplicity A4 (kgCO₂e)</div>
                         <div class="kpi-sub"><span id="a4OptPerM2">0</span> kg/m²</div>
                     </div>
                     <div class="kpi-card delta">
-                        <div class="kpi-icon">📉</div>
+                        <div class="kpi-icon" data-icon="trendDown"></div>
                         <div class="kpi-value"><span id="a4Delta">0</span></div>
                         <div class="kpi-label">Carbon saved (kgCO₂e)</div>
                         <div class="kpi-sub"><span id="a4DeltaPct">0%</span> below baseline</div>
@@ -156,11 +157,11 @@
                 <div class="journey-card">
                     <h3>Every material is a multi-leg journey</h3>
                     <div class="journey-flow">
-                        <div class="journey-node"><span class="journey-icon">🏭</span><span>Factory / quarry</span></div>
-                        <div class="journey-leg"><span class="journey-mode">🚢 Sea freight</span><small>container ship, runs full</small></div>
-                        <div class="journey-node"><span class="journey-icon">⚓</span><span>Port of entry</span></div>
-                        <div class="journey-leg"><span class="journey-mode">🚚 Road</span><small>load factor &amp; waste apply here</small></div>
-                        <div class="journey-node site"><span class="journey-icon">🏗️</span><span>Auckland site</span></div>
+                        <div class="journey-node"><span class="journey-icon" data-icon="factory"></span><span>Factory / quarry</span></div>
+                        <div class="journey-leg"><span class="journey-mode"><i data-icon="ship"></i>Sea freight</span><small>container ship, runs full</small></div>
+                        <div class="journey-node"><span class="journey-icon" data-icon="anchor"></span><span>Port of entry</span></div>
+                        <div class="journey-leg"><span class="journey-mode"><i data-icon="truck"></i>Road</span><small>load factor &amp; waste apply here</small></div>
+                        <div class="journey-node site"><span class="journey-icon" data-icon="crane"></span><span>Auckland site</span></div>
                     </div>
                     <p class="journey-note">Sea distances use container-freight factors; the local road leg is where Simplicity's full trucks and low waste cut the most carbon. Distances come from the BRANZ Transport Scenarios database; factors from MfE 2023 (ME1781).</p>
                 </div>
@@ -173,37 +174,37 @@
 
                 <div class="activity-launch-grid">
                     <a class="activity-launch" href="activity-walls.html?mode=blank">
-                        <span class="al-icon">🧱</span>
+                        <span class="al-icon" data-icon="masonry"></span>
                         <span class="al-name">Concrete Structural Walls</span>
                         <span class="al-desc">Concrete &amp; rebar transport, pour, crane &amp; formwork</span>
                         <span class="al-cta">Open calculator →</span>
                     </a>
                     <a class="activity-launch" href="activity-foundation.html?mode=blank">
-                        <span class="al-icon">🕳️</span>
+                        <span class="al-icon" data-icon="excavation"></span>
                         <span class="al-name">Foundation</span>
                         <span class="al-desc">Excavation, hardfill import, pour &amp; compaction</span>
                         <span class="al-cta">Open calculator →</span>
                     </a>
                     <a class="activity-launch" href="activity-floors.html?mode=blank">
-                        <span class="al-icon">🏗️</span>
+                        <span class="al-icon" data-icon="crane"></span>
                         <span class="al-name">Suspended Floors</span>
                         <span class="al-desc">Concrete &amp; rebar transport, pump to height, formwork &amp; propping</span>
                         <span class="al-cta">Open calculator →</span>
                     </a>
                     <a class="activity-launch" href="activity-roof.html?mode=blank">
-                        <span class="al-icon">🏠</span>
+                        <span class="al-icon" data-icon="comfort"></span>
                         <span class="al-name">Roof</span>
                         <span class="al-desc">Concrete deck, timber &amp; steel transport, crane erection &amp; connections</span>
                         <span class="al-cta">Open calculator →</span>
                     </a>
                     <a class="activity-launch" href="activity-windows.html?mode=blank">
-                        <span class="al-icon">🪟</span>
+                        <span class="al-icon" data-icon="glazing"></span>
                         <span class="al-name">Windows &amp; Glazing</span>
                         <span class="al-desc">Imported joinery: sea &amp; road transport, hoist &amp; install</span>
                         <span class="al-cta">Open calculator →</span>
                     </a>
                     <a class="activity-launch" href="activity-cladding.html?mode=blank">
-                        <span class="al-icon">🧊</span>
+                        <span class="al-icon" data-icon="cladding"></span>
                         <span class="al-name">External Cladding</span>
                         <span class="al-desc">Brick veneer transport, scaffold, hoist &amp; lay</span>
                         <span class="al-cta">Open calculator →</span>
@@ -231,7 +232,7 @@
         </div>
     </footer>
 
-    <script src="js/a4a5-calculator.js"></script>
+    <script src="js/a4a5-calculator.js?v=2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/analytics.js"></script>

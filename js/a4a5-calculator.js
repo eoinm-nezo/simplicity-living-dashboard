@@ -193,7 +193,7 @@ function renderMaterials() {
         const m = materialDef(line.material);
         const tr = document.createElement('tr');
         const matOpts = A4A5_DATA.materials.map(mm =>
-            `<option value="${mm.key}" ${mm.key === line.material ? 'selected' : ''}>${mm.icon} ${mm.name}</option>`).join('');
+            `<option value="${mm.key}" ${mm.key === line.material ? 'selected' : ''}>${mm.name}</option>`).join('');
         const groups = [...new Set(A4A5_DATA.origins.map(o => o.group))];
         const originOpts = groups.map(g =>
             `<optgroup label="${g}">` +
@@ -296,7 +296,7 @@ function renderA4() {
 
     // Per-material comparison chart
     const ctx = document.getElementById('a4Chart');
-    const labels = r.perMaterial.map(m => m.icon + ' ' + m.name);
+    const labels = r.perMaterial.map(m => m.name);
     if (a4Chart) a4Chart.destroy();
     a4Chart = new Chart(ctx, {
         type: 'bar',
@@ -337,7 +337,7 @@ function renderSiteTools() {
     if (!wrap) return;
     wrap.innerHTML = A4A5_DATA.a5SiteTools.map(t => `
         <div class="site-tool-card">
-            <div class="site-tool-icon">${t.icon}</div>
+            <div class="site-tool-icon">${appIcon(t.icon)}</div>
             <h4>${escapeHtml(t.name)}</h4>
             <p>${escapeHtml(t.desc)}</p>
         </div>`).join('');

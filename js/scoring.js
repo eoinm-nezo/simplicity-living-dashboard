@@ -59,31 +59,43 @@ function updateScore() {
     updateSummary(categoryScores, totalScore);
 }
 
+// Five stars, filled to the rating. SVG rather than the emoji glyph so it matches
+// the rest of the app and keeps its shape across platforms.
+function starBar(filled) {
+    let out = '';
+    for (let i = 1; i <= 5; i++) {
+        out += '<svg class="rating-star' + (i <= filled ? ' on' : '') + '" viewBox="0 0 24 24"' +
+               ' stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">' +
+               '<path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.3L12 17.4 6.4 20.4l1.1-6.3L3 9.7l6.2-.9z"/></svg>';
+    }
+    return '<span class="rating-stars" role="img" aria-label="' + filled + ' of 5 stars">' + out + '</span>';
+}
+
 function updateRating(score) {
     const ratingElement = document.getElementById('scoreRating');
     let rating, stars;
     
     if (score >= 120) {
         rating = '5-Star: Exceptional';
-        stars = '⭐⭐⭐⭐⭐';
+        stars = starBar(5);
     } else if (score >= 100) {
         rating = '4-Star: Excellent';
-        stars = '⭐⭐⭐⭐';
+        stars = starBar(4);
     } else if (score >= 80) {
         rating = '3-Star: Good';
-        stars = '⭐⭐⭐';
+        stars = starBar(3);
     } else if (score >= 60) {
         rating = '2-Star: Adequate';
-        stars = '⭐⭐';
+        stars = starBar(2);
     } else if (score > 0) {
         rating = '1-Star: Needs Improvement';
-        stars = '⭐';
+        stars = starBar(1);
     } else {
         rating = 'Not Yet Rated';
-        stars = '';
+        stars = starBar(0);
     }
     
-    ratingElement.textContent = stars + ' ' + rating;
+    ratingElement.innerHTML = stars + ' ' + rating;
 }
 
 function updateSummary(categoryScores, totalScore) {

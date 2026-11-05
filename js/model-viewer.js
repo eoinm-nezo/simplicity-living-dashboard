@@ -71,32 +71,86 @@
     return !(neg && pos);
   }
 
-  // Ear clipping. Written out rather than pulled from three.js because the UMD
-  // build does not expose Earcut on the global. Polygons here are 4-8 sided,
-  // so the simple O(n^2) form is more than fast enough — and it handles the
-  // non-convex floor plates (L-shaped units) that a fan would get wrong.
-  function earClip(pts) {
-    var n = pts.length, out = [];
-    if (n < 3) return out;
+  // Tolerances scale with the polygon so they behave the same on a 0.5 m window
+  // and a 60 m floor plate.
+  function loopScale(pts) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      if (pts[i][0] < minX) minX = pts[i][0];
+      if (pts[i][0] > maxX) maxX = pts[i][0];
+      if (pts[i][1] < minY) minY = pts[i][1];
+      if (pts[i][1] > maxY) maxY = pts[i][1];
+    }
+    return Math.max(maxX - minX, maxY - minY, 1e-9);
+  }
+
+  // Remove repeated and collinear vertices before clipping. A repeated vertex
+  // gives a zero-length edge, and a collinear one gives a zero-area "ear";
+  // both make every candidate ear look degenerate or blocked, which is what
+  // used to end the loop early and silently drop the rest of the polygon.
+  // Returns indices into pts, so the caller can still address the 3D vertices.
+  function cleanLoop(pts) {
+    var s = loopScale(pts);
+    var distEps = s * 1e-7, areaEps = s * s * 1e-10;
     var idx = [];
-    for (var i = 0; i < n; i++) idx.push(i);
+    for (var i = 0; i < pts.length; i++) idx.push(i);
+
+    var changed = true;
+    while (changed && idx.length >= 3) {
+      changed = false;
+      for (var k = 0; k < idx.length && idx.length >= 3; k++) {
+        var a = pts[idx[(k - 1 + idx.length) % idx.length]];
+        var b = pts[idx[k]];
+        var c = pts[idx[(k + 1) % idx.length]];
+        var dup = Math.abs(a[0] - b[0]) <= distEps && Math.abs(a[1] - b[1]) <= distEps;
+        var cross = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+        if (dup || Math.abs(cross) <= areaEps) {
+          idx.splice(k, 1);
+          changed = true;
+          k--;
+        }
+      }
+    }
+    return idx;
+  }
+
+  // Ear clipping. Written out rather than pulled from three.js because the UMD
+  // build does not expose Earcut on the global. It handles the non-convex floor
+  // plates (L-shaped units) and notched walls that a fan would get wrong.
+  function earClip(pts) {
+    var out = [];
+    var idx = cleanLoop(pts);
+    if (idx.length < 3) return out;
     if (signedArea(pts, idx) < 0) idx.reverse();
 
-    var guard = 0;
-    while (idx.length > 3 && guard++ < n * n + 8) {
+    var s = loopScale(pts);
+    var areaEps = s * s * 1e-10, distEps = s * 1e-7;
+    function same(p, q) {
+      return Math.abs(p[0] - q[0]) <= distEps && Math.abs(p[1] - q[1]) <= distEps;
+    }
+
+    var guard = 0, limit = idx.length * idx.length + 8;
+    while (idx.length > 3 && guard++ < limit) {
       var clipped = false;
+      var fallback = -1, fallbackCross = -Infinity;
+
       for (var k = 0; k < idx.length; k++) {
         var i0 = idx[(k - 1 + idx.length) % idx.length];
         var i1 = idx[k];
         var i2 = idx[(k + 1) % idx.length];
         var a = pts[i0], b = pts[i1], c = pts[i2];
         var cross = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
-        if (cross <= 1e-9) continue;                 // reflex or degenerate
+        if (cross > fallbackCross) { fallbackCross = cross; fallback = k; }
+        if (cross <= areaEps) continue;               // reflex
         var clear = true;
         for (var m = 0; m < idx.length; m++) {
           var j = idx[m];
           if (j === i0 || j === i1 || j === i2) continue;
-          if (pointInTri(pts[j], a, b, c)) { clear = false; break; }
+          var p = pts[j];
+          // A vertex sitting exactly on one of the ear's corners (a repeat that
+          // survived cleaning, or a touching notch) is not inside it.
+          if (same(p, a) || same(p, b) || same(p, c)) continue;
+          if (pointInTri(p, a, b, c)) { clear = false; break; }
         }
         if (!clear) continue;
         out.push(i0, i1, i2);
@@ -104,7 +158,15 @@
         clipped = true;
         break;
       }
-      if (!clipped) break;                            // degenerate, take what we have
+
+      // No valid ear, which only happens on self-touching or numerically
+      // ugly input. Clip the most convex corner anyway: a slightly imperfect
+      // triangle is better than a hole in the wall.
+      if (!clipped) {
+        var f = fallback;
+        out.push(idx[(f - 1 + idx.length) % idx.length], idx[f], idx[(f + 1) % idx.length]);
+        idx.splice(f, 1);
+      }
     }
     if (idx.length === 3) out.push(idx[0], idx[1], idx[2]);
     return out;

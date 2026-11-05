@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Simplicity Living</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/scoring.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/scoring.css?v=6">
+    <link rel="stylesheet" href="css/admin.css?v=3">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
-    <script src="js/simplicity-db.js"></script>
-    <link rel="stylesheet" href="css/auth.css">
+    <script src="js/icons.js?v=8"></script>
+    <script src="js/simplicity-db.js?v=2"></script>
+    <script src="js/scoring-methodology.js?v=1"></script>
+    <link rel="stylesheet" href="css/auth.css?v=2">
 </head>
 <body>
     <!-- Password gate (UI-only, not real security) -->
@@ -55,20 +57,24 @@
 
         <!-- Tabs -->
         <div class="admin-tabs" id="adminTabs">
-            <button class="admin-tab active" data-tab="scoring" onclick="showTab('scoring')">🏆 Scoring Results</button>
-            <button class="admin-tab" data-tab="lca" onclick="showTab('lca')">🏗️ Embodied Carbon</button>
-            <button class="admin-tab" data-tab="energy" onclick="showTab('energy')">⚡ Energy Results</button>
-            <button class="admin-tab" data-tab="waste" onclick="showTab('waste')">♻️ Waste Data</button>
-            <button class="admin-tab" data-tab="database" onclick="showTab('database')">💾 Database</button>
-            <button class="admin-tab" data-tab="analytics" onclick="showTab('analytics')">📊 Analytics</button>
+            <button class="admin-tab active" data-tab="scoring" onclick="showTab('scoring')"><i data-icon="trophy"></i>Benchmark Scoring</button>
+            <button class="admin-tab" data-tab="lca" onclick="showTab('lca')"><i data-icon="crane"></i>Embodied Carbon</button>
+            <button class="admin-tab" data-tab="energy" onclick="showTab('energy')"><i data-icon="energy"></i>Energy Results</button>
+            <button class="admin-tab" data-tab="waste" onclick="showTab('waste')"><i data-icon="recycle"></i>Waste Data</button>
+            <button class="admin-tab" data-tab="database" onclick="showTab('database')"><i data-icon="database"></i>Database</button>
+            <button class="admin-tab" data-tab="analytics" onclick="showTab('analytics')"><i data-icon="chart"></i>Analytics</button>
         </div>
 
-        <!-- Scoring -->
+        <!-- Scoring: per-criterion benchmark editor (v0.2) -->
         <section class="admin-panel" id="panel-scoring">
-            <h2 class="section-title">Scoring Assessments</h2>
-            <p class="admin-note">Each row is one assessment. Category scores are out of 20; the combined total is calculated automatically. The Scoring page shows the latest assessment per project.</p>
-            <div class="db-table-wrap"><table class="db-table admin-table" id="table-scoring"></table></div>
-            <button class="promo-btn admin-add-btn" onclick="addRow('scoring')">+ Add assessment</button>
+            <h2 class="section-title">Benchmark Assessments <span class="standard-pill">Pilot v0.2</span></h2>
+            <p class="admin-note">
+                Each module is scored <strong>upward from the evidence</strong>, not entered as a total. Pick an assessment,
+                enter the measured value for each criterion (leave a criterion <em>Not assessed</em> if the evidence is
+                unknown, which is not the same as zero), and the module and combined scores recompute live. Saving writes
+                the per-criterion evidence and the computed module scores back to the database the Scoring page reads.
+            </p>
+            <div id="benchmarkEditor"><p class="admin-note">Loading assessments…</p></div>
         </section>
 
         <!-- LCA -->
@@ -126,7 +132,7 @@
         </div>
     </footer>
 
-    <script src="js/admin.js"></script>
+    <script src="js/admin.js?v=3"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/analytics.js"></script>

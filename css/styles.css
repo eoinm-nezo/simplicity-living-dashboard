@@ -792,3 +792,34 @@ body {
 .mb-2 {
   margin-bottom: 2rem;
 }
+
+/* ===================================================================================
+   Shared icon set (js/icons.js). One stroke weight, one size scale, colour inherited —
+   so the same visual language runs from the calculator to the scorecard.
+   =================================================================================== */
+.app-icon {
+    width: 24px; height: 24px; display: block; flex-shrink: 0;
+    stroke: currentColor; fill: none; vertical-align: middle;
+}
+/* beside a run of text */
+.app-icon-inline {
+    display: inline-block; width: 1.15em; height: 1.15em;
+    vertical-align: -0.2em; margin-right: 0.4em; opacity: 0.75;
+}
+
+/* An icon placed inline ahead of a run of text: <i data-icon="…"></i>Label.
+   Sized and spaced off the text it sits with, whatever the container. */
+i[data-icon] {
+    display: inline-flex; align-items: center; font-style: normal;
+    vertical-align: -0.16em; margin-right: 0.45em;
+}
+i[data-icon] .app-icon { width: 1.05em; height: 1.05em; opacity: 0.8; flex-shrink: 0; }
+h2 > i[data-icon] .app-icon, h3 > i[data-icon] .app-icon { opacity: 0.6; }
+.admin-tab .app-icon, .btn-score-self .app-icon, .standard-group-title .app-icon {
+    width: 1.05em; height: 1.05em; opacity: 0.85; flex-shrink: 0;
+}
+
+/* star rating */
+.rating-stars { display: inline-flex; gap: 2px; vertical-align: -0.15em; margin-right: 0.35rem; }
+.rating-star  { width: 1.05em; height: 1.05em; fill: none; stroke: #d6d6d6; }
+.rating-star.on { fill: var(--simplicity-orange); stroke: var(--simplicity-orange); }

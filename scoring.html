@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simplicity Scoring System - Simplicity Living</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/scoring.css">
+    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/scoring.css?v=7">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
-    <script src="js/simplicity-db.js"></script>
-    <script src="js/scoring-criteria.js"></script>
-    <link rel="stylesheet" href="css/auth.css">
+    <script src="js/simplicity-db.js?v=2"></script>
+    <script src="js/icons.js?v=8"></script>
+    <script src="js/scoring-criteria.js?v=4"></script>
+    <script src="js/scoring-methodology.js?v=1"></script>
+    <link rel="stylesheet" href="css/auth.css?v=2">
 </head>
 <body>
     <!-- Navigation -->
@@ -35,40 +37,52 @@
 
     <!-- Page Header -->
     <section class="hero">
-        <h1>Simplicity Scoring System</h1>
-        <p>How each project performs, category by category &mdash; on its own merit</p>
+        <h1>Simplicity Living Benchmark</h1>
+        <p>Seven aspects of our apartment buildings, assessed against published targets and evidence</p>
     </section>
 
     <!-- Main Content -->
     <div class="container">
         <!-- About -->
         <section class="section">
-            <h2 class="section-title">About the Scoring System</h2>
-            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 1rem;">
+            <h2 class="section-title">About the Benchmark</h2>
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-left: 4px solid #ff6600; margin-bottom: 1.25rem;">
                 <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    Aligned to the leading <strong>green-building rating</strong>, we actively benchmark the <strong>seven credits that matter most</strong> &mdash;
-                    Energy Use, Indoor Environment Quality (winter & summer comfort, moisture), Embodied Carbon, Sustainable Materials,
-                    Water Use, Construction Waste Minimisation and Sustainable Transport. Each is scored out of 20 and stands on its own merit,
-                    so strengths and weaknesses stay visible instead of averaging into a single star rating.
+                    The Simplicity Living Benchmark tracks <strong>seven aspects of our apartment buildings</strong>.
+                    We assess each against published targets and supporting evidence, so we can identify improvements
+                    and track progress from project to project.
                 </p>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    The score wheel below shows all seven in a single graph: each segment fills from the centre to the score achieved out of 20.
-                    Switch to <strong>Detailed Results</strong> to expand any category and see exactly what it's scored on and why.
-                    The <strong>14 remaining rating credits</strong> &mdash; where Simplicity hits full marks by default &mdash; are shown further down the page.
+                <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                    It measures seven selected outcomes; it is not a comprehensive sustainability assessment, regulatory
+                    approval or third-party certification. Each module is scored out of 20 and stands on its own merit,
+                    calculated upward from the evidence. Open <strong>Module Breakdown</strong> for any project to see exactly
+                    how each point is earned, what the next target is, and where our buildings sit.
                 </p>
             </div>
-            <div style="text-align:center; margin-top:1.5rem;">
-                <button class="btn-score-self" onclick="openSelfScorer()">✏️ Score Your Project</button>
+
+            <div class="pilot-banner">
+                <strong>Pilot methodology (v0.2).</strong> The numeric targets are calibration candidates for back-testing,
+                not approved rules or an external benchmark. Project data shown here is placeholder, pending real evidence.
             </div>
+
+            <!-- The seven focus areas -->
+            <div class="focus-tiles" id="focusTiles"><!-- rendered by scoring-view.js --></div>
+            <!-- "Score Your Project" self-scorer hidden: low public use and it overlapped Homestar.
+                 Markup kept for reference if re-enabled:
+                 <div style="text-align:center; margin-top:1.5rem;">
+                     <button class="btn-score-self" onclick="openSelfScorer()"><i data-icon="edit"></i>Score Your Project</button>
+                 </div>
+            -->
         </section>
 
-        <!-- Your saved assessments -->
+        <!-- "Your Assessments" (saved self-scores) hidden with the self-scorer feature. Kept for reference:
         <section class="section">
             <h2 class="section-title">Your Assessments</h2>
             <div class="your-assessments" id="yourAssessmentsPanel">
                 <div class="your-assess-login"><p>Loading…</p></div>
             </div>
         </section>
+        -->
 
         <!-- Overall comparison across projects -->
         <section class="section">
@@ -103,7 +117,7 @@
 
             <div class="view-toggle">
                 <button type="button" id="viewScorecardBtn" class="view-toggle-btn active" onclick="setScoreView('scorecard')">Score Wheel</button>
-                <button type="button" id="viewDetailBtn" class="view-toggle-btn" onclick="setScoreView('detail')">Detailed Results</button>
+                <button type="button" id="viewDetailBtn" class="view-toggle-btn" onclick="setScoreView('detail')">Module Breakdown</button>
             </div>
 
             <!-- Scorecard view: the score wheel -->
@@ -122,11 +136,11 @@
                 </div>
             </div>
 
-            <!-- Detailed results view (expandable accordion) -->
+            <!-- Detailed results view: the seven category cards → full breakdown popup -->
             <div id="detailView" class="scorecard-panel" style="display:none;">
                 <h3 id="detailTitle" style="margin-bottom: 0.5rem;"></h3>
-                <p class="scorecard-meta" style="margin-bottom: 1.25rem;">Click any category to expand its criteria, performance band and assessor notes.</p>
-                <div id="detailAccordion" class="detail-accordion"></div>
+                <p class="scorecard-meta" style="margin-bottom: 1.25rem;">The seven modules, scored for this project from the evidence. Click a card for the full breakdown: how each point is earned, the next target, and where our projects sit.</p>
+                <div id="detailAccordion" class="detail-cards"></div>
             </div>
 
             <p class="admin-hint">New results, edits, imports and exports are managed on the <a href="admin.html">Admin page</a>.</p>
@@ -136,31 +150,32 @@
         <section class="section standard-section">
             <h2 class="section-title">The Simplicity Standard <span class="standard-pill">Full marks by default</span></h2>
             <p class="section-lead">
-                The seven credits above are where we push hardest &mdash; because we can always do better. The remaining
-                <strong>14 of the rating's 22 credits</strong> aren't a contest: Simplicity builds to <strong>full marks on these as standard</strong>,
-                so there's no need to score them project-by-project. They're our baseline, not our stretch goal.
+                The seven areas above are where we push hardest, because we can always do better. Beyond them sits a wide
+                set of <strong>good-practice standards that are simply how Simplicity builds</strong>, our baseline on every
+                home: healthy ventilation and daylight, quiet interiors, durable low-maintenance materials, native
+                landscaping and more, designed in as standard.
             </p>
             <div id="standardGroups" class="standard-groups"></div>
         </section>
     </div>
 
-    <!-- Score Your Project modal -->
-    <div id="selfScorerOverlay" class="self-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="selfStepLabel">
-        <div class="self-card">
-            <div class="self-header">
-                <span id="selfStepLabel" class="self-step-label">Your Project</span>
-                <button class="self-close" onclick="closeSelfScorer()" title="Close">✕</button>
-            </div>
-            <div class="self-progress-track">
-                <div class="self-progress-fill" id="selfProgress"></div>
-            </div>
-            <div class="self-body" id="selfScorerBody">
-                <!-- rendered by scoring-self.js -->
-            </div>
-            <div class="self-footer" id="selfFooter">
-                <button class="self-btn secondary" id="selfBackBtn" onclick="selfGoBack()" style="visibility:hidden;">← Back</button>
-                <button class="self-btn primary"   id="selfNextBtn" onclick="selfGoNext()">Start Scoring →</button>
-            </div>
+    <!-- Score Your Project modal removed while the self-scorer is hidden (low public use +
+         overlapped Homestar). scoring-self.js is no longer loaded. Restore the modal markup
+         and the script tag from version history to re-enable the self-scoring feature. -->
+
+    <!-- Simplicity Standard credit popup -->
+    <div id="standardModalOverlay" class="sm-overlay" style="display:none;" role="dialog" aria-modal="true" onclick="if(event.target===this)closeStandardModal()">
+        <div class="sm-card">
+            <button class="sm-close" onclick="closeStandardModal()" title="Close">✕</button>
+            <div id="standardModalBody"><!-- rendered by scoring-view.js --></div>
+        </div>
+    </div>
+
+    <!-- Category scoring-breakdown popup -->
+    <div id="categoryModalOverlay" class="cm-overlay" style="display:none;" role="dialog" aria-modal="true" onclick="if(event.target===this)closeCategoryModal()">
+        <div class="cm-card">
+            <button class="cm-close" onclick="closeCategoryModal()" title="Close">✕</button>
+            <div id="categoryModalBody"><!-- rendered by scoring-view.js --></div>
         </div>
     </div>
 
@@ -183,8 +198,8 @@
         </div>
     </footer>
 
-    <script src="js/scoring-view.js"></script>
-    <script src="js/scoring-self.js"></script>
+    <script src="js/scoring-view.js?v=6"></script>
+    <!-- self-scorer hidden: <script src="js/scoring-self.js?v=3"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/analytics.js"></script>
