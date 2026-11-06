@@ -82,7 +82,7 @@
       const grid = card.querySelector('[data-a45-grid]');
       if (!grid) return;
       if (!res) { grid.innerHTML = '<p class="a45-empty">—</p>'; return; }
-      grid.innerHTML = stageRow('A4', res.baseA4, res.blA4, res.simpA4) + stageRow('A5', res.baseA5, res.blA5, res.simpA5);
+      grid.innerHTML = stageRow('A5', res.baseA5, res.blA5, res.simpA5);
     });
 
     // Section rollup — absolute kgCO2e for the block, split A4 vs A5, each shown across all
@@ -117,15 +117,7 @@
          <span class="et-arrow">&rsaquo;</span>
          <span class="et-item et-simp"><small>${lbl}</small><strong>${t(sp)}</strong> kgCO₂e</span>`;
       tot.innerHTML =
-        `<div class="et-pair et-pair-a4">
-           <span class="et-tag">A4</span>
-           ${three('Simplicity measured', gA4, bA4, sA4)}
-           <span class="et-note"><strong class="et-red">${redA4.toFixed(0)}% below the baseline.</strong>
-             Green Star reads low because it scores an Auckland supplier at
-             ${window.GREENSTAR_A45 ? GREENSTAR_A45.LAST_MILE_KM : 1} km; the baseline is a realistic
-             conventional haul, and our measured transport comes in under it.</span>
-         </div>
-         <div class="et-pair et-pair-a5">
+        `<div class="et-pair et-pair-a5">
            <span class="et-tag">A5</span>
            ${three('Simplicity measured', gA5, bA5, sA5)}
            <span class="et-note"><strong class="et-red">${redA5.toFixed(0)}% below the baseline.</strong>
@@ -232,7 +224,7 @@
         `<p>The diesel burned by the machines and the electricity for the crew's tools track <strong>how much work there is to do</strong>, and the work is identical in both programmes: the same concrete, the same trades, the same tasks in the same order.</p>
          <p>Compressing that work into fewer weeks does not reduce it, so the on-site work energy lands within a few percent either way. That is exactly why this is <em>not</em> where the carbon saving comes from.</p>
          <h5>How the carbon is worked out</h5>
-         <p>Taken from the solved programme: each week's modelled activity for every trade is multiplied by that trade's fuel and electricity intensity, then by MfE 2022 factors (diesel ${EF.diesel.toFixed(2)} kgCO₂e/L, grid electricity ${EF.electricity.toFixed(3)} kgCO₂e/kWh). Delivery of materials to site (A4) is handled separately on the element cards; this figure is the A5 on-site work energy.</p>
+         <p>Taken from the solved programme: each week's modelled activity for every trade is multiplied by that trade's fuel and electricity intensity, then by MfE 2022 factors (diesel ${EF.diesel.toFixed(2)} kgCO₂e/L, grid electricity ${EF.electricity.toFixed(3)} kgCO₂e/kWh). Delivery of materials to site is covered on the Transport page; this figure is the A5 on-site work energy.</p>
          ${stat('Baseline vs Waiatarua', `~${kg((b.fuel + s.fuel) / 2)} L diesel · ${kg((b.elec + s.elec) / 2)} kWh`, 'within a few percent either way')}` },
       'tile-peak': { tag: 'Programme metric', title: 'Peak-week activity', body:
         `<p>Because the same work is packed into roughly half the weeks, more of it happens at once. The busiest week at Waiatarua carries more people and plant than the baseline's busiest week.</p>

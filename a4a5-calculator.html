@@ -1,240 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A4–A5 Carbon Calculator - Simplicity Living</title>
-    <link rel="stylesheet" href="css/styles.css?v=4">
-    <link rel="stylesheet" href="css/calculator.css?v=3">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
-    <script src="js/simplicity-db.js"></script>
-    <script src="js/icons.js?v=6"></script>
-    <script src="js/a4a5-data.js?v=3"></script>
-    <link rel="stylesheet" href="css/auth.css?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transport | Simplicity Living</title>
+<link rel="stylesheet" href="css/styles.css?v=4">
+<link rel="stylesheet" href="css/auth.css?v=2">
+<link rel="stylesheet" href="css/transport.css?v=3">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
+<nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo">
                 <img src="assets/images/simplicity-logo.svg" alt="Simplicity Living" class="logo-img">
             </a>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="embodied-carbon.html">Embodied Carbon</a></li>
-                <li><a href="energy.html">Energy</a></li>
-                <li><a href="productivity.html">Site Activity</a></li>
-                <li><a href="waste.html">Waste</a></li>
-                <li><a href="maintenance.html">Maintenance</a></li>
-                <li><a href="scoring.html">Scoring</a></li>
-                <li><a href="a4a5-calculator.html" class="nav-cta active">A4&ndash;A5 Calculator</a></li>
+                <li>
+<a href="index.html">Home</a>
+</li>
+                <li>
+<a href="embodied-carbon.html">Embodied Carbon</a>
+</li>
+                <li>
+<a href="energy.html">Energy</a>
+</li>
+                <li>
+<a href="a4a5-calculator.html" class="active">Transport</a>
+</li>
+                <li>
+<a href="productivity.html">Site Activity</a>
+</li>
+                <li>
+<a href="waste.html">Waste</a>
+</li>
+                <li>
+<a href="maintenance.html">Maintenance</a>
+</li>
+                <li>
+<a href="scoring.html">Scoring</a>
+</li>
+                
             </ul>
-            <div id="authNavBadge" class="auth-nav-badge"></div>
+            <div id="authNavBadge" class="auth-nav-badge">
+</div>
         </div>
     </nav>
-
-    <!-- Hero -->
-    <section class="hero">
-        <h1>A4&ndash;A5 Carbon Calculator</h1>
-        <p>Prove that smarter logistics and faster, cleaner sites beat the industry baseline &mdash; not by hiding the materials, but by wasting nothing in transit or execution.</p>
-    </section>
-
-    <div class="container">
-        <p id="calcStatus" class="calc-status"></p>
-
-        <!-- The paradigm shift explainer -->
-        <section class="section">
-            <h2 class="section-title">A different way to count A4 &amp; A5</h2>
-            <div class="paradigm-grid">
-                <div class="paradigm-card old">
-                    <div class="paradigm-icon" data-icon="material"></div>
-                    <h3>The industry default</h3>
-                    <p>Material-driven. Punch in a quantity, the tool slaps on a generic transport distance and a fat 5&ndash;10% waste penalty. Efficient builders get the same score as sloppy ones.</p>
-                </div>
-                <div class="paradigm-arrow">→</div>
-                <div class="paradigm-card new">
-                    <div class="paradigm-icon" data-icon="target"></div>
-                    <h3>The Simplicity way</h3>
-                    <p>Logistics-driven. Mass sets the floor, but your <strong>real distances</strong>, <strong>full trucks</strong>, <strong>tiny waste factor</strong> and <strong>shorter programme</strong> are the levers &mdash; and every saving is shown against the baseline.</p>
-                </div>
-            </div>
-
-            <!-- A4 vs A5 flow -->
-            <div class="stage-flow">
-                <div class="stage-step a1a3">
-                    <span class="stage-code">A1&ndash;A3</span>
-                    <span class="stage-name">Product</span>
-                    <small>Making the materials</small>
-                </div>
-                <div class="stage-link">→</div>
-                <div class="stage-step a4 active">
-                    <span class="stage-code">A4</span>
-                    <span class="stage-name">Transport</span>
-                    <small>Getting them to site</small>
-                </div>
-                <div class="stage-link">→</div>
-                <div class="stage-step a5 active">
-                    <span class="stage-code">A5</span>
-                    <span class="stage-name">Construction</span>
-                    <small>Building it &mdash; energy, fuel &amp; waste</small>
-                </div>
-            </div>
-        </section>
-
-        <!-- PROJECTS: front and centre -->
-        <section class="section">
-            <h2 class="section-title">Your Projects</h2>
-            <p class="section-lead">No logins yet &mdash; just pick a project, or start a new one. Everything you change saves automatically.</p>
-            <div class="project-bar" id="projectBar"></div>
-
-            <div class="project-form" id="projectForm">
-                <div class="pf-grid">
-                    <div class="pf-field pf-wide"><label>Project name</label><input type="text" id="pf_name"></div>
-                    <div class="pf-field"><label>Location</label><input type="text" id="pf_location"></div>
-                    <div class="pf-field"><label>GFA (m²)</label><input type="number" id="pf_gfa" min="0"></div>
-                    <div class="pf-field"><label>Storeys</label><input type="number" id="pf_storeys" min="0"></div>
-                    <div class="pf-field"><label>Apartments / floor</label><input type="number" id="pf_apts" min="0"></div>
-                    <div class="pf-field"><label>Buildings</label><input type="number" id="pf_buildings" min="0"></div>
-                </div>
-                <div class="pf-actions">
-                    <button class="promo-btn" onclick="saveProjectMeta()">Save project</button>
-                    <button class="promo-btn db-btn-secondary" onclick="duplicateProject()">⧉ Copy as scenario</button>
-                    <button class="promo-btn db-btn-secondary" style="border-color:#dc3545;color:#dc3545;" onclick="deleteProject()">Delete</button>
-                </div>
-            </div>
-        </section>
-
-        <div id="calcBody">
-            <!-- ===================== A4 ===================== -->
-            <section class="section">
-                <h2 class="section-title">A4 &middot; Transport to Site</h2>
-                <p class="section-lead">Add the major materials and where they come from. We convert volumes to mass, run the <strong>industry baseline</strong> (BRANZ default distances, 10% waste, part-full trucks) against <strong>Simplicity's optimised logistics</strong> (2% waste, full trucks), and show the carbon you save.</p>
-
-                <div class="materials-card">
-                    <h3>Materials &amp; supply origins</h3>
-                    <div class="db-table-wrap">
-                        <table class="db-table materials-table">
-                            <thead>
-                                <tr><th>Material</th><th>Quantity</th><th>Supply origin</th><th style="text-align:right;">Mass</th><th></th></tr>
-                            </thead>
-                            <tbody id="materialsBody"></tbody>
-                        </table>
-                    </div>
-                    <button class="promo-btn admin-add-btn" onclick="addMaterial()">+ Add material</button>
-                </div>
-
-                <!-- A4 KPI cards -->
-                <div class="kpi-row">
-                    <div class="kpi-card baseline">
-                        <div class="kpi-icon" data-icon="material"></div>
-                        <div class="kpi-value"><span id="a4Baseline">0</span></div>
-                        <div class="kpi-label">Baseline A4 (kgCO₂e)</div>
-                        <div class="kpi-sub"><span id="a4BasePerM2">0</span> kg/m²</div>
-                    </div>
-                    <div class="kpi-card optimised">
-                        <div class="kpi-icon" data-icon="target"></div>
-                        <div class="kpi-value"><span id="a4Optimised">0</span></div>
-                        <div class="kpi-label">Simplicity A4 (kgCO₂e)</div>
-                        <div class="kpi-sub"><span id="a4OptPerM2">0</span> kg/m²</div>
-                    </div>
-                    <div class="kpi-card delta">
-                        <div class="kpi-icon" data-icon="trendDown"></div>
-                        <div class="kpi-value"><span id="a4Delta">0</span></div>
-                        <div class="kpi-label">Carbon saved (kgCO₂e)</div>
-                        <div class="kpi-sub"><span id="a4DeltaPct">0%</span> below baseline</div>
-                    </div>
-                </div>
-
-                <div class="chart-wrapper">
-                    <h3>Where the savings come from</h3>
-                    <div class="chart-canvas-container" style="height: 420px;">
-                        <canvas id="a4Chart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Multi-leg journey explainer -->
-                <div class="journey-card">
-                    <h3>Every material is a multi-leg journey</h3>
-                    <div class="journey-flow">
-                        <div class="journey-node"><span class="journey-icon" data-icon="factory"></span><span>Factory / quarry</span></div>
-                        <div class="journey-leg"><span class="journey-mode"><i data-icon="ship"></i>Sea freight</span><small>container ship, runs full</small></div>
-                        <div class="journey-node"><span class="journey-icon" data-icon="anchor"></span><span>Port of entry</span></div>
-                        <div class="journey-leg"><span class="journey-mode"><i data-icon="truck"></i>Road</span><small>load factor &amp; waste apply here</small></div>
-                        <div class="journey-node site"><span class="journey-icon" data-icon="crane"></span><span>Auckland site</span></div>
-                    </div>
-                    <p class="journey-note">Sea distances use container-freight factors; the local road leg is where Simplicity's full trucks and low waste cut the most carbon. Distances come from the BRANZ Transport Scenarios database; factors from MfE 2023 (ME1781).</p>
-                </div>
-            </section>
-
-            <!-- ===================== A5 ===================== -->
-            <section class="section">
-                <h2 class="section-title">A5 &middot; Construction &amp; Installation</h2>
-                <p class="section-lead">A5 is the physical act of building &mdash; the pour, crane, plant and site energy for each element. Rather than one generic estimate, each construction element has its own <strong>activity calculator</strong>. Open one below as a blank shell, enter your own quantities and logistics, and see the baseline-vs-optimised saving. <small style="color:#888;">(On the Simplicity site these same tools substantiate real projects, prefilled with their data.)</small></p>
-
-                <div class="activity-launch-grid">
-                    <a class="activity-launch" href="activity-walls.html?mode=blank">
-                        <span class="al-icon" data-icon="masonry"></span>
-                        <span class="al-name">Concrete Structural Walls</span>
-                        <span class="al-desc">Concrete &amp; rebar transport, pour, crane &amp; formwork</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                    <a class="activity-launch" href="activity-foundation.html?mode=blank">
-                        <span class="al-icon" data-icon="excavation"></span>
-                        <span class="al-name">Foundation</span>
-                        <span class="al-desc">Excavation, hardfill import, pour &amp; compaction</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                    <a class="activity-launch" href="activity-floors.html?mode=blank">
-                        <span class="al-icon" data-icon="crane"></span>
-                        <span class="al-name">Suspended Floors</span>
-                        <span class="al-desc">Concrete &amp; rebar transport, pump to height, formwork &amp; propping</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                    <a class="activity-launch" href="activity-roof.html?mode=blank">
-                        <span class="al-icon" data-icon="comfort"></span>
-                        <span class="al-name">Roof</span>
-                        <span class="al-desc">Concrete deck, timber &amp; steel transport, crane erection &amp; connections</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                    <a class="activity-launch" href="activity-windows.html?mode=blank">
-                        <span class="al-icon" data-icon="glazing"></span>
-                        <span class="al-name">Windows &amp; Glazing</span>
-                        <span class="al-desc">Imported joinery: sea &amp; road transport, hoist &amp; install</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                    <a class="activity-launch" href="activity-cladding.html?mode=blank">
-                        <span class="al-icon" data-icon="cladding"></span>
-                        <span class="al-name">External Cladding</span>
-                        <span class="al-desc">Brick veneer transport, scaffold, hoist &amp; lay</span>
-                        <span class="al-cta">Open calculator →</span>
-                    </a>
-                </div>
-
-                <!-- Site data sources (imagined) -->
-                <div class="site-tools-card">
-                    <h3>Where the real A5 numbers will come from</h3>
-                    <p class="section-lead">A5 today is mostly guesswork from floor area. To prove real efficiency we capture verifiable primary data on site &mdash; these are the tools that will feed the activity calculators:</p>
-                    <div class="site-tools-grid" id="siteTools"></div>
-                </div>
-            </section>
-        </div>
+<section class="hero">
+<h1>Transport</h1>
+<p>A4 · Following the materials, from their source to our site.</p>
+</section>
+<main class="container">
+<aside class="transport-nezo" aria-labelledby="transport-nezo-title">
+    <div>
+        <h2 id="transport-nezo-title">Calculate your own project for free</h2>
+        <p>Explore your project’s transport footprint with NEZO free access calculators.</p>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2026 Simplicity Living. Building Performance Dashboard.</p>
-        <p>A4 distances: BRANZ Transport Scenarios &middot; Emission factors: MfE 2023 (ME1781) &middot; A5 figures are placeholders pending site data</p>
-        <div class="footer-admin">
-            <a href="admin.html" class="footer-admin-link" title="Admin — data management">
-                <span class="footer-admin-mark">%</span> Admin
-            </a>
-        </div>
-    </footer>
-
-    <script src="js/a4a5-calculator.js?v=2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
-    <script src="js/analytics.js"></script>
+    <a href="https://app.nezo-app.com/" target="_blank" rel="noopener noreferrer">NEZO</a>
+</aside>
+<section class="section">
+<h2 class="section-title">A different way to count A4</h2>
+<div class="transport-grid">
+<article class="transport-card">
+<span class="eyebrow">THE INDUSTRY DEFAULT</span>
+<h3>A distance allowance</h3>
+<p>Material quantities are paired with assumed routes. A useful starting point, but it cannot tell the whole logistics story.</p>
+</article>
+<article class="transport-card accent">
+<span class="eyebrow">THE SIMPLICITY WAY</span>
+<h3>Follow the actual journey</h3>
+<p>Compare the same materials using supplier distances, delivery loads and transport modes. Open each element to follow the arithmetic and see where the model improves on a conventional baseline.</p>
+</article>
+</div>
+</section>
+<section class="section">
+<h2 class="section-title">Waiatarua · Building A</h2>
+<p>Transport comparison carried over from Site Activity. These six element models are placeholders pending final substantiation, not verified delivery records.</p>
+<div id="transportTotals" class="transport-grid">
+</div>
+<label for="transportElement">Explore an element</label> <select id="transportElement">
+</select>
+<div id="transportWorkings" aria-live="polite">
+</div>
+</section>
+<section class="section">
+<h2 class="section-title">The supplied transport assessment</h2>
+<div id="assessmentSummary">
+</div>
+<label for="deliverySearch">Find a material or source</label> <input id="deliverySearch" type="search" placeholder="Search assessment…">
+<label>
+<input id="unresolvedOnly" type="checkbox"> Show unresolved quantities only</label>
+<p id="deliveryCount" aria-live="polite">
+</p>
+<div class="transport-table">
+<table>
+<thead>
+<tr>
+<th>Material / evidence</th>
+<th>Mass</th>
+<th>Route</th>
+<th>A4 kgCO₂e</th>
+</tr>
+</thead>
+<tbody id="deliveryRows">
+</tbody>
+</table>
+</div>
+<p>
+<a href="assets/data/nezo-transport-assessment.json" download>Download original assessment JSON</a>
+</p>
+</section>
+</main>
+<footer class="footer">
+<p>© 2026 Simplicity Living · A4 Transport</p>
+</footer>
+<script src="js/a4a5-data.js?v=3">
+</script>
+<script src="js/greenstar-a45.js?v=2">
+</script>
+<script src="js/activity-data.js?v=2">
+</script>
+<script src="js/transport-assessment.js">
+</script>
+<script src="js/transport.js?v=1">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+<script src="js/supabase-client.js">
+</script>
 </body>
 </html>

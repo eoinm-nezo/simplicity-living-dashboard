@@ -55,19 +55,19 @@
     // ── group helpers ──
     const inputGroups = () => {
         const g = {};
-        el.inputs.forEach(f => { (g[f.group] = g[f.group] || []).push(f); });
+        el.inputs.filter(f => !/Km$/.test(f.id)).forEach(f => { (g[f.group] = g[f.group] || []).push(f); });
         return g;
     };
     const assumpGroups = () => {
         const g = {};
-        el.assumptions.forEach(a => { (g[a.grp] = g[a.grp] || []).push(a); });
+        el.assumptions.filter(a => !/^(efRoad|efSea|distBase|util)/.test(a.id)).forEach(a => { (g[a.grp] = g[a.grp] || []).push(a); });
         return g;
     };
 
     // ── build shell ──
     function render() {
         const banner = mode === 'blank'
-            ? `<div class="act-mode act-mode-blank"><span class="act-mode-tag">Public tool</span> Blank shell — enter your own project's quantities and logistics to see how the Simplicity approach cuts A4–A5.</div>`
+            ? `<div class="act-mode act-mode-blank"><span class="act-mode-tag">Public tool</span> Blank shell — enter your own project's quantities and logistics to see how the Simplicity approach cuts A5.</div>`
             : `<div class="act-mode act-mode-project"><span class="act-mode-tag">Substantiating</span> Prefilled with <strong>${esc(project.name)}</strong> data (${esc(project.location)}). Figures are placeholders pending final substantiation.</div>`;
 
         let inputsHtml = '';
@@ -124,19 +124,15 @@
                 </div>
                 <div class="act-saving" id="actSavingPill">–0%</div>
               </div>
-              <p class="act-badge-note">This is the detailed site model: Simplicity’s measured figure against
-                the same model run on typical contractor assumptions — full trucks and short hauls versus
-                part loads and long ones. The Green Star default above is a different thing again: an
-                industry lookup, not a site model.</p>
+              <p class="act-badge-note">A5 plant, power and construction activity, compared using the same quantities and conventional contractor assumptions. Model estimates remain subject to substantiation.</p>
 
               <div class="act-card">
                 <div class="act-kpirow">
-                  <div class="act-kpi act-kpi-base"><div class="act-kpi-v" id="actBaseTotal">0</div><div class="act-kpi-l">Typical contractor A4–A5</div></div>
-                  <div class="act-kpi act-kpi-simp"><div class="act-kpi-v" id="actSimpTotal">0</div><div class="act-kpi-l">Simplicity A4–A5</div></div>
+                  <div class="act-kpi act-kpi-base"><div class="act-kpi-v" id="actBaseTotal">0</div><div class="act-kpi-l">Typical contractor A5</div></div>
+                  <div class="act-kpi act-kpi-simp"><div class="act-kpi-v" id="actSimpTotal">0</div><div class="act-kpi-l">Simplicity A5</div></div>
                   <div class="act-kpi act-kpi-save"><div class="act-kpi-v" id="actSaved">0</div><div class="act-kpi-l">Saved (kgCO₂e)</div></div>
                 </div>
                 <div class="act-stagesplit">
-                  <div><span class="act-stage-tag a4">A4</span> Transport &nbsp;<strong id="actA4Simp">0</strong> <small>vs <span id="actA4Base">0</span> typical</small></div>
                   <div><span class="act-stage-tag a5">A5</span> Construction &nbsp;<strong id="actA5Simp">0</strong> <small>vs <span id="actA5Base">0</span> typical</small></div>
                 </div>
               </div>
@@ -198,6 +194,7 @@
     let last = null;
     function recompute() {
         const r = el.compute(state.values, state.assumptions);
+        r.streams = r.streams.filter(s => s.stage === 'A5');
         last = r;
         const sum = (arr, k) => arr.reduce((s, x) => s + (+x[k] || 0), 0);
         const a4 = r.streams.filter(s => s.stage === 'A4');
@@ -235,7 +232,7 @@
         }).join('');
 
         const q = document.getElementById('actQuant');
-        if (q) q.innerHTML = r.quantities.map(x =>
+        if (q) q.innerHTML = r.quantities.filter(x => !/A4|transport|sea share|truck|delivered/i.test(x.label)).map(x =>
             `<div class="act-q"><span class="act-q-v">${fmt(x.value)}</span><span class="act-q-l">${esc(x.label)}${x.unit ? ' (' + esc(x.unit) + ')' : ''}</span></div>`).join('');
 
         renderWorkings(r);
@@ -294,93 +291,7 @@
         const ratio = simpTot > 0 ? gs.total / simpTot : 0;
         const a4Ratio = gs.a4Total > 0 ? simpA4 / gs.a4Total : 0;
 
-        host.innerHTML = `
-        <section class="act-card act-workings">
-          <div class="w-head">
-            <h3>Three references, one page</h3>
-            <p>Left is the industry compliance number: the NZGBC Embodied Carbon Calculator's own
-               A4&ndash;A5 method, which reads low. The middle is a realistic <strong>baseline</strong>:
-               a conventional build of the same element. The right is what Simplicity measures.
-               Nothing is hidden &mdash; every line shows its arithmetic, and the measured figure is
-               <strong>${redTot >= 0 ? redTot.toFixed(0) + '% below the baseline' : Math.abs(redTot).toFixed(0) + '% above the baseline'}</strong>.</p>
-          </div>
-
-          <div class="w-cols">
-            <div class="w-col w-col-base">
-              <div class="w-col-head">
-                <span class="w-tag">Green Star default</span>
-                <strong>${per(gs.perUnit)}</strong><small>kgCO₂e / ${esc(el.unitLabel)}</small>
-              </div>
-              <h4>A4 &mdash; transport to site</h4>
-              <table class="w-table"><tbody>${gsA4Rows}
-                <tr class="w-sub"><td>A4 subtotal</td><td>${kg(gs.a4Total)}</td></tr></tbody></table>
-              <h4>A5 &mdash; construction</h4>
-              <table class="w-table"><tbody>${gsA5Rows}
-                <tr class="w-sub"><td>A5 subtotal</td><td>${kg(gs.a5Total)}</td></tr></tbody></table>
-              <div class="w-total">A4&ndash;A5 total <strong>${kg(gs.total)}</strong> kgCO₂e</div>
-            </div>
-
-            <div class="w-col w-col-mid">
-              <div class="w-col-head">
-                <span class="w-tag">Baseline estimate</span>
-                <strong>${per(blTot / denom)}</strong><small>kgCO₂e / ${esc(el.unitLabel)}</small>
-              </div>
-              <h4>A4 &mdash; transport to site</h4>
-              <table class="w-table"><tbody>${blA4Rows}
-                <tr class="w-sub"><td>A4 subtotal</td><td>${kg(blA4)}</td></tr></tbody></table>
-              <h4>A5 &mdash; construction</h4>
-              <table class="w-table"><tbody>${blA5Rows}
-                <tr class="w-sub"><td>A5 subtotal</td><td>${kg(blA5)}</td></tr></tbody></table>
-              <div class="w-total">A4&ndash;A5 total <strong>${kg(blTot)}</strong> kgCO₂e</div>
-            </div>
-
-            <div class="w-col w-col-simp">
-              <div class="w-col-head">
-                <span class="w-tag">Simplicity measured</span>
-                <strong>${per(simpTot / denom)}</strong><small>kgCO₂e / ${esc(el.unitLabel)}</small>
-              </div>
-              <h4>A4 &mdash; transport to site</h4>
-              <table class="w-table"><tbody>${sA4Rows}
-                <tr class="w-sub"><td>A4 subtotal</td><td>${kg(simpA4)}</td></tr></tbody></table>
-              <h4>A5 &mdash; construction</h4>
-              <table class="w-table"><tbody>${sA5Rows}
-                <tr class="w-sub"><td>A5 subtotal</td><td>${kg(simpA5)}</td></tr></tbody></table>
-              <div class="w-total">A4&ndash;A5 total <strong>${kg(simpTot)}</strong> kgCO₂e</div>
-            </div>
-          </div>
-
-          <div class="w-reconcile">
-            <h4>Reading the gap honestly</h4>
-            <ul>
-              <li><strong>Against the baseline, the measured figure is ${redTot >= 0 ? redTot.toFixed(0) + '% lower' : Math.abs(redTot).toFixed(0) + '% higher'}.</strong>
-                  That is the Simplicity benefit: ${kg(blTot)} kgCO₂e for a conventional build of this
-                  element, ${kg(simpTot)} kgCO₂e as we measure it. The Green Star number is not the
-                  thing to beat, the realistic baseline is.</li>
-              <li><strong>A4 is understated by the default, not overstated.</strong> Green Star does not
-                  ask how far the truck went &mdash; it looks the distance up in a city-pair table. An
-                  Auckland supplier serving an Auckland site scores
-                  ${GREENSTAR_A45.LAST_MILE_KM} km. Measured against the real hauls, our A4 comes out
-                  <strong>${a4Ratio >= 1 ? (a4Ratio).toFixed(1) + '&times; higher' : (1 / Math.max(a4Ratio, 1e-9)).toFixed(1) + '&times; lower'}</strong>
-                  than the default allows for.</li>
-              <li><strong>A5 is a flat allowance, so it cannot be beaten or missed.</strong> With no site
-                  energy data the calculator charges
-                  ${GREENSTAR_A45.A5A_PER_M2_GFA} kgCO₂e per m² GFA for the entire construction phase
-                  &mdash; every trade, every preliminary, start to finish. That allowance is
-                  <em>${kg(gs.buildingGfa * GREENSTAR_A45.A5A_PER_M2_GFA)} kgCO₂e</em> for
-                  ${esc(gs.buildingLabel)}. We have apportioned
-                  ${(gs.massShare * 100).toFixed(1)}% of it to this element by mass share, because
-                  Green Star itself never splits it. The measured figure beside it covers only this
-                  element's own plant and power &mdash; it is <em>not</em> a saving against the
-                  allowance, it is the part of the allowance we can actually account for.</li>
-              <li><strong>Same quantities, ${per(ratio)}&times; apart.</strong> That distance is the case
-                  for measuring. The default is a defensible place to start a project; it is not a
-                  defensible place to finish one.</li>
-              ${gs.notes.map(nt => `<li>${esc(nt)}</li>`).join('')}
-            </ul>
-            <p class="w-src">Green Star column computed per ${esc(GREENSTAR_A45.SOURCE)}. Constants read
-               from the project's own submission workbook, NZGBC-ZP102646 (Ascot A).</p>
-          </div>
-        </section>`;
+        host.innerHTML = `<section class="act-card act-workings"><h3>A5 construction — the workings</h3><p>Same element quantities, three references. Site figures remain model estimates pending substantiation. The Green Star site allowance is apportioned by mass; its coverage differs from the element plant and power model.</p><div class="w-cols"><div class="w-col"><h4>Green Star default</h4><table class="w-table"><tbody>${gsA5Rows}</tbody></table><strong>${kg(gs.a5Total)} kgCO₂e</strong></div><div class="w-col"><h4>Conventional baseline</h4><table class="w-table"><tbody>${blA5Rows}</tbody></table><strong>${kg(blA5)} kgCO₂e</strong></div><div class="w-col"><h4>Simplicity model</h4><table class="w-table"><tbody>${sA5Rows}</tbody></table><strong>${kg(simpA5)} kgCO₂e</strong></div></div><p>Transport results and their workings are on <a href="a4a5-calculator.html">Transport</a>.</p></section>`;
     }
 
     render();
